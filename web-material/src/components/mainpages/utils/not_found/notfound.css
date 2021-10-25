@@ -1,0 +1,17 @@
+.not-found {
+    max-width: 1200px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.not-found img {
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.not-found h1 {
+    margin: 0 auto;
+}

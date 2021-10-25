@@ -1,0 +1,27 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema
+const KhoSchema = new Schema({
+    tenkho:{
+        type: String,
+        unique: true,
+        required: true,
+    },
+    madaily:{
+        type: Schema.Types.ObjectId,
+        ref: 'daily'
+    },
+    diachi:{
+        type: String,
+        required: true,
+    },
+    sodienthoai:{
+        type: String,
+        required: true,
+    },
+    images:{
+        type: String,
+        required: true,
+    }
+})
+
+module.exports = mongoose.model('kho',KhoSchema);

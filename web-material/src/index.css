@@ -1,0 +1,75 @@
+* {
+  padding: 0;
+  box-sizing: border-box;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.App {
+  max-width: 100vw;
+  width: 100%;
+  min-height: 100vh;
+  box-shadow: 0 0 35px #eee;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul li {
+  list-style: none;
+}
+
+button {
+  border: none;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.layout {
+  width: 100%;
+  display: flex;
+}
+
+.layout .layout-first {
+  width: 250px;
+}
+.layout .layout-second {
+  margin: 0;
+  width: 100%;
+}
+
+/*--------------------- Header ---------------------*/
+@import url("./components/header/header.css");
+
+/*--------------------- Navbar ---------------------*/
+@import url("./components/navbar/navbar.css");
+
+/*--------------------- Not Found ---------------------*/
+@import url("./components/mainpages/utils/not_found/notfound.css");
+
+/*--------------------- Login/Register ---------------------*/
+@import url("./components/mainpages/auth/login.css");
+
+/*--------------------- HomePage ---------------------*/
+@import url("./components/mainpages/homepage/homepage.css");
+
+/*--------------------- Materials ---------------------*/
+@import url("./components/mainpages/vattu/materials.css");
+
+/*--------------------- Employees ---------------------*/
+@import url("./components/mainpages/nhanvien/employees.css");
+
+/*--------------------- Stores ---------------------*/
+@import url("./components/mainpages/daily/stores.css");
+
+/*--------------------- WareHouses ---------------------*/
+@import url("./components/mainpages/kho/warehouses.css");

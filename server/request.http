@@ -1,0 +1,328 @@
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+   "hoten" : "Nguyễn Thanh Bình",
+   "madaily" : "6131906e1d91413b1c97969f",
+   "diachi" : "Quận 3",
+   "username" : "u2",
+   "password"  : "1",
+   "role" : "user",
+   "sodienthoai": "0123456785",
+   "cmnd":"123456781",
+   "tinhtrang":true,
+   "images" : "https://res.cloudinary.com/ntsit1999/image/upload/v1630638345/samples/237094265_1962984640536375_6226300357679383118_n_qtdgsl.jpg"
+}
+
+###
+# http://192.168.1.11:3000/api/auth/login
+# POST http://localhost:3000/api/auth/login
+# POST http://localhost:3000/api/auth/login
+POST 
+Content-Type: application/json
+
+{
+   "username":"u2",
+    "password":"1"
+}
+
+
+
+###
+
+GET http://localhost:3000/api/nhanvien
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5MzgzNzE1fQ.3AdKFjrfBfCHKwp8_GCJD20rTrggO7Dw53Lusya19SM
+
+
+
+
+
+###
+
+GET http://localhost:3000/api/nhanvien/login/u1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5MzgzNzE1fQ.3AdKFjrfBfCHKwp8_GCJD20rTrggO7Dw53Lusya19SM
+
+###
+
+GET http://localhost:3000/api/nhanvien/611e2a71a0773a3d44f351e3
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5MzgzNzE1fQ.3AdKFjrfBfCHKwp8_GCJD20rTrggO7Dw53Lusya19SM
+
+
+###
+
+PUT http://localhost:3000/api/nhanvien/6131919b1d91413b1c9796a8
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjEyMDlhYzAxNDFhYjQ0ZDM0MWYyZTRjIiwiaWF0IjoxNjI5NTM4ODE4fQ.cbEGHvCP2R1rs22Yx4cgh6G5f-OspPGr7g-6kcGBNwI
+
+{
+   "hoten" : "Thanh Bình",
+   "madaily" : "6131906e1d91413b1c97969f",
+   "diachi" : "Quận 3",
+   "username" : "u2",
+   "password"  : "1",
+   "role" : "user",
+   "images" : "https://res.cloudinary.com/ntsit1999/image/upload/v1630638345/samples/237094265_1962984640536375_6226300357679383118_n_qtdgsl.jpg"
+}
+
+###
+
+PUT http://localhost:3000/api/nhanvien/changepass/6131919b1d91413b1c9796a8
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjEyMDlhYzAxNDFhYjQ0ZDM0MWYyZTRjIiwiaWF0IjoxNjI5NTM4ODE4fQ.cbEGHvCP2R1rs22Yx4cgh6G5f-OspPGr7g-6kcGBNwI
+
+{
+   "hoten" : "Thanh Bình",
+   "madaily" : "6131906e1d91413b1c97969f",
+   "diachi" : "Quận 3",
+   "username" : "u2",
+   "mkht" : "2",
+   "mkm":"1",
+   "nlmkm":"1",
+   "role" : "user",
+   "images" : "https://res.cloudinary.com/ntsit1999/image/upload/v1630638345/samples/237094265_1962984640536375_6226300357679383118_n_qtdgsl.jpg"
+}
+
+###
+
+DELETE  http://localhost:3000/api/nhanvien/61323fe7a7880b55ccf5a5d6
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5Mzg0ODMwfQ.7mRBYZih9_upcX1JElrUNWRKC6UHlj-8sl41v2VZIgM
+
+
+###
+POST http://localhost:3000/api/vattu
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjEyZjQ1Yjc4ZjdlYjM0MTA4ZWM5N2IzIiwiaWF0IjoxNjMwNDg3OTkxfQ.chutKzPivxILOKZMLvTdYE3zuNj31fYHCWx00j9Q5cY
+
+{
+   "tenvt" : "Đồng",
+   "soluong" : 290,
+   "gianhap" : 60000,
+   "giaxuat" : 62000,
+   "donvi" : "kg",
+   "images" : "https://res.cloudinary.com/ntsit1999/image/upload/v1630486382/samples/Dong_fnolrf.jpg"
+}
+
+###
+
+GET http://192.168.1.6:3000/api/vattu
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5Mzg0ODMwfQ.7mRBYZih9_upcX1JElrUNWRKC6UHlj-8sl41v2VZIgM
+
+
+###
+
+PUT http://localhost:3000/api/vattu/611e6cd637a515417cde24aa
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5Mzg0ODMwfQ.7mRBYZih9_upcX1JElrUNWRKC6UHlj-8sl41v2VZIgM
+
+{
+   "tenvt" : "Nhôm",
+   "soluong" : 100,
+   "gianhap" : 5300,
+   "giaxuat" : 5500,
+   "donvi" : "Kg",
+   "images" : "https://res.cloudinary.com/ntsit1999/image/upload/v1630486383/samples/Nhom_f2huep.jpg"
+}
+
+
+
+###
+
+GET http://localhost:3000/api/daily
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5MzgzNzE1fQ.3AdKFjrfBfCHKwp8_GCJD20rTrggO7Dw53Lusya19SM
+
+
+###
+
+GET  http://localhost:3000/api/daily/611ee65bc9c8bb39241f5ba4
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5Mzg0ODMwfQ.7mRBYZih9_upcX1JElrUNWRKC6UHlj-8sl41v2VZIgM
+
+
+###
+
+POST http://localhost:3000/api/daily
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjEyZjQ1Yjc4ZjdlYjM0MTA4ZWM5N2IzIiwiaWF0IjoxNjMwNDg3OTkxfQ.chutKzPivxILOKZMLvTdYE3zuNj31fYHCWx00j9Q5cY
+
+{
+   "tendl" : "Đại lý 6",
+   "diachi" : "Tân Phú1",
+   "sodienthoai" : "0324516897",
+   "images" : "https://res.cloudinary.com/ntsit1999/image/upload/v1630486381/samples/ch4_m0ddmg.jpg"
+}
+
+
+###
+
+PUT http://localhost:3000/api/daily/612f5207c6c79e32ac526c02
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5Mzg0ODMwfQ.7mRBYZih9_upcX1JElrUNWRKC6UHlj-8sl41v2VZIgM
+
+{
+   "tendl" : "Đai lý 2A",
+   "diachi" : "Quận 9",
+   "sodienthoai" : "0905050612",
+   "images" : "https://res.cloudinary.com/ntsit1999/image/upload/v1630486382/samples/ch6_qlch6q.jpg"
+}
+
+# 61324bb662db3e63dc9e027c
+###
+
+DELETE  http://localhost:3000/api/daily/61324bb662db3e63dc9e027c
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5Mzg0ODMwfQ.7mRBYZih9_upcX1JElrUNWRKC6UHlj-8sl41v2VZIgM
+
+
+###
+
+GET http://localhost:3000/api/kho
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5MzgzNzE1fQ.3AdKFjrfBfCHKwp8_GCJD20rTrggO7Dw53Lusya19SM
+
+
+
+
+###
+
+GET  http://localhost:3000/api/kho/611ee71bc9c8bb39241f5ba7
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5Mzg0ODMwfQ.7mRBYZih9_upcX1JElrUNWRKC6UHlj-8sl41v2VZIgM
+
+
+
+###
+
+POST http://localhost:3000/api/kho
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5MzgzNzE1fQ.3AdKFjrfBfCHKwp8_GCJD20rTrggO7Dw53Lusya19SM
+
+{
+   "tenkho" : "Kho 1",
+   "madaily" : "613190bf1d91413b1c9796a2",
+   "diachi" : "Quận 2",
+   "sodienthoai":"0123456789",
+   "images": "https://res.cloudinary.com/ntsit1999/image/upload/v1630486382/samples/Kho1_ozu5ta.jpg"
+}
+
+
+###
+
+PUT http://localhost:3000/api/kho/613003f963b0861484cc6fd4
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5Mzg0ODMwfQ.7mRBYZih9_upcX1JElrUNWRKC6UHlj-8sl41v2VZIgM
+
+{
+   "tenkho" : "Kho 2",
+   "madl" : "612f51cec6c79e32ac526bff",
+   "diachi" : "Bình Dương 1",
+   "images" : "https://i-kinhdoanh.vnecdn.net/2011/03/22/co-so-don-nat-1367026603_m_460x0.jpg"
+}
+
+
+###
+
+DELETE  http://localhost:3000/api/kho/6130bb226d61d02794e80d99
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5Mzg0ODMwfQ.7mRBYZih9_upcX1JElrUNWRKC6UHlj-8sl41v2VZIgM
+
+###
+POST http://localhost:3000/api/phieunhap
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5MzgzNzE1fQ.3AdKFjrfBfCHKwp8_GCJD20rTrggO7Dw53Lusya19SM
+
+{
+   "tenpn" :"PN1",
+   "ngay" : "09-2-2021",
+   "manv" : "6131919b1d91413b1c9796a8",
+   "makho": "6131ba681d91413b1c97979b"
+}
+
+###
+
+GET http://localhost:3000/api/phieunhap
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5MzgzNzE1fQ.3AdKFjrfBfCHKwp8_GCJD20rTrggO7Dw53Lusya19SM
+
+
+
+
+###
+POST http://localhost:3000/api/ctphieunhap
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5MzgzNzE1fQ.3AdKFjrfBfCHKwp8_GCJD20rTrggO7Dw53Lusya19SM
+
+{
+   "mapn" :"6135bfa1e7dbfd3a5c6a8eb1",
+   "mavt" :"6131973f1d91413b1c9796cd",
+   "soluong" : 120
+}
+
+
+###
+
+GET http://localhost:3000/api/ctphieunhap
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5MzgzNzE1fQ.3AdKFjrfBfCHKwp8_GCJD20rTrggO7Dw53Lusya19SM
+
+
+###
+
+GET http://localhost:3000/api/ctphieunhap/6137ec15b8d89d3f706f1fa0
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5MzgzNzE1fQ.3AdKFjrfBfCHKwp8_GCJD20rTrggO7Dw53Lusya19SM
+
+
+
+###
+POST http://localhost:3000/api/phieuxuat
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjEyMDlhYTUxNDFhYjQ0ZDM0MWYyZTQ5IiwiaWF0IjoxNjMwMjI0NTgxfQ.I8UfNm9hQ6efLeumuWP6jzFFlKc1bCC_VKeSFjXWc_k
+
+{
+   "tenpx" :"PX5",
+   "ngay" : "08-19-2021",
+   "manv" : "6131919b1d91413b1c9796a8",
+   "makho": "6131ba681d91413b1c97979b"
+}
+
+###
+
+GET http://localhost:3000/api/phieuxuat
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5MzgzNzE1fQ.3AdKFjrfBfCHKwp8_GCJD20rTrggO7Dw53Lusya19SM
+
+
+###
+
+GET http://localhost:3000/api/ctphieuxuat
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5MzgzNzE1fQ.3AdKFjrfBfCHKwp8_GCJD20rTrggO7Dw53Lusya19SM
+
+
+
+###
+POST http://localhost:3000/api/ctphieuxuat
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjEyMDlhYTUxNDFhYjQ0ZDM0MWYyZTQ5IiwiaWF0IjoxNjMwMjI0NTgxfQ.I8UfNm9hQ6efLeumuWP6jzFFlKc1bCC_VKeSFjXWc_k
+
+{
+   "mapx" :"6135e0cd45c9244578389d17",
+   "mavt" :"6131973f1d91413b1c9796cd",
+   "soluong" : 120
+}
+
+
+###
+
+GET http://localhost:3000/api/ctphieuxuat/6138035e8deb8b375437ca4b
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiNjExZTJhNzFhMDc3M2EzZDQ0ZjM1MWUzIiwiaWF0IjoxNjI5MzgzNzE1fQ.3AdKFjrfBfCHKwp8_GCJD20rTrggO7Dw53Lusya19SM
+
+
+
