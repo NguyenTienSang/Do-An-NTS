@@ -8,7 +8,10 @@ import Header from "../../header/Header";
 function WareHouses() {
   const state = useContext(GlobalState);
   const [warehouses] = state.warehouseAPI.warehouses;
-
+  if (warehouses.length !== 0)
+  {
+    console.log('warehouses :',warehouses);
+  }
   return (
     <div className="layout">
     <div className="layout-first"><NavBar/></div>

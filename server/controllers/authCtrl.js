@@ -47,6 +47,12 @@ const authCtrl = {
           return res.status(400)
           .json({success: false,message:"Số điện thoại trống"})
       }
+      if(sodienthoai.length != 10)
+      {
+          return res.status(400)
+          .json({message:"Số điện thoại phải đúng 10 số"})
+      }  
+
       if(!cmnd)
       {
           return res.status(400)
@@ -105,8 +111,8 @@ const authCtrl = {
           httpOnly: true,
           path: '/api/auth/refresh_token'
       })
- console.log('Đã lưu cookie',req.cookies.refreshtoken);
-      res.json({accesstoken})
+    console.log('Đã lưu cookie',req.cookies.refreshtoken);
+      res.json({message: 'Đã thêm thành công',accesstoken})
 
       } catch (err) {
         return res.status(500).json({ msg: err.message });
@@ -181,7 +187,7 @@ const authCtrl = {
 
   getEmployee: async (req, res) => {
     try {
-      const nhanvien = await NhanVien.findById(req.nhanvien.id).select("-password");
+      const nhanvien = await NhanVien.findById(req.nhanvien.id).populate('madaily').select("-password");
       
       if (!nhanvien) return res.status(400).json({ msg: "Nhân viên không tồn tại !!!" });
 

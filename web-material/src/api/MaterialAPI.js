@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function MaterialsAPI() {
+function MaterialAPI() {
   const [materials, setMaterials] = useState([]);
   const [callback, setCallback] = useState(false);
 
@@ -20,4 +20,4 @@ function MaterialsAPI() {
   }
 }
 
-export default MaterialsAPI;
+export default MaterialAPI;

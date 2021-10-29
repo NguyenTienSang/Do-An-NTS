@@ -1,6 +1,8 @@
-import React from 'react'
+import React from 'react';
+import { Link } from 'react-router-dom';
 import {RiDeleteBin6Line} from 'react-icons/ri';
 import {FaUserEdit} from 'react-icons/fa';
+import {GrView} from 'react-icons/gr';
 
 function EmployeeItem({employee,stt,EditEmployee,DeleteEmployee}) {
     console.log(employee);
@@ -33,7 +35,7 @@ function EmployeeItem({employee,stt,EditEmployee,DeleteEmployee}) {
           <button onClick={() => DeleteEmployee(employee._id,employee.images.public_id)}><RiDeleteBin6Line/></button>
           </div>
           <div style={{flex:0.6}} className="employee_item_element">
-          <button>Chi tiết</button>
+          <button><Link to={`/detail_employee/${employee._id}`}><GrView/></Link></button>
           </div>
       </div>
     )

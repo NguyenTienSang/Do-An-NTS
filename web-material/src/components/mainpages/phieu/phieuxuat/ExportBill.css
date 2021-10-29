@@ -1,0 +1,30 @@
+.container {
+    display: flex;
+    width: 100vw;
+}
+
+.importbills {
+    display: block;
+    justify-items: center;
+    margin: 20px;
+}
+
+.header_list {
+    display: flex;
+    border: 1px solid #999;
+    height: 50px;
+    align-items: center;
+    background-color: rgb(235, 232, 232);
+}
+
+.header_list p {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    align-items: center;
+    border-right: 1px solid #999;
+    height: 100%;
+    font-size: 18px;
+}
+/*--------------------- Warehouse Item ---------------------*/
+@import url("./ImportBillItem.css");

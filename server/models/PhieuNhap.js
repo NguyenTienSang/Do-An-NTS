@@ -18,6 +18,10 @@ const PhieuNhapSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'kho'
     },
+    ctpn: {
+        type: Array,
+        default: []
+    }
 })
 
 module.exports = mongoose.model('phieunhap',PhieuNhapSchema);

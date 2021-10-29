@@ -1,0 +1,13 @@
+.infor-detail {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    max-width: 700px;
+    border: 1px solid #999;
+    border-radius: 5px;
+}
+
+.infor-detail p {
+    justify-content: flex-start;
+    margin-left: 7px;
+}

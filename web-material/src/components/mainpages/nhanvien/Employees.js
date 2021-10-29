@@ -7,7 +7,7 @@ import EmployeeItem from "./EmployeeItem";
 import NavBar from "../../navbar/NavBar";
 import Header from "../../header/Header";
 import Loading from "../utils/loading/Loading";
-import {GiExplosiveMaterials} from 'react-icons/gi';
+import {BsFillPersonLinesFill} from 'react-icons/bs';
 import {BiBookAdd} from 'react-icons/bi';
 
 
@@ -113,8 +113,12 @@ function Employees() {
   };
 
   const handleChangeInput = (e) => {
+    console.log('e.target : ',e.target)
     const { name, value } = e.target;
+    console.log('name : ',name);
+    console.log('value : ',value);
     setEmployee({ ...employee, [name]: value });
+    console.log('Thông tin nhân viên : ',employee);
   };
 
  
@@ -142,47 +146,48 @@ function Employees() {
     document.getElementById("modal_container").classList.remove("modal_active");
   }
 
-  const AddToListEmployee = async () => {
+  const AddToListEmployee = async (e) => {
+    console.log(e);
         // alert('Thêm thành công : '+employee.tenvt);
-        console.log('Dữ liệu thêm mới : ',{...employee, images });
+        // console.log('Dữ liệu thêm mới : ',{...employee, images });
       
         // //Thêm mới
-        // if(!onEdit)
-        // {
-        //   try {
-        //     const res = await axios.post(
-        //              "/api/vattu",
-        //              { ...employee, images },
-        //              {
-        //                headers: { Authorization: token },
-        //              }
-        //            );
-        //            alert(res.data.message);
-        //            document.getElementById("modal_container").classList.remove("modal_active");
-        //            setCallback(!callback);
-        //           //  history.push("/vattu");
-        //    } catch (err) {
-        //        alert(err.response.data.message);
-        //    }
-        // }
-        // //Cập nhật thông tin vật tư
-        // if(onEdit)
-        // {
-        //   try {
-        //     const res = await axios.put(
-        //              `/api/vattu/${employee._id}`,
-        //              { ...employee, images },
-        //              {
-        //                headers: { Authorization: token },
-        //              }
-        //            );
-        //            alert(res.data.message);
-        //            document.getElementById("modal_container").classList.remove("modal_active");
-        //            setCallback(!callback);
-        //    } catch (err) {
-        //        alert(err.response.data.message);
-        //    }
-        // }  
+        if(!onEdit)
+        {
+          try {
+            const res = await axios.post(
+                     "/api/auth/register",
+                     { ...employee, images },
+                     {
+                       headers: { Authorization: token },
+                     }
+                   );
+                   alert(res.data.message);
+                   document.getElementById("modal_container").classList.remove("modal_active");
+                   setCallback(!callback);
+                  //  history.push("/vattu");
+           } catch (err) {
+               alert(err.response.data.message);
+           }
+        }
+        //Cập nhật thông tin nhân viên
+        if(onEdit)
+        {
+          try {
+            const res = await axios.put(
+                     `/api/nhanvien/${employee._id}`,
+                     { ...employee, images },
+                     {
+                       headers: { Authorization: token },
+                     }
+                   );
+                   alert(res.data.message);
+                   document.getElementById("modal_container").classList.remove("modal_active");
+                   setCallback(!callback);
+           } catch (err) {
+               alert(err.response.data.message);
+           }
+        }  
   }
 
 
@@ -199,7 +204,7 @@ function Employees() {
       );
       //Xóa vật tư trong db
       const deleteemployee = await axios.delete(
-               `/api/vattu//${id}`,
+               `/api/nhanvien//${id}`,
                {
                  headers: { Authorization: token },
                }
@@ -223,10 +228,10 @@ function Employees() {
       <div className="employees">
       <div className="header-title">
               <div className="title-tab">
-                <h2 style={{display:'flex',alignItems:'center'}}><GiExplosiveMaterials style={{marginRight:'5px'}}/>Vật Tư</h2>
+                <h2 style={{display:'flex',alignItems:'center'}}><BsFillPersonLinesFill style={{marginRight:'5px'}}/>Nhân Viên</h2>
               </div>
            
-              <button className='add-item' onClick={AddEmployee}><BiBookAdd  style={{marginRight:'5px',marginTop:'5px'}}/>Thêm Vật Tư</button>
+              <button className='add-item' onClick={AddEmployee}><BiBookAdd  style={{marginRight:'5px',marginTop:'5px'}}/>Thêm Nhân Viên</button>
            
               
             </div>
@@ -276,16 +281,16 @@ function Employees() {
             </div>
 
           <div className="row">
-          <label htmlFor="daily">Đại lý</label>
+          <label htmlFor="stores">Đại lý</label>
           <select
-            name="daily"
-            value={employee.madaily}
+            name="madaily"
+            value={employee.daily}
             onChange={handleChangeInput}
           >
             <option value="" disabled selected hidden>Vui lòng chọn đại lý</option>
-            {stores.map((store) => (
-              <option value={store._id} key={store.id}>
-                {store.tendl}
+            {stores.map((daily) => (
+              <option value={daily._id}>
+                {daily.tendl}
               </option>
             ))}
           </select>
@@ -333,6 +338,20 @@ function Employees() {
             </div>
 
             <div className="row">
+            <label htmlFor="role">Quyền</label>
+            <select
+              name="role"
+              value={employee.role}
+              onChange={handleChangeInput}
+            >
+              <option value="" disabled selected hidden>Vui lòng chọn quyền</option>
+              <option value="admin" >Admin</option>
+              <option value="user" >User</option>
+              
+            </select>
+          </div>
+
+            <div className="row">
               <label htmlFor="price">Số điện thoại</label>
               <input
                 type="number"
@@ -366,8 +385,8 @@ function Employees() {
               value={employee.tinhtrang}
               onChange={handleChangeInput}
             >
-              {/* <option value="" disabled selected hidden>Vui lòng chọn tình tạng</option> */}
-              <option value="Đang làm" selected>Đang làm</option>
+              <option value="" disabled selected hidden>Vui lòng chọn tình trạng</option>
+              <option value="Đang làm" >Đang làm</option>
               <option value="Chuyển công tác" >Chuyển công tác</option>
               <option value="Nghỉ việc">Nghỉ việc</option>
               
@@ -393,7 +412,7 @@ function Employees() {
 
 
             <div className="option-button">
-                <button id="add" onClick={AddToListEmployee}>Thêm</button>
+                <button id="add" onClick={AddToListEmployee}>{onEdit ? 'Cập Nhật' : 'Thêm'}</button>
                 <button id="close"   onClick={CloseModalEmployee}>Hủy</button>
             </div>
 

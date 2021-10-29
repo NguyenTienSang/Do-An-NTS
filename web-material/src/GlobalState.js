@@ -2,9 +2,11 @@ import React, { createContext, useState, useEffect} from "react";
 
 import UserAPI from "./api/UserAPI";
 import MaterialAPI from './api/MaterialAPI';
-import EmployeesAPI from './api/EmployeeAPI';
+import EmployeeAPI from './api/EmployeeAPI';
 import StoresAPI from "./api/StoreAPI";
 import WareHouseAPI from "./api/WareHouseAPI";
+import ImportBillAPI from "./api/ImportBillAPI"
+import ExportBillAPI from "./api/ExportBillAPI"
 
 import axios from "axios";
 
@@ -21,7 +23,7 @@ export const DataProvider = ({ children }) => {
         const res = await axios.get("/api/auth/refresh_token");
 
         setToken(res.data.accesstoken);
-
+          
         setTimeout(() => {
           refreshToken();
         }, 10 * 60 * 1000);
@@ -33,9 +35,11 @@ export const DataProvider = ({ children }) => {
   const state = {
     token: [token, setToken],
     materialAPI: MaterialAPI(),
-    employeeAPI: EmployeesAPI(),
+    employeeAPI: EmployeeAPI(),
     storeAPI: StoresAPI(),
     warehouseAPI: WareHouseAPI(),
+    importbillAPI: ImportBillAPI(),
+    exportbillAPI: ExportBillAPI(),
     userAPI: UserAPI(token)
   };
 

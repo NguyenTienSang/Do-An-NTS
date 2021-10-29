@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function EmployeesAPI() {
+function EmployeeAPI() {
   const [employees, setEmployees] = useState([]);
   const [callback, setCallback] = useState(false);
 
@@ -21,4 +21,4 @@ function EmployeesAPI() {
   }
 }
 
-export default EmployeesAPI;
+export default EmployeeAPI;

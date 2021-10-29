@@ -9,20 +9,21 @@
     border-right: 1px solid rgb(138, 138, 138);
 }
 
-.navbar nav {
+.navbar .navigation {
     width: 100%;
 }
 
-.navbar nav ul li {
+.navbar .navigation .navbar-content .item-narbar {
     display: flex;
     justify-content: flex-start;
+    flex-direction: row;
     align-items: center;
     width: 100%;
     height: 70px;
     border-bottom: 1px solid rgb(138, 138, 138);
 }
 
-.navbar nav ul li a {
+.navbar .navigation .navbar-content .item-narbar a {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -33,16 +34,45 @@
     color: #000;
 }
 
-.navbar nav ul li a svg {
+.navbar .navigation .navbar-content .item-narbar a svg {
     margin-left: 0px;
     margin-right: 10px;
 }
 
-.navbar nav ul li:hover {
+.navbar .navigation .navbar-content .item-narbar:hover {
     background-color: #0198fc;
     color: #fff !important;
 }
 
-.navbar nav ul li:hover > a {
+.navbar .navigation .navbar-content .item-narbar:hover > a {
     color: #fff;
+}
+
+.navbar .navigation .navbar-content .item-narbar:hover > .sub-menu {
+    display: block;
+    color: #333;
+}
+
+.navbar-content .item-narbar .sub-menu {
+    display: none;
+    max-width: 210px;
+    width: 100%;
+    position: absolute;
+    left: 210px;
+    /* border: 1px solid #333; */
+}
+
+.navbar-content .item-narbar .sub-menu .sub-menu-item {
+    display: flex;
+    align-items: center;
+    height: 35px;
+    padding-left: 10px;
+    border-top: 1px solid rgb(138, 138, 138);
+    border-bottom: 1px solid rgb(138, 138, 138);
+    border-right: 1px solid rgb(138, 138, 138);
+    border-left: none;
+}
+
+.navbar-content .item-narbar .sub-menu .sub-menu-item:first-child {
+    border-bottom: none;
 }

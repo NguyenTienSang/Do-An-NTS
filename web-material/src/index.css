@@ -47,6 +47,7 @@ button {
   width: 100%;
 }
 
+@import url("https://cdn.syncfusion.com/ej2/material.css");
 /*--------------------- Header ---------------------*/
 @import url("./components/header/header.css");
 
@@ -73,3 +74,6 @@ button {
 
 /*--------------------- WareHouses ---------------------*/
 @import url("./components/mainpages/kho/warehouses.css");
+
+/*--------------------- ImportBills ---------------------*/
+@import url("./components/mainpages/phieu/phieunhap/ImportBill.css");

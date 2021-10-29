@@ -41,6 +41,8 @@ app.use('/api',require('./routes/nhanvienRouter'));
 app.use('/api',require('./routes/vattuRouter'));
 app.use('/api',require('./routes/dailyRouter'));
 app.use('/api',require('./routes/khoRouter'));
+app.use('/api',require('./routes/phieunhapRouter'));
+app.use('/api',require('./routes/phieuxuatRouter'));
 app.use("/api", require("./routes/upload"));
 // app.use('/api/kho',khoRouter);
 // app.use('/api/phieunhap',phieunhapRouter);
