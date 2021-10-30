@@ -14,10 +14,11 @@ import {BiBookAdd} from 'react-icons/bi';
 
 const initialMaterial = {
   tenvt:"",
-  soluong:"",
-  gianhap:0,
-  giaxuat:0,
   donvi:"",
+  soluong:"",
+  gianhap:"",
+  giaxuat:"",
+  trangthai:"Đang kinh doanh",
 };
 
 
@@ -140,8 +141,9 @@ function Materials() {
   const AddToListMaterial = async () => {
         // alert('Thêm thành công : '+material.tenvt);
         console.log('Dữ liệu thêm mới : ',{...material, images });
-      
-        //Thêm mới
+        console.log('Số lượng : ',typeof(material.soluong));
+        console.log('Trạng thái : ',material.trangthai);
+
         if(!onEdit)
         {
           try {
@@ -232,6 +234,7 @@ function Materials() {
               <p>Số lượng tồn</p>
               <p>Giá nhập</p>
               <p>Giá xuất</p>
+              <p style={{flex:0.6}}>Trạng thái</p>
               <p style={{flex:0.6}}>Cập nhật</p>
               <p style={{flex:0.6}}>Xóa</p>
             </div>
@@ -318,6 +321,34 @@ function Materials() {
                 onChange={handleChangeInput}
               />
             </div>
+
+            <div className="row">
+            <label>Trạng thái</label>
+            {
+              onEdit ? <select
+              name="trangthai"
+              value={material.trangthai}
+              onChange={handleChangeInput}
+              
+            >
+              {/* <option value="" hidden>Vui lòng chọn trạng thái</option> */}
+              <option value="Đang kinh doanh">Đang kinh doanh</option>
+              <option value="Ngừng kinh doanh"  >Ngừng kinh doanh</option>
+            </select>
+            : 
+            <select
+            name="trangthai"
+            value={material.trangthai}
+            onChange={handleChangeInput}
+            disabled="disabled"
+          >
+            {/* <option value="" hidden>Vui lòng chọn trạng thái</option> */}
+            <option value="Đang kinh doanh" selected>Đang kinh doanh</option>
+            <option value="Ngừng kinh doanh" >Ngừng kinh doanh</option>
+          </select>
+            }
+            
+          </div>
 
             <div className="upload">
               <h1>Hình ảnh</h1>

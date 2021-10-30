@@ -30,6 +30,9 @@ function MaterialItem({material,stt,EditMaterial,DeleteMaterial}) {
           {material.giaxuat} VND
           </div>
           <div style={{flex:0.6}} className="material_item_element">
+          {material.trangthai}
+          </div>
+          <div style={{flex:0.6}} className="material_item_element">
           <button style={{fontSize:30}} onClick={() => EditMaterial(material)}><FaRegEdit/></button>
           </div>
           <div style={{flex:0.6}} className="material_item_element">

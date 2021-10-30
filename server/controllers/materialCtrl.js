@@ -24,7 +24,7 @@ const materialCtrl = {
     createMaterial: async (req, res) => {
   
       try {
-        const {tenvt,soluong,gianhap,giaxuat,donvi,images} = req.body;
+        const {tenvt,soluong,gianhap,giaxuat,donvi,trangthai,images} = req.body;
       if(!tenvt)
       {
           return res.status(400)
@@ -46,6 +46,11 @@ const materialCtrl = {
           return res.status(400)
           .json({message:"Đơn vị không được trống"})
       }
+      if(!trangthai)
+      {
+          return res.status(400)
+          .json({message:"Trạng thái không được trống"})
+      }
       if(!images)
       {
           return res.status(400)
@@ -60,7 +65,7 @@ const materialCtrl = {
                   .json({message: 'Tên vật tư đã tồn tại' })
                 
   
-          const newVatTu = new VatTu({tenvt,soluong,gianhap,giaxuat,donvi,images})
+          const newVatTu = new VatTu({tenvt,soluong,gianhap,giaxuat,donvi,trangthai,images})
           await newVatTu.save();
   
           res.json({
@@ -86,7 +91,7 @@ const materialCtrl = {
 
     updateMaterial: async (req, res) => {
     try {
-        const {tenvt,soluong,gianhap,giaxuat,donvi,images} = req.body;
+        const {tenvt,soluong,gianhap,giaxuat,donvi,trangthai,images} = req.body;
  
         if(!tenvt)
         {
@@ -113,13 +118,18 @@ const materialCtrl = {
             return res.status(400)
             .json({success: false,message:"Đơn vị không được trống"})
         }
+        if(!trangthai)
+        {
+            return res.status(400)
+            .json({message:"Trạng thái không được trống"})
+        }
         if(!images)
         {
             return res.status(400)
             .json({success: false,message:"Ảnh không được trống"})
         }
 
-        updatedVatTu = await VatTu.findOneAndUpdate({_id:req.params.id},{tenvt,soluong,gianhap,giaxuat,donvi,images}, {new:true});
+        updatedVatTu = await VatTu.findOneAndUpdate({_id:req.params.id},{tenvt,soluong,gianhap,giaxuat,donvi,trangthai,images}, {new:true});
        
         // User not authorised to update vattu
         if(!updatedVatTu)

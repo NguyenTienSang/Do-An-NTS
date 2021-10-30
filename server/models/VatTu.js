@@ -13,12 +13,16 @@ const VatTuSchema = new mongoose.Schema({
     gianhap:{
         type: Number,
         required: true,
-    },
+    },  
     giaxuat:{
         type: Number,
         required: true,
     },
     donvi:{
+        type: String,
+        required: true,
+    },
+    trangthai:{
         type: String,
         required: true,
     },

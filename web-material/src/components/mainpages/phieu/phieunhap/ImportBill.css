@@ -28,3 +28,6 @@
 }
 /*--------------------- Warehouse Item ---------------------*/
 @import url("./ImportBillItem.css");
+
+/*--------------------- Create Import Bill ---------------------*/
+@import url("./CreateImportBill.css");
