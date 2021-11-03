@@ -1,6 +1,178 @@
-.example-custom-input {
-    width: 80px;
+.react-datepicker-popper {
+    right: 70px;
+}
+
+.react-datepicker__triangle {
+    left: -115px !important;
+}
+
+.react-datepicker {
+    left: -215px;
+}
+
+.button-date-picker {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5px;
+    width: 100px;
     height: 30px;
     border: 1px solid #333;
     border-radius: 5px;
+}
+
+.create-importbill {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 10px;
+}
+
+.create-importbill .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0px;
+}
+
+.create-importbill .row label {
+    margin-right: 10px;
+    margin-left: 0px;
+    width: 200px;
+}
+
+.create-importbill .search-material {
+    display: flex;
+    width: 100%;
+}
+
+.create-importbill input {
+    width: 80%;
+    height: 30px;
+}
+
+.create-importbill .list-material {
+    display: none;
+    position: fixed;
+    background-color: #fff;
+    border: 1px solid #999;
+    border-radius: 5px;
+    margin-top: 2px;
+    z-index: 10;
+    width: 84%;
+}
+
+.create-importbill .list-material .header-list-material {
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 10px;
+    border-bottom: 1px solid #999;
+}
+
+.list-material .header-list-material p {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.create-importbill .list-material .item-material {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 0px 10px;
+    /* margin-top: 5px; */
+}
+
+.create-importbill .list-material .item-material:hover {
+    background-color: rgb(26, 148, 255);
+    color: #fff;
+}
+
+.create-importbill .list-material .item-material p {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.create-importbill .form-bill {
+    border: 1px solid #999;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.create-importbill .form-bill .header-title {
+    display: flex;
+    justify-content: center;
+}
+
+.list-item-bill {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid #999;
+}
+
+/* .list-item-bill .header-item-bill {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+} */
+
+.list-item-bill h3 {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.list-item-bill h3,
+.header-item-bil {
+    height: 34px;
+}
+
+.list-item-bill h3,
+.header-item-bill,
+.item-bill {
+    align-items: center;
+    border-bottom: 1px solid #999;
+}
+
+.list-item-bill .header-item-bill,
+.item-bill {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    margin: 0px;
+    padding: 0 10px;
+}
+
+.item-bill button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 1px solid #999;
+    background-color: #999;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+.item-bill .delete-item {
+    cursor: pointer;
+}
+
+.button-option {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.button-option button {
+    max-width: 100px;
+    width: 100%;
+    height: 40px;
+    border: 1px solid #fff;
+    border-radius: 7px;
+    background-color: rgb(26, 148, 255);
+    color: #fff;
 }

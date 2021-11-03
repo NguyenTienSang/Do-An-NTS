@@ -238,7 +238,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaGFudmllbklkIjoiN
 
 {
    "tenpn" :"PN1",
-   "ngay" : "09-2-2021",
+   "ngay" : "09-02-2021",
    "manv" : "6131919b1d91413b1c9796a8",
    "makho": "6131ba681d91413b1c97979b"
 }
