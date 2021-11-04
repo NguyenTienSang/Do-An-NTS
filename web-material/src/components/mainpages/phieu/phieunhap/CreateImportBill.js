@@ -16,56 +16,67 @@ import {IoMdArrowDropdown} from 'react-icons/io';
 import {RiDeleteBin6Line} from 'react-icons/ri';
 
 
-
-
-
-
 function CreateImportBill() {
 
   const initialImportBill = {
     tenpn:"",
-    ngay:"10-20-2021",
+    ngay:"",
     manv:JSON.parse(localStorage.getItem('inforuser'))._id,
     makho:"",
   };
 
   const state = useContext(GlobalState);
-  // const [importbills] = state.importbillAPI.addImportBill;
-
-
- 
   const [materials] = state.materialAPI.materials;
   const [warehouses] = state.warehouseAPI.warehouses;
+  const [importbills] = state.importbillAPI.importbills;
+  const [detailimportbill, setDetailImportBill] = useState([]);
+  const [newdetailimportbill, setNewDetailImportBill] = useState();
   const [loading, setLoading] = useState(false);
   const [user,setUser] =  useState(JSON.parse(localStorage.getItem('inforuser')));
   const [startDate, setStartDate] = useState("");
-  const [dhdn, setDHDN] = useState("");
+  const [currentDate, setCurrentDate] = useState(new Date());
+  // const [currentDate, setCurrentDate] = useState((new Date()));
+  const [hdn, setHDN] = useState(new Date("10-20-2021"));
   const [searchTerm,setSearchTerm] = useState("");
   const [onSearch, setOnSearch] = useState(false);
   const [importbill, setImportBill] = useState({
-    tenpn:"",
-    ngay: new Date(),
+    tenpn:'PN' +(importbills.length + 1),
+    ngay: moment(new Date()).format('DD-MM-yyy'),
     manv:JSON.parse(localStorage.getItem('inforuser'))._id,
-    makho:"",
+    makho:""
   });
-  const [detailimportbill, setDetailImportBill] = useState([]);
+  
 
 
   const newwarehouses =  warehouses.filter((warehouse,index) => (user.madaily._id === warehouse.madaily._id) ? warehouse : undefined)
   
   const SubmitImportBill = () => {
-    console.log('dhdn : ',dhdn);
-    
+    console.log('importbill : ',importbill);
+    console.log('detailimportbill : ',detailimportbill);
+    // console.log('newdetailimportbill : ',newdetailimportbill);
+    // setImportBill({...importbill,ctpn : detailimportbill});
+    // {...importbill,makho : detailimportbill}
+    // setImportBill(...importbill)
+
   }
 
-  const DateImportBill = (date) => {
+  useEffect(() => {
+    const date = new Date();
+    const day = new Date().getDate();
+    const month = new Date().getMonth()+1;
+    const year = new Date().getFullYear();
+    console.log('currentDate : ',currentDate);
+
    
-    const datetest = moment(date).format('DD-MM-yyy');
-    console.log('test : ',typeof(date));
-    console.log('test1 : ',date);
-    setDHDN(datetest);
-    setStartDate(date);
-  }
+    setStartDate(
+      day+'-'+month+'-'+year
+    )
+
+    console.log('importbills : ',importbills.length);
+  },[])
+
+
+  
 
   const AddToImportBill = (material) => {
     if(!onSearch)
@@ -75,7 +86,6 @@ function CreateImportBill() {
     }
     const exist = detailimportbill.find((x) => x._id === material._id);
         if(exist) {
-      
             setDetailImportBill(
               detailimportbill.map((x) => 
                 x._id === material._id ? {...exist, qty: exist.qty + 1 } : x
@@ -101,18 +111,6 @@ function CreateImportBill() {
   }
 
 
-  useEffect(() => {
-    const day = new Date().getDate();
-    const month = new Date().getMonth()+1;
-    const year = new Date().getFullYear();
-
-    const testdate = year + '-' +  month + '-'+ day;
-    console.log('testdate : ',testdate);
-    // setcurrentDate(testdate);
-   },[])
-
-
-  // const [startDate, setStartDate] = useState(new Date());
   const [dataDate,setDate] = useState(new Date());
   const ExampleCustomInput = ({ value, onClick }) => (
     <button className="button-date-picker" onClick={onClick}>
@@ -125,17 +123,10 @@ function CreateImportBill() {
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
-    if(e.target.type === 'date')
-    {
-      setImportBill({ ...importbill, [name]: (e.target.value.slice(8, 10)  + '-' + e.target.value.slice(5, 7) + '-' + e.target.value.slice(0, 4)) });
-    }
-    else {
       setImportBill({ ...importbill, [name]: value });
-    }
-   
   };
  
-  console.log('Danh sách vật tư : ',materials);
+ 
  
   return (
     <div className="layout">
@@ -200,7 +191,7 @@ function CreateImportBill() {
               <input
                 type="text"
                 name="tenpn"
-                placeholder="Nhập tên phiếu nhập"
+                disabled
                 id="tenpn"
                 required
                 value={importbill.tenpn}
@@ -223,11 +214,22 @@ function CreateImportBill() {
         format="DD-MM-YYYY"
         placeholder="Nhập ngày"
         minDate={new Date("10-20-2021")}
-        // maxDate={new Date(currentDate)}
-        dateFormat="dd/MM/yyyy"
-        selected={startDate}
-        onChange={(date) => DateImportBill(date)}
-        value={importbill.ngay}
+        maxDate={new Date()}
+        dateFormat="dd-MM-yyyy"
+        selected={currentDate}
+        onChange={(date) =>
+          {
+            setCurrentDate(date)
+            console.log('date : ',typeof(date))
+
+            // const datetest = moment(date).format('DD-MM-yyy');
+            // console.log('datetest : ',datetest)
+            setImportBill({ ...importbill, ngay : moment(date).format('DD-MM-yyy')});
+
+          }
+           
+        }
+        value={currentDate}
        
         customInput={<ExampleCustomInput />}
       />
@@ -239,7 +241,7 @@ function CreateImportBill() {
     <div className="row">
         <label htmlFor="newwarehouses">Kho</label>
         <select
-          name="madaily"
+          name="makho"
           value={importbill.warehouse}
           onChange={handleChangeInput}>
            <option value="" disabled selected hidden>Vui lòng chọn kho</option>
@@ -310,6 +312,16 @@ function CreateImportBill() {
      <div className="button-option">
      <button onClick={() =>
             {
+              detailimportbill.map(item => 
+              //   {
+              //   setDetailImportBill({item,_id : item._id,gianhap : item.gianhap,qty : item.qty})
+              //   // setNewDetailImportBill({...newdetailimportbill,_id : item._id,gianhap : item.gianhap,qty : item.qty})
+              // }
+              ({
+                _id : item._id,gianhap : item.gianhap,qty : item.qty
+              })
+              )
+              // setImportBill({...importbill,ctpn : newdetailimportbill})
               SubmitImportBill()
             }}>Lập Phiếu</button>
       <button>Hủy</button>

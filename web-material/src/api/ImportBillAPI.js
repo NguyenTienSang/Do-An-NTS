@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 function ImportBillAPI() {
-  const [ctpn, setCTPN] = useState([]);
   const [importbills, setImportBills] = useState([]);
+  const [ctpn, setCTPN] = useState([]);
     const getImportBills = async () => {
       const res = await axios.get('/api/importbill');
       setImportBills(res.data);
