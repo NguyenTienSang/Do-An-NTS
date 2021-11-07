@@ -18,66 +18,52 @@ import {RiDeleteBin6Line} from 'react-icons/ri';
 
 function CreateImportBill() {
 
-  const initialImportBill = {
-    tenpn:"",
-    ngay:"",
-    manv:JSON.parse(localStorage.getItem('inforuser'))._id,
-    makho:"",
-  };
+  // const initialImportBill = () => {
+    
+  //   tenpn: importbills.length;
+  //   ngay:"";
+  //   manv:JSON.parse(localStorage.getItem('inforuser'))._id;
+  //   makho:"";
+  // };
 
   const state = useContext(GlobalState);
+  const [token] = state.token;
   const [materials] = state.materialAPI.materials;
   const [warehouses] = state.warehouseAPI.warehouses;
   const [importbills] = state.importbillAPI.importbills;
   const [detailimportbill, setDetailImportBill] = useState([]);
-  const [newdetailimportbill, setNewDetailImportBill] = useState();
   const [loading, setLoading] = useState(false);
   const [user,setUser] =  useState(JSON.parse(localStorage.getItem('inforuser')));
   const [startDate, setStartDate] = useState("");
   const [currentDate, setCurrentDate] = useState(new Date());
   // const [currentDate, setCurrentDate] = useState((new Date()));
+  const [callback, setCallback] = state.importbillAPI.callback;
   const [hdn, setHDN] = useState(new Date("10-20-2021"));
   const [searchTerm,setSearchTerm] = useState("");
   const [onSearch, setOnSearch] = useState(false);
   const [importbill, setImportBill] = useState({
-    tenpn:'PN' +(importbills.length + 1),
-    ngay: moment(new Date()).format('DD-MM-yyy'),
-    manv:JSON.parse(localStorage.getItem('inforuser'))._id,
-    makho:""
+    tenpn: "",
+    ngay: "",
+    manv: "",
+    makho: ""
   });
+
+
   
 
+  useEffect(() => {
+    setImportBill({
+      tenpn:'PN' + (importbills.length+1),
+      ngay: moment(new Date()).format('MM-DD-yyy'),
+      manv:JSON.parse(localStorage.getItem('inforuser'))._id,
+      makho:"",
+      ctpn: []
+    })
+    setDetailImportBill([])
+  },[importbills])
 
   const newwarehouses =  warehouses.filter((warehouse,index) => (user.madaily._id === warehouse.madaily._id) ? warehouse : undefined)
   
-  const SubmitImportBill = () => {
-    console.log('importbill : ',importbill);
-    console.log('detailimportbill : ',detailimportbill);
-    // console.log('newdetailimportbill : ',newdetailimportbill);
-    // setImportBill({...importbill,ctpn : detailimportbill});
-    // {...importbill,makho : detailimportbill}
-    // setImportBill(...importbill)
-
-  }
-
-  useEffect(() => {
-    const date = new Date();
-    const day = new Date().getDate();
-    const month = new Date().getMonth()+1;
-    const year = new Date().getFullYear();
-    console.log('currentDate : ',currentDate);
-
-   
-    setStartDate(
-      day+'-'+month+'-'+year
-    )
-
-    console.log('importbills : ',importbills.length);
-  },[])
-
-
-  
-
   const AddToImportBill = (material) => {
     if(!onSearch)
     {
@@ -88,23 +74,23 @@ function CreateImportBill() {
         if(exist) {
             setDetailImportBill(
               detailimportbill.map((x) => 
-                x._id === material._id ? {...exist, qty: exist.qty + 1 } : x
+                x._id === material._id ? {...exist, quantity: exist.quantity + 1 } : x
               )
           )
         }
         else {
-          setDetailImportBill([...detailimportbill, {...material,qty:1}]);
+          setDetailImportBill([...detailimportbill, {...material,quantity:1}]);
         }
   }
 
   const RemoveToImportBill = (material) => {
     const exist = detailimportbill.find((x) => x._id === material._id);
-      if (exist.qty === 1) {
+      if (exist.quantity === 1) {
         setDetailImportBill(detailimportbill.filter((x) => x._id !== material._id));
       } else {
         setDetailImportBill(
           detailimportbill.map((x) =>
-            x._id === material._id ? { ...exist, qty: exist.qty - 1 } : x
+            x._id === material._id ? { ...exist, quantity: exist.quantity - 1 } : x
           )
         );
       }
@@ -142,7 +128,7 @@ function CreateImportBill() {
                   placeholder="Nhập tên vật tư"
                   id="inputsearch"
                   required
-                  // value={importbill.tenpn}
+                  autocomplete="off"
                   onChange={(event)=> {
                     setSearchTerm(event.target.value);
                     document.getElementById("list-material").style.display = "block";
@@ -224,8 +210,7 @@ function CreateImportBill() {
 
             // const datetest = moment(date).format('DD-MM-yyy');
             // console.log('datetest : ',datetest)
-            setImportBill({ ...importbill, ngay : moment(date).format('DD-MM-yyy')});
-
+            setImportBill({ ...importbill, ngay : moment(date).format('MM-DD-YYYY')});
           }
            
         }
@@ -242,7 +227,7 @@ function CreateImportBill() {
         <label htmlFor="newwarehouses">Kho</label>
         <select
           name="makho"
-          value={importbill.warehouse}
+          value={importbill.makho}
           onChange={handleChangeInput}>
            <option value="" disabled selected hidden>Vui lòng chọn kho</option>
           {newwarehouses.map((warehouse) => (
@@ -286,13 +271,13 @@ function CreateImportBill() {
             <button onClick={() => RemoveToImportBill(item)} className="remove">
               -
             </button>{' '}
-             <div>{item.qty}</div>
+             <div>{item.quantity}</div>
              <button onClick={() => AddToImportBill(item)} className="add">
               +
             </button>
        
             <div>
-            {item.gianhap *  item.qty} VND
+            {item.gianhap *  item.quantity} VND
             </div>
 
             <div>
@@ -310,19 +295,33 @@ function CreateImportBill() {
 
      </div>
      <div className="button-option">
-     <button onClick={() =>
+     <button onClick={async() =>
             {
-              detailimportbill.map(item => 
-              //   {
-              //   setDetailImportBill({item,_id : item._id,gianhap : item.gianhap,qty : item.qty})
-              //   // setNewDetailImportBill({...newdetailimportbill,_id : item._id,gianhap : item.gianhap,qty : item.qty})
-              // }
-              ({
-                _id : item._id,gianhap : item.gianhap,qty : item.qty
-              })
-              )
-              // setImportBill({...importbill,ctpn : newdetailimportbill})
-              SubmitImportBill()
+              if(detailimportbill.length==0)
+              {
+                  alert('Phiếu chưa có vật tư, vui lòng thêm  vật tư vào phiếu')
+              }
+              else
+              {
+                importbill.ngay = importbill.ngay.slice(0,3)+(parseInt(importbill.ngay.slice(3,5))+1)+importbill.ngay.slice(5,10);
+                console.log('importbill nè : ',importbill)
+                  try {
+                    const res = await axios.post(
+                             "/api/importbill",
+                             {...importbill,ctpn: detailimportbill.map(item => ({
+                              _id : item._id, gianhap : item.gianhap,soluong : item.quantity
+                            })) },
+                             {
+                               headers: { Authorization: token },
+                             }
+                           );
+                           console.log('importbill nè : ',importbill)
+                           alert(res.data.message);
+                           setCallback(!callback);
+                   } catch (err) {
+                       alert(err.response.data.message);
+                   }
+              }
             }}>Lập Phiếu</button>
       <button>Hủy</button>
      </div>

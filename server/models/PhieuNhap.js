@@ -22,6 +22,8 @@ const PhieuNhapSchema = new Schema({
         type: Array,
         default: []
     }
+},{
+    timestamps: true
 })
 
 module.exports = mongoose.model('phieunhap',PhieuNhapSchema);

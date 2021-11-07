@@ -3,41 +3,26 @@ import axios from "axios";
 
 function ImportBillAPI() {
   const [importbills, setImportBills] = useState([]);
-  const [ctpn, setCTPN] = useState([]);
+  const [callback, setCallback] = useState(false);
+
     const getImportBills = async () => {
       const res = await axios.get('/api/importbill');
+      // console.log('importbills.length api : ',importbills.length)
       setImportBills(res.data);
+
     };
   
- useEffect(() => {
-  getImportBills()
- },[])
+ useEffect(async () => {
+  await getImportBills()
+  await console.log('gọi callback : ',importbills.length)
+ },[callback])
 
- const addImportBill = async (material) => {
-
-  const check = ctpn.every((item) => {
-    return item._id !== material._id;
-  });
-
-  if (check) {
-    setCTPN([...ctpn, { ...material, soluong: 1 }]);
-
-    // await axios.patch(
-    //   "/importbill/addbill",
-    //   { ctpn: [...ctpn, { ...material, soluong: 1 }] },
-    //   {
-    //     headers: { Authorization: token },
-    //   }
-    // );
-  } else {
-    alert("Đã thêm vật tư này vào phiếu.");
-  }
-};
+ 
 
 
   return {
     importbills: [importbills,setImportBills],
-    addImportBill: addImportBill,
+    callback: [callback, setCallback]
   }
 }
 

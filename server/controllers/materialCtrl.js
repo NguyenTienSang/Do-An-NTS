@@ -25,6 +25,7 @@ const materialCtrl = {
   
       try {
         const {tenvt,soluong,gianhap,giaxuat,donvi,trangthai,images} = req.body;
+        console.log('tenvt : ',tenvt);
       if(!tenvt)
       {
           return res.status(400)

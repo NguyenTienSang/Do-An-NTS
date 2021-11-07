@@ -14,12 +14,13 @@ const importbillCtrl = {
     },
     createImportBill: async (req, res) => {
   
-        const {tenpn,ngay,manv,makho} = req.body;
-        if(!tenpn)
-        {
-            return res.status(400)
-            .json({success: false,message:"Tên phiếu nhập không được trống"})
-        }
+        const {tenpn,ngay,manv,makho,ctpn} = req.body;
+        console.log('tenpn1 : ',tenpn);
+        // if(!tenpn)
+        // {
+        //     return res.status(400)
+        //     .json({success: false,message:"Tên phiếu nhập không được trống"})
+        // }
         if(!ngay)
         {
             return res.status(400)
@@ -35,6 +36,11 @@ const importbillCtrl = {
             return res.status(400)
             .json({success: false,message:"Mã kho không được trống"})
         }
+        if(!ctpn)
+        {
+            return res.status(400)
+            .json({success: false,message:"Phiếu nhập chưa có vật tư"})
+        }
     
         console.log('tenpn : ',tenpn);
         console.log('ngay : ',ngay);
@@ -49,7 +55,7 @@ const importbillCtrl = {
                 .status(400)
                 .json({ success: false, message: 'Tên phiếu nhập đã tồn tại' })
             }
-            const newPhieuNhap = new PhieuNhap({tenpn,ngay,manv,makho})
+            const newPhieuNhap = new PhieuNhap({tenpn,ngay,manv,makho,ctpn})
             await newPhieuNhap.save();
             res.json({
                 success: true,

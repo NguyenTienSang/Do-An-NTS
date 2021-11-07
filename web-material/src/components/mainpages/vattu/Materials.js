@@ -38,9 +38,9 @@ function Materials() {
   const [onEdit, setOnEdit] = useState(false);
   const [callback, setCallback] = state.materialAPI.callback;
 
+  console.log('materials.length : ',materials.length)
+
   useEffect(() => {
-    console.log('param.id : ');
-    console.log('param.id2 : ',param.id);
     if (param.id) {
       setOnEdit(true);
       materials.forEach((material) => {
@@ -50,7 +50,6 @@ function Materials() {
         }
       });
     } else {
-      console.log('param.id3 : ');
       setOnEdit(false);
       setMaterial(initialMaterial);
       setImages(false);
@@ -146,6 +145,7 @@ function Materials() {
 
         if(!onEdit)
         {
+          console.log('thêm mới nè')
           try {
             const res = await axios.post(
                      "/api/vattu",
