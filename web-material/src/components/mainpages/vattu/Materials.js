@@ -35,9 +35,12 @@ function Materials() {
   const param = useParams();
 
   const [materials] = state.materialAPI.materials;
+  const [searchTerm,setSearchTerm] = useState("");
   const [onEdit, setOnEdit] = useState(false);
   const [callback, setCallback] = state.materialAPI.callback;
 
+
+  
   console.log('materials.length : ',materials.length)
 
   useEffect(() => {
@@ -218,6 +221,21 @@ function Materials() {
       <div className="layout-second">
         <Header/>
         <div className="materials">
+        <div className="row search-material">
+          <label>Tìm vật tư</label>
+                <input
+                  type="text"
+                  name="tenpn"
+                  placeholder="Nhập tên vật tư"
+                  id="inputsearch"
+                  required
+                  autocomplete="off"
+                  onChange={(event)=> {
+                    setSearchTerm(event.target.value);
+                    // document.getElementById("list-material").style.display = "block";
+                  }}
+                />
+        </div>
             <div className="header-title">
               <div className="title-tab">
                 <h2 style={{display:'flex',alignItems:'center'}}><GiExplosiveMaterials style={{marginRight:'5px'}}/>Vật Tư</h2>
@@ -238,7 +256,17 @@ function Materials() {
               <p style={{flex:0.6}}>Cập nhật</p>
               <p style={{flex:0.6}}>Xóa</p>
             </div>
-            {materials.map((material,index) => {
+            {
+             materials.filter(material=>{
+              if(searchTerm == "") 
+              {
+                  return material;
+              }
+              else if(material.tenvt.toLowerCase().includes(searchTerm.toLowerCase()))
+              {
+                  return material;
+              }
+          }).map((material,index) => {
                 return(
                   <MaterialItem
                     material={material}

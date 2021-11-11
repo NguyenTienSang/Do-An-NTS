@@ -4,11 +4,11 @@ const verifyToken = require('../middleware/auth')
 const importbillCtrl = require("../controllers/importbillCtrl");
 
 router
-.route("/importbill")
+.route("/phieunhap")
 .get(importbillCtrl.getImportBill)
 .post(importbillCtrl.createImportBill);
 
 
-router.route("/importbill/addbill").patch(importbillCtrl.addImportBill);
+// router.route("/exportbill/addbill").patch(exportbillCtrl.addExportBill);
 
 module.exports = router;

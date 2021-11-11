@@ -71,6 +71,19 @@
     border-bottom: 1px solid rgb(138, 138, 138);
     border-right: 1px solid rgb(138, 138, 138);
     border-left: none;
+    background-color: #fff;
+}
+
+.navbar-content .item-narbar .sub-menu .sub-menu-item a {
+    width: 100%;
+}
+
+.navbar-content .item-narbar .sub-menu .sub-menu-item:hover {
+    background-color: #0198fc;
+}
+
+.navbar-content .item-narbar .sub-menu .sub-menu-item:hover > a {
+    color: #fff;
 }
 
 .navbar-content .item-narbar .sub-menu .sub-menu-item:first-child {

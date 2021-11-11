@@ -18,10 +18,22 @@ const PhieuNhapSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'kho'
     },
-    ctpn: {
-        type: Array,
-        default: []
-    }
+    ctpn: [
+        {
+            mavt: {
+                type: String,
+                ref: 'vattu'
+            },
+            gianhap: {
+                type: Number,
+                require: true,
+            },
+            soluong: {
+                type: Number,
+                require: true,
+            }
+        }
+    ]
 },{
     timestamps: true
 })

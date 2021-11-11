@@ -26,6 +26,56 @@
     height: 100%;
     font-size: 18px;
 }
+
+/*--------------------- Css Chi Tiết Phiếu Nhập ---------------------*/
+
+.detail-importbill .title-detail p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #999;
+    border-top: none;
+    height: 40px;
+    font-weight: 500;
+    /* margin: 0 auto; */
+}
+
+.detail-importbill .header-detail-importbill {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #999;
+    border-top: none;
+}
+
+.detail-importbill .header-detail-importbill p {
+    display: flex;
+    justify-content: center;
+    flex: 1 1;
+    align-items: center;
+    border-right: 1px solid #999;
+    height: 100%;
+    font-size: 18px;
+}
+
+.detail-importbill .item-detail {
+    display: flex;
+    align-items: center;
+    border: 1px solid #999;
+    border-top: none;
+    height: 60px;
+}
+
+.detail-importbill .item-detail .item-detail-element {
+    display: flex;
+    flex: 1 1;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid #999;
+    height: 100%;
+    font-size: 18px;
+    font-weight: 300;
+}
+
 /*--------------------- Warehouse Item ---------------------*/
 @import url("./ImportBillItem.css");
 

@@ -85,3 +85,6 @@ p {
 
 /*--------------------- ImportBills ---------------------*/
 @import url("./components/mainpages/phieu/phieunhap/ImportBill.css");
+
+/*--------------------- ExportBills ---------------------*/
+@import url("./components/mainpages/phieu/phieuxuat/ExportBill.css");

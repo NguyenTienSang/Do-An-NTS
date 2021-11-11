@@ -1,4 +1,4 @@
-.importbill_item {
+.exportbill_item {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -8,14 +8,14 @@
     height: 140px;
 }
 
-.importbill_item h2 {
+.exportbill_item h2 {
     margin: 0;
     font-weight: 300;
     font-size: 20px;
     color: rgb(8, 137, 243);
 }
 
-.importbill_item img {
+.exportbill_item img {
     display: flex;
     align-items: center;
     max-width: 160px;
@@ -24,7 +24,7 @@
     margin: 0;
 }
 
-.importbill_item .importbill_item_element {
+.exportbill_item .exportbill_item_element {
     display: flex;
     flex: 1;
     justify-content: center;
@@ -36,15 +36,15 @@
 }
 
 .header_list p:last-child,
-.importbill_item .importbill_item_element:last-child {
+.exportbill_item .exportbill_item_element:last-child {
     border-right: none;
 }
 
-.importbill_item:nth-child(2n) {
+.exportbill_item:nth-child(2n) {
     background-color: rgba(228, 228, 224, 0.5);
 }
 
-.importbill_item .importbill_item_element button {
+.exportbill_item .exportbill_item_element button {
     font-size: 18px;
     font-weight: 300;
 }

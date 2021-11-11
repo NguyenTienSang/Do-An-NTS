@@ -18,6 +18,22 @@ const PhieuXuatSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'kho'
     },
+    ctpx: [
+       {
+        mavt: {
+            type: String,
+            ref: 'vattu'
+        },
+        giaxuat: {
+            type: Number,
+            require: true,
+        },
+        soluong: {
+            type: Number,
+            require: true,
+        }
+       }
+    ]
 })
 
 module.exports = mongoose.model('phieuxuat',PhieuXuatSchema);

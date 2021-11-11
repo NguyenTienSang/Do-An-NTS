@@ -13,7 +13,7 @@ function ImportBill() {
   const [importbills] = state.importbillAPI.importbills;
   if (importbills.length !== 0)
   {
-    console.log('importbills :',importbills);
+    console.log('importbills.length !== 0 :',importbills);
   }
   return (
     <div className="layout">
@@ -36,18 +36,22 @@ function ImportBill() {
               <p>Ngày lập</p>
               <p>Nhân viên</p>
               <p>Đại lý</p>
+              <p>Kho</p>
+              <p>Tổng Tiền</p>
               <p style={{flex:0.6}}>Chi tiết</p>
             </div>
             {importbills.map((importbill,index) => {
               {
                 console.log('phiếu nhập1 : ',importbill);
               }
-                return( 
+                return(
+                  <>
                   <ImportBillItem
                     key={importbill._id}
                     importbill={importbill}
                     stt={index}
                   />
+                  </> 
                 )
             })}
         </div>

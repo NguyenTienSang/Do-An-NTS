@@ -3,6 +3,7 @@ import axios from "axios";
 
 function ExportBillAPI() {
   const [importbills, setExportBills] = useState([]);
+  const [callback, setCallback] = useState(false);
 
     const getExportBills = async () => {
       const res = await axios.get('/api/phieuxuat');
@@ -11,10 +12,11 @@ function ExportBillAPI() {
   
  useEffect(() => {
   getExportBills()
- },[])
+ },[callback])
 
   return {
-    exportbills: [importbills,setExportBills]
+    exportbills: [importbills,setExportBills],
+    callback: [callback, setCallback]
   }
 }
 

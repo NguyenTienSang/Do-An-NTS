@@ -21,36 +21,36 @@
     border-radius: 5px;
 }
 
-.create-importbill {
+.create-exportbill {
     display: block;
     width: 100%;
     padding: 10px;
 }
 
-.create-importbill .row {
+.create-exportbill .row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 0px;
 }
 
-.create-importbill .row label {
+.create-exportbill .row label {
     margin-right: 10px;
     margin-left: 0px;
     width: 200px;
 }
 
-.create-importbill .search-material {
+.create-exportbill .search-material {
     display: flex;
     width: 100%;
 }
 
-.create-importbill input {
+.create-exportbill input {
     width: 80%;
     height: 30px;
 }
 
-.create-importbill .list-material {
+.create-exportbill .list-material {
     display: none;
     position: fixed;
     background-color: #fff;
@@ -61,7 +61,7 @@
     width: 84%;
 }
 
-.create-importbill .list-material .header-list-material {
+.create-exportbill .list-material .header-list-material {
     display: flex;
     justify-content: space-between;
     padding: 0px 10px;
@@ -74,7 +74,7 @@
     width: 100%;
 }
 
-.create-importbill .list-material .item-material {
+.create-exportbill .list-material .item-material {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -83,24 +83,24 @@
     /* margin-top: 5px; */
 }
 
-.create-importbill .list-material .item-material:hover {
+.create-exportbill .list-material .item-material:hover {
     background-color: rgb(26, 148, 255);
     color: #fff;
 }
 
-.create-importbill .list-material .item-material p {
+.create-exportbill .list-material .item-material p {
     display: flex;
     justify-content: center;
     width: 100%;
 }
 
-.create-importbill .form-bill {
+.create-exportbill .form-bill {
     border: 1px solid #999;
     border-radius: 5px;
     margin-top: 10px;
 }
 
-.create-importbill .form-bill .header-title {
+.create-exportbill .form-bill .header-title {
     display: flex;
     justify-content: center;
 }
@@ -164,14 +164,22 @@
     display: flex;
     justify-content: center;
     margin-top: 20px;
+    max-width: 300px;
+    width: 100%;
 }
 
 .button-option button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     max-width: 100px;
     width: 100%;
     height: 40px;
     border-radius: 7px;
     background-color: rgb(26, 148, 255);
+    color: #fff;
+    margin-right: 0px;
+    /* margin-left: 0px; */
 }
 
 .button-option a {

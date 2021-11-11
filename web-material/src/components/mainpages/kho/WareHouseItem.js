@@ -1,6 +1,7 @@
 import React from 'react'
 import {RiDeleteBin6Line} from 'react-icons/ri';
 import {FaUserEdit} from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 function WareHouseItem({warehouse,stt}) {
     return (
@@ -32,7 +33,8 @@ function WareHouseItem({warehouse,stt}) {
           <button style={{fontSize:30}}><RiDeleteBin6Line/></button>
           </div>
           <div style={{flex:0.6}} className="warehouse_item_element">
-          <button>Chi tiết</button>
+
+          <Link to={'/chitietkho'}> <button>Xem kho</button></Link>
           </div>
       </div>
     )

@@ -5,7 +5,7 @@ const PhieuNhap = require('../models/PhieuNhap');
 const importbillCtrl = {
     getImportBill: async (req, res) => {
         try{
-            const phieunhap = await PhieuNhap.find().populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho');
+            const phieunhap = await PhieuNhap.find().populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpn').populate({path :'ctpn',populate: {path: 'mavt'}});
             res.json(phieunhap)
         } catch(error) {
             console.log(error)
@@ -16,11 +16,11 @@ const importbillCtrl = {
   
         const {tenpn,ngay,manv,makho,ctpn} = req.body;
         console.log('tenpn1 : ',tenpn);
-        // if(!tenpn)
-        // {
-        //     return res.status(400)
-        //     .json({success: false,message:"Tên phiếu nhập không được trống"})
-        // }
+        if(!tenpn)
+        {
+            return res.status(400)
+            .json({success: false,message:"Tên phiếu nhập không được trống"})
+        }
         if(!ngay)
         {
             return res.status(400)
@@ -36,6 +36,7 @@ const importbillCtrl = {
             return res.status(400)
             .json({success: false,message:"Mã kho không được trống"})
         }
+        console.log('ctpn : ',ctpn[0]);
         if(!ctpn)
         {
             return res.status(400)
@@ -68,7 +69,8 @@ const importbillCtrl = {
             res.status(500).json({ success: false, message: 'Lập phiếu nhập thất bại' })
         }
 
-    },
+    }
+    ,
     addImportBill: async (req, res) => {
         try {
           const pn = await PhieuNhap.findById(req.params.id);

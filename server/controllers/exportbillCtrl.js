@@ -2,10 +2,10 @@ const VatTu = require('../models/VatTu');
 const PhieuXuat = require('../models/PhieuXuat');
 
 
-const importbillCtrl = {
+const exportbillCtrl = {
     getExportBill: async (req, res) => {
         try{
-            const phieuxuat = await PhieuXuat.find().populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho');
+            const phieuxuat = await PhieuXuat.find().populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpx').populate({path :'ctpx',populate: {path: 'mavt'}});
             res.json(phieuxuat)
         } catch(error) {
             console.log(error)
@@ -14,7 +14,7 @@ const importbillCtrl = {
     },
     createExportBill: async (req, res) => {
   
-        const {tenpx,ngay,manv,makho} = req.body;
+        const {tenpx,ngay,manv,makho,ctpx} = req.body;
         if(!tenpx)
         {
             return res.status(400)
@@ -35,11 +35,17 @@ const importbillCtrl = {
             return res.status(400)
             .json({success: false,message:"Mã kho không được trống"})
         }
+        if(!ctpx)
+        {
+            return res.status(400)
+            .json({success: false,message:"Phiếu xuất chưa có vật tư"})
+        }
     
         console.log('tenpx : ',tenpx);
         console.log('ngay : ',ngay);
         console.log('manv : ',manv);
         console.log('kho : ',makho);
+        console.log('ctpx : ',ctpx);
         try {
             const phieuxuat = await PhieuXuat.findOne({ tenpx })
             
@@ -47,9 +53,9 @@ const importbillCtrl = {
             {
                 return res
                 .status(400)
-                .json({ success: false, message: 'Tên phiếu nhập đã tồn tại' })
+                .json({ success: false, message: 'Tên phiếu xuất đã tồn tại' })
             }
-            const newPhieuXuat = new PhieuXuat({tenpx,ngay,manv,makho})
+            const newPhieuXuat = new PhieuXuat({tenpx,ngay,manv,makho,ctpx})
             await newPhieuXuat.save();
             res.json({
                 success: true,
@@ -65,4 +71,4 @@ const importbillCtrl = {
     }
   };
 
-  module.exports = importbillCtrl;
+  module.exports = exportbillCtrl;

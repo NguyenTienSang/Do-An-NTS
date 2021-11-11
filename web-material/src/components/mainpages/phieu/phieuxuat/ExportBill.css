@@ -3,7 +3,7 @@
     width: 100vw;
 }
 
-.importbills {
+.exportbills {
     display: block;
     justify-items: center;
     margin: 20px;
@@ -26,5 +26,58 @@
     height: 100%;
     font-size: 18px;
 }
+
+/*--------------------- Css Chi Tiết Phiếu Nhập ---------------------*/
+
+.detail-exportbill .title-detail p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #999;
+    border-top: none;
+    height: 40px;
+    font-weight: 500;
+    /* margin: 0 auto; */
+}
+
+.detail-exportbill .header-detail-exportbill {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #999;
+    border-top: none;
+}
+
+.detail-exportbill .header-detail-exportbill p {
+    display: flex;
+    justify-content: center;
+    flex: 1 1;
+    align-items: center;
+    border-right: 1px solid #999;
+    height: 100%;
+    font-size: 18px;
+}
+
+.detail-exportbill .item-detail {
+    display: flex;
+    align-items: center;
+    border: 1px solid #999;
+    border-top: none;
+    height: 60px;
+}
+
+.detail-exportbill .item-detail .item-detail-element {
+    display: flex;
+    flex: 1 1;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid #999;
+    height: 100%;
+    font-size: 18px;
+    font-weight: 300;
+}
+
 /*--------------------- Warehouse Item ---------------------*/
-@import url("./ImportBillItem.css");
+@import url("./ExportBillItem.css");
+
+/*--------------------- Create Export Bill ---------------------*/
+@import url("./CreateExportBill.css");

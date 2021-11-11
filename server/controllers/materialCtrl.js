@@ -21,6 +21,15 @@ const materialCtrl = {
             res.status(500).json({message: 'Internal server error' })
         }
       },
+      getMaterialStore: async (req, res) => {
+        try{
+            const vattu = await VatTu.find({_id:req.params.id});
+            res.json({success: true,vattu})
+        } catch(error) {
+            console.log(error)
+            res.status(500).json({message: 'Internal server error' })
+        }
+      },
     createMaterial: async (req, res) => {
   
       try {

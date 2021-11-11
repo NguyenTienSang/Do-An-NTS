@@ -6,15 +6,13 @@ function ImportBillAPI() {
   const [callback, setCallback] = useState(false);
 
     const getImportBills = async () => {
-      const res = await axios.get('/api/importbill');
-      // console.log('importbills.length api : ',importbills.length)
+      const res = await axios.get('/api/phieunhap');
       setImportBills(res.data);
 
     };
   
- useEffect(async () => {
-  await getImportBills()
-  await console.log('gọi callback : ',importbills.length)
+ useEffect(() => {
+  getImportBills()
  },[callback])
 
  

@@ -14,11 +14,16 @@ import DetailEmployee from "./nhanvien/DetailEmployee";
 
 import Stores from "./daily/Stores";
 import WareHouses from "./kho/WareHouse";
+
 import ImportBill from "./phieu/phieunhap/ImportBill";
 import CreateImportBill from './phieu/phieunhap/CreateImportBill';
+import DetailImportBill from "./phieu/phieunhap/DetailImportBill";
 
+import DetailWareHouse from "./kho/DetailWareHouse"
 
 import ExportBill from "./phieu/phieuxuat/ExportBill";
+import CreateExportBill from "./phieu/phieuxuat/CreateExportBill";
+
 import ThongKe from "./thongke/ThongKe";
 import Login from "./auth/Login";
 import NotFound from "./utils/not_found/NotFound"
@@ -39,8 +44,15 @@ function Pages() {
             <Route path="/daily" exact component={isAdmin ?  Stores : NotFound} />
             <Route path="/kho" exact component={isAdmin ?  WareHouses : NotFound} />
             <Route path="/phieunhap" exact component={ImportBill} />
+            <Route path="/ctphieunhap" exact component={DetailImportBill} />
             <Route path="/lapphieunhap" exact component={CreateImportBill} />
+
+            
             <Route path="/phieuxuat" exact component={ExportBill} />
+            <Route path="/lapphieuxuat" exact component={CreateExportBill} />
+            <Route path="/chitietkho" exact component={DetailWareHouse} />
+
+
             <Route path="/login" exact component={isLogged ?  HomePage : Login} />  
             <Route path="/thongke" exact component={isAdmin ?  ThongKe : NotFound}/>
             

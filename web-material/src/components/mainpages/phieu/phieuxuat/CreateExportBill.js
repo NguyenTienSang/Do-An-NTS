@@ -7,7 +7,7 @@ import DatePicker from "react-datepicker";
 // import Moment from 'react-moment';
 import moment from 'moment'
 import "react-datepicker/dist/react-datepicker.css";
-import ImportBillItem from "./ImportBillItem";
+import ExportBillItem from "./ExportBillItem";
 import NavBar from "../../../navbar/NavBar";
 import Header from "../../../header/Header";
 import {GiExplosiveMaterials} from 'react-icons/gi';
@@ -16,69 +16,72 @@ import {IoMdArrowDropdown} from 'react-icons/io';
 import {RiDeleteBin6Line} from 'react-icons/ri';
 
 
-function CreateImportBill() {
+function CreateExportBill() {
 
   const state = useContext(GlobalState);
   const [token] = state.token;
   const [materials] = state.materialAPI.materials;
   const [warehouses] = state.warehouseAPI.warehouses;
-  const [importbills] = state.importbillAPI.importbills;
-  const [detailimportbill, setDetailImportBill] = useState([]);
+  const [exportbills] = state.exportbillAPI.exportbills;
+  const [detailexportbill, setDetailExportBill] = useState([]);
   const [loading, setLoading] = useState(false);
   const [user,setUser] =  useState(JSON.parse(localStorage.getItem('inforuser')));
   const [startDate, setStartDate] = useState("");
   const [currentDate, setCurrentDate] = useState(new Date());
   // const [currentDate, setCurrentDate] = useState((new Date()));
-  const [callback, setCallback] = state.importbillAPI.callback;
+  const [callback, setCallback] = state.exportbillAPI.callback;
   const [hdn, setHDN] = useState(new Date("10-20-2021"));
   const [searchTerm,setSearchTerm] = useState("");
   const [onSearch, setOnSearch] = useState(false);
-  const [importbill, setImportBill] = useState({
-    tenpn: "",
+  const [exportbill, setExportBill] = useState({
+    tenpx: "",
     ngay: "",
     manv: "",
     makho: ""
   });
 
+
+  
+
   useEffect(() => {
-    setImportBill({
-      tenpn:'PN' + (importbills.length+1),
+    setExportBill({
+      tenpx:'PX' + (exportbills.length+1),
       ngay: moment(new Date()).format('MM-DD-yyy'),
       manv:JSON.parse(localStorage.getItem('inforuser'))._id,
       makho:"",
-      ctpn: []
+      ctpx: []
     })
-    setDetailImportBill([])
-  },[importbills])
+    setDetailExportBill([])
+  },[exportbills])
 
   const newwarehouses =  warehouses.filter((warehouse,index) => (user.madaily._id === warehouse.madaily._id) ? warehouse : undefined)
   
-  const AddToImportBill = (material) => {
+  const AddToExportBill = (material) => {
     if(!onSearch)
     {
       document.getElementById("list-material").style.display = "none";
       document.getElementById("inputsearch").value = "";
     }
-    const exist = detailimportbill.find((x) => x._id === material._id);
+    const exist = detailexportbill.find((x) => x._id === material._id);
         if(exist) {
-            setDetailImportBill(
-              detailimportbill.map((x) => 
+            setDetailExportBill(
+              detailexportbill.map((x) => 
                 x._id === material._id ? {...exist, quantity: exist.quantity + 1 } : x
               )
           )
         }
         else {
-          setDetailImportBill([...detailimportbill, {...material,quantity:1}]);
+          setDetailExportBill([...detailexportbill, {...material,quantity:1}]);
         }
   }
 
-  const RemoveToImportBill = (material) => {
-    const exist = detailimportbill.find((x) => x._id === material._id);
+  const RemoveToExportBill = (material) => {
+    const exist = detailexportbill.find((x) => x._id === material._id);
       if (exist.quantity === 1) {
-        setDetailImportBill(detailimportbill.filter((x) => x._id !== material._id));
+        setDetailExportBill(detailexportbill.filter((x) => x._id !== material._id));
       } else {
-        setDetailImportBill(
-          detailimportbill.map((x) =>
+        setDetailExportBill(
+          detailexportbill.map((x) =>
             x._id === material._id ? { ...exist, quantity: exist.quantity - 1 } : x
           )
         );
@@ -98,7 +101,7 @@ function CreateImportBill() {
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
-      setImportBill({ ...importbill, [name]: value });
+      setExportBill({ ...exportbill, [name]: value });
   };
  
  
@@ -108,7 +111,7 @@ function CreateImportBill() {
     <div className="layout-first"><NavBar/></div> 
     <div className="layout-second">
       <Header/>
-      <div className="create-importbill">
+      <div className="create-exportbill">
         <div className="row search-material">
           <label>Tìm vật tư</label>
                 <input
@@ -145,30 +148,30 @@ function CreateImportBill() {
             <div className="item-material" onClick={() =>
             {
               setOnSearch(false)
-              AddToImportBill(material)
+              AddToExportBill(material)
             }}>
             
               <p>{material.tenvt}</p>
               <p><img width="80" height="40" src={material.images.url} alt=""></img></p>
               <p>{material.soluong} {material.donvi}</p>
-              <p>{material.gianhap} VND</p>
+              <p>{material.giaxuat} VND</p>
             </div>
           ))
         }            
         </div>
      
       <div className="form-bill">
-      <p className="header-title">Nhập Thông Tin Phiếu Nhập</p>
+      <p className="header-title">Nhập Thông Tin Phiếu Xuất</p>
 
       <div className="row">
-              <label htmlFor="title">Tên phiếu nhập</label>
+              <label htmlFor="title">Tên phiếu xuất</label>
               <input
                 type="text"
-                name="tenpn"
+                name="tenpx"
                 disabled
-                id="tenpn"
+                id="tenpx"
                 required
-                value={importbill.tenpn}
+                value={exportbill.tenpx}
                 onChange={handleChangeInput}
               />
       </div>
@@ -198,7 +201,7 @@ function CreateImportBill() {
 
             // const datetest = moment(date).format('DD-MM-yyy');
             // console.log('datetest : ',datetest)
-            setImportBill({ ...importbill, ngay : moment(date).format('MM-DD-YYYY')});
+            setExportBill({ ...exportbill, ngay : moment(date).format('MM-DD-YYYY')});
           }
            
         }
@@ -215,7 +218,7 @@ function CreateImportBill() {
         <label htmlFor="newwarehouses">Kho</label>
         <select
           name="makho"
-          value={importbill.makho}
+          value={exportbill.makho}
           onChange={handleChangeInput}>
            <option value="" disabled selected hidden>Vui lòng chọn kho</option>
           {newwarehouses.map((warehouse) => (
@@ -245,7 +248,7 @@ function CreateImportBill() {
            <p>Tổng Tiền</p>
          </div>
           {
-            detailimportbill.map((item,index) => {
+            detailexportbill.map((item,index) => {
               return (
                <div className="item-bill">
                <div>{index+1}</div>
@@ -253,23 +256,23 @@ function CreateImportBill() {
              <img width="160" height="100" src={item.images.url} alt=""></img>
             
             <div>
-            {item.gianhap}VND
+            {item.giaxuat}VND
             </div>
        
-            <button onClick={() => RemoveToImportBill(item)} className="remove">
+            <button onClick={() => RemoveToExportBill(item)} className="remove">
               -
             </button>{' '}
              <div>{item.quantity}</div>
-             <button onClick={() => AddToImportBill(item)} className="add">
+             <button onClick={() => AddToExportBill(item)} className="add">
               +
             </button>
        
             <div>
-            {item.gianhap *  item.quantity} VND
+            {item.giaxuat *  item.quantity} VND
             </div>
 
             <div>
-              <RiDeleteBin6Line className="delete-item" onClick={() => {setDetailImportBill(detailimportbill.filter((x) => x._id !== item._id))}}/>
+              <RiDeleteBin6Line className="delete-item" onClick={() => {setDetailExportBill(detailexportbill.filter((x) => x._id !== item._id))}}/>
               
             </div>
 
@@ -285,28 +288,27 @@ function CreateImportBill() {
      <div className="button-option">
      <button onClick={async() =>
             {
-              if(detailimportbill.length==0)
+              if(detailexportbill.length==0)
               {
                   alert('Phiếu chưa có vật tư, vui lòng thêm  vật tư vào phiếu')
               }
               else
               {
-                importbill.ngay = importbill.ngay.slice(0,3)+(parseInt(importbill.ngay.slice(3,5))+1)+importbill.ngay.slice(5,10);
-                console.log('importbill nè : ',importbill)
-                // console.log('detailimportbill : ',detailimportbill.map(item => ({
-                //               mavt : item._id, gianhap : item.gianhap,soluong : item.quantity
-                //             })) )
+                exportbill.ngay = exportbill.ngay.slice(0,3)+(parseInt(exportbill.ngay.slice(3,5))+1)+exportbill.ngay.slice(5,10);
+                console.log('exportbill nè : ',exportbill)
+                console.log('detailexportbill nè : ',detailexportbill)
+              
                   try {
                     const res = await axios.post(
-                             "/api/phieunhap",
-                             {...importbill,ctpn: detailimportbill.map(item => ({
-                              mavt : item._id, gianhap : item.gianhap,soluong : item.quantity
+                             "/api/phieuxuat",
+                             {...exportbill,ctpx: detailexportbill.map(item => ({
+                              mavt : item._id, giaxuat : item.giaxuat,soluong : item.quantity
                             })) },
                              {
                                headers: { Authorization: token },
                              }
                            );
-                           console.log('importbill nè : ',importbill)
+                           console.log('exportbill nè2 : ',exportbill)
                            alert(res.data.message);
                            setCallback(!callback);
                    } catch (err) {
@@ -314,8 +316,7 @@ function CreateImportBill() {
                    }
               }
             }}>Lập Phiếu</button>
-      <Link to="/phieunhap"><button>Hủy</button></Link>
-      {/* /phieunhap */}
+      <button>Hủy</button>
      </div>
       </div>
       </div>
@@ -323,4 +324,4 @@ function CreateImportBill() {
   )
 }
 
-export default CreateImportBill;
+export default CreateExportBill;
