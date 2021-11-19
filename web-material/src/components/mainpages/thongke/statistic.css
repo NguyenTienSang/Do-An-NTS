@@ -1,0 +1,27 @@
+.statistic-container ul {
+    display: flex;
+    margin: 100px 0px;
+}
+
+.statistic-container ul .statistic-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 180px;
+    height: 150px;
+    border: 1px solid #999;
+    border-radius: 8px;
+    background-color: rgb(26, 148, 255);
+}
+
+.statistic-container ul .statistic-item a {
+    color: #fff;
+}
+
+.statistic-item p {
+    text-align: center;
+    font-size: 24px;
+}
+
+/*--------------------- StatisticMaterial ---------------------*/
+@import url("./statisticmaterial.css");

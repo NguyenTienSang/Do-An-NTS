@@ -36,6 +36,7 @@ function Employees() {
   const history = useHistory();
   const param = useParams();
 
+  const [searchTerm,setSearchTerm] = useState("");
   const [employees] = state.employeeAPI.employees;
   const [stores] = state.storeAPI.stores;
   const [onEdit, setOnEdit] = useState(false);
@@ -226,6 +227,21 @@ function Employees() {
     <div className="layout-second">
       <Header/>
       <div className="employees">
+      <div className="row search-employee">
+          <label>Tìm nhân viên</label>
+                <input
+                  type="text"
+                  name="tenpn"
+                  placeholder="Nhập tên nhân viên"
+                  id="inputsearch"
+                  required
+                  autocomplete="off"
+                  onChange={(event)=> {
+                    setSearchTerm(event.target.value);
+                    // document.getElementById("list-material").style.display = "block";
+                  }}
+                />
+        </div>
       <div className="header-title">
               <div className="title-tab">
                 <h2 style={{display:'flex',alignItems:'center'}}><BsFillPersonLinesFill style={{marginRight:'5px'}}/>Nhân Viên</h2>
@@ -246,7 +262,16 @@ function Employees() {
             <p style={{flex:0.6}}>Xóa</p>
             <p style={{flex:0.6}}>Chi tiết</p>
           </div>
-          {employees.map((employee,index) => {
+          {employees.filter(employee=>{
+              if(searchTerm === "") 
+              {
+                  return employee;
+              }
+              else if(employee.hoten.toLowerCase().includes(searchTerm.toLowerCase()))
+              {
+                  return employee;
+              }
+          }).map((employee,index) => {
             console.log(employee);
               return( 
                 <EmployeeItem

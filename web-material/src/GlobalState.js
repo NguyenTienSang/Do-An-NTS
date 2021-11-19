@@ -7,6 +7,7 @@ import StoresAPI from "./api/StoreAPI";
 import WareHouseAPI from "./api/WareHouseAPI";
 import ImportBillAPI from "./api/ImportBillAPI"
 import ExportBillAPI from "./api/ExportBillAPI"
+import StatisticAPI from "./api/StatisticAPI"
 
 import axios from "axios";
 
@@ -40,6 +41,7 @@ export const DataProvider = ({ children }) => {
     warehouseAPI: WareHouseAPI(),
     importbillAPI: ImportBillAPI(),
     exportbillAPI: ExportBillAPI(),
+    statisticAPI: StatisticAPI(),
     userAPI: UserAPI(token)
   };
 

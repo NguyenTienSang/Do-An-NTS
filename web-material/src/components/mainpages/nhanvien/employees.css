@@ -9,6 +9,19 @@
     margin: 20px;
 }
 
+.employees .search-employee {
+    margin-bottom: 10px;
+}
+
+.employees .search-employee input {
+    width: 200px;
+    height: 30px;
+    margin-left: 10px;
+    padding: 0 10px;
+    border: 1px solid #999;
+    border-radius: 8px;
+}
+
 .header_list {
     display: flex;
     border: 1px solid #999;

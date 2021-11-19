@@ -24,9 +24,13 @@ import DetailWareHouse from "./kho/DetailWareHouse"
 import ExportBill from "./phieu/phieuxuat/ExportBill";
 import CreateExportBill from "./phieu/phieuxuat/CreateExportBill";
 
-import ThongKe from "./thongke/ThongKe";
+import Statistic from "./thongke/Statistic";
+import StatisticMaterial from "./thongke/StatisticMaterial";
+import StatisticImportBill from "./thongke/StatisticImportBill"
+
 import Login from "./auth/Login";
 import NotFound from "./utils/not_found/NotFound"
+
 function Pages() {
     const state = useContext(GlobalState);
     console.log(state);
@@ -54,7 +58,9 @@ function Pages() {
 
 
             <Route path="/login" exact component={isLogged ?  HomePage : Login} />  
-            <Route path="/thongke" exact component={isAdmin ?  ThongKe : NotFound}/>
+            <Route path="/thongke" exact component={isAdmin ?  Statistic : NotFound}/>
+            <Route path="/thongkevattu" exact component={isAdmin ?  StatisticMaterial : NotFound}/>
+            <Route path="/thongkephieunhap" exact component={isAdmin ?  StatisticImportBill : NotFound}/>
             
             <Route path="*" exact component={NotFound} />
            

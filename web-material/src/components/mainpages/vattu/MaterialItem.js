@@ -22,7 +22,7 @@ function MaterialItem({material,stt,EditMaterial,DeleteMaterial}) {
         <div className="material_item_element">
         {material.soluong} {material.donvi}
         </div>
-
+        
         <div className="material_item_element">
         {material.gianhap} VND
         </div>

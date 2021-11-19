@@ -40,9 +40,6 @@ function Materials() {
   const [callback, setCallback] = state.materialAPI.callback;
 
 
-  
-  console.log('materials.length : ',materials.length)
-
   useEffect(() => {
     if (param.id) {
       setOnEdit(true);
@@ -258,7 +255,7 @@ function Materials() {
             </div>
             {
              materials.filter(material=>{
-              if(searchTerm == "") 
+              if(searchTerm === "") 
               {
                   return material;
               }

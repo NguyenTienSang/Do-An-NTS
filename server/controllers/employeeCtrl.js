@@ -10,7 +10,7 @@ const employeeCtrl = {
         //   const employees = await NhanVien.find().populate('madaily').sort({madaily: 1,hoten: 1});
    
           const employees = await NhanVien.find().populate('madaily');
-          console.log('nhanvienthuocdaily : ',employees);
+        //   console.log('nhanvienthuocdaily : ',employees);
           res.json(employees);
         } catch (err) {
           return res.status(500).json({ msg: err.message });

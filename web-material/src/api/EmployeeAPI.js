@@ -7,7 +7,7 @@ function EmployeeAPI() {
 
     const getEmployees = async () => {
       const res = await axios.get('/api/nhanvien');
-      console.log('Danh sách nhân viên : ',res.data);
+      // console.log('Danh sách nhân viên : ',res.data);
       setEmployees(res.data);
     };
   
