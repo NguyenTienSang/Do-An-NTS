@@ -15,7 +15,7 @@ function Statistic() {
               <div className="statistic-container">
                 <ul>
                   <li className="statistic-item">
-                          <Link to={'/thongkevattu'}><p>Thống kê <br/> nhân viên</p> </Link>
+                          <Link to={'/thongkephieunhap'}><p>Thống kê <br/> nhân viên</p> </Link>
                     </li>
                     <li className="statistic-item">
                     <Link to={'/thongkevattu'}><p>Thống kê <br/> vật tư</p> </Link>

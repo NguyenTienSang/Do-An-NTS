@@ -15,7 +15,7 @@ function ImportBillItem({importbill,stt}) {
       return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + " VND"
   }
 
-  console.log('phiếu nhập : ',importbill);
+  // console.log('phiếu nhập : ',importbill);
     return (
       <div>
         <div className="importbill_item">
@@ -65,7 +65,7 @@ function ImportBillItem({importbill,stt}) {
     )
     function onLoadTotal() {
       var totalcost = 0;
-      importbill.ctpn.map(ipbill => {
+      importbill?.ctpn?.map(ipbill => {
   totalcost+= ipbill.gianhap*ipbill.soluong;
   })
   return totalcost;

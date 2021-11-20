@@ -87,12 +87,12 @@ function CreateImportBill() {
 
 
   const [dataDate,setDate] = useState(new Date());
-  const ExampleCustomInput = ({ value, onClick }) => (
-    <button className="button-date-picker" onClick={onClick}>
-      {value}
-      <IoMdArrowDropdown/>
-    </button>
-  );
+  // const ExampleCustomInput = ({ value, onClick }) => (
+  //   <button className="button-date-picker" onClick={onClick}>
+  //     {value}
+  //     <IoMdArrowDropdown/>
+  //   </button>
+  // );
 
   const param = useParams();
 
@@ -186,7 +186,6 @@ function CreateImportBill() {
  <DatePicker
         className="date-picker"
         format="DD-MM-YYYY"
-        placeholder="Nhập ngày"
         minDate={new Date("10-20-2021")}
         maxDate={new Date()}
         dateFormat="dd-MM-yyyy"
@@ -194,17 +193,17 @@ function CreateImportBill() {
         onChange={(date) =>
           {
             setCurrentDate(date)
-            console.log('date : ',typeof(date))
+            // console.log('date : ',moment(date).format('MM-DD-YYYY'))
 
             // const datetest = moment(date).format('DD-MM-yyy');
-            // console.log('datetest : ',datetest)
+            console.log('datetest : ',moment(date).format('MM-DD-YYYY'))
             setImportBill({ ...importbill, ngay : moment(date).format('MM-DD-YYYY')});
           }
            
         }
         value={currentDate}
        
-        customInput={<ExampleCustomInput />}
+        // customInput={<ExampleCustomInput />}
       />
 
 

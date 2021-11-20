@@ -1,0 +1,123 @@
+.importbills {
+    display: block;
+    justify-items: center;
+    margin: 20px;
+}
+
+.importbills .search-importbills input {
+    width: 200px;
+    height: 30px;
+    margin-left: 10px;
+    padding: 0 10px;
+    border: 1px solid #999;
+    border-radius: 8px;
+}
+.filter-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.filter-container .search-importbills {
+    display: flex;
+    align-items: center;
+}
+.filter-container .filter-date {
+    display: flex;
+    align-items: center;
+}
+
+.filter-container .filter-date-component {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.filter-container .filter-date-component label {
+    margin-right: 10px;
+}
+
+.filter-container .statistic-bills {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+    color: #fff;
+    background-color: rgb(26, 148, 255);
+    width: 160px;
+    border-radius: 8px;
+    padding: 0px 10px;
+}
+
+.filter-date .filter-date-component .react-datepicker-wrapper .react-datepicker__input-container input {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    padding: 0px 5px;
+    border: 1px solid #999;
+    border-radius: 8px;
+    color: rgb(0, 0, 0);
+    width: 100px;
+}
+
+.statistic-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    padding: 0px 10px 0px 10px;
+    color: #fff;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    background-color: rgb(38 151 251);
+    max-width: 50px;
+    width: 100%;
+    height: 32px;
+}
+
+/* 
+
+
+ */
+
+/* .importbills .hi {
+    background-color: rgb(26, 148, 255);
+    border: none;
+} */
+
+/* .filter-date {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+.filter-date-component {
+    display: flex;
+    justify-content: space-evenly;
+    margin: 0px;
+    width: 100%;
+}
+
+.filter-date-component label {
+    max-width: 40px;
+    width: 100%;
+}
+
+.button-date-picker {
+    margin: 0px;
+}
+
+.filter-date .statistic-bills {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    padding: 0px 10px 3px 10px;
+    color: #fff;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    background-color: rgb(38 151 251);
+    max-width: 120px;
+    width: 100%;
+    height: 32px;
+} */

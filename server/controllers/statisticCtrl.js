@@ -92,11 +92,43 @@ const statisticCtrl = {
     /*Thống kê phiếu nhập, phiếu xuất của nhân viên
     Chi ra 2 option phiếu nhập, phiếu xuất
     theo giai đoạn 
+        Đếm số phiếu nhập
+        Đếm số phiếu xuất
+        Tổng giá trị phiếu nhập
+        Tổng giá trị phiếu xuất
+
+        Trường hợp tất cả
+        Đếm số phiếu nhập
+        Tổng giá trị phiếu nhập
+        Đếm số phiếu xuất
+        Tổng giá trị phiếu xuất
+        Tổng lợi nhuận
     */
         try {
-            const {manhanvien} = req.body;
-            const phieunhap = await PhieuNhap.find({"manv" : manhanvien, "ngay":{$gte:"2021-07-11",$lt:"2021-12-31"}})
-            res.json(phieunhap);
+            const {manv,startDateFilter,endDateFilter,optionbill} = req.body;
+            console.log("manv : ",manv);
+            console.log("startDateFilter : ",startDateFilter);
+            console.log("startDateFilter : ",typeof(startDateFilter));
+            console.log("endDateFilter : ",endDateFilter);
+            console.log("endDateFilter : ",typeof(endDateFilter));
+            console.log("optionbill : ",optionbill);
+            //Trường hợp phiếu nhập
+            if(optionbill === 'PhieuNhap')
+            {
+                const phieunhap = await PhieuNhap.find({"manv" : manv, "ngay":{$gte:startDateFilter,$lt:endDateFilter}}).populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpn').populate({path :'ctpn',populate: {path: 'mavt'}})
+                // const phieunhap = await PhieuNhap.find({"manv" : manv, "ngay":{$gte:startDateFilter,$lt:endDateFilter}})
+                res.json(phieunhap);
+            }
+            else if(optionbill === 'PhieuXuat')
+            {
+                const phieuxuat = await PhieuXuat.find({"manv" : manv, "ngay":{$gte:startDateFilter,$lt:endDateFilter}}).populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpn').populate({path :'ctpn',populate: {path: 'mavt'}})
+                // const phieunhap = await PhieuNhap.find({"manv" : manv, "ngay":{$gte:startDateFilter,$lt:endDateFilter}})
+                res.json(phieuxuat);
+            }
+            else if(optionbill === 'TatCa')
+            { const phieu = await PhieuNhap.find().populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpn').populate({path :'ctpn',populate: {path: 'mavt'}})
+                res.json(phieu);
+            }
         } catch (error) {
             return res.status(500).json({ msg: error.message });
         }

@@ -32,7 +32,6 @@ function ExporttBill() {
               
               <button className='add-item'><Link to={'/lapphieuxuat'} style={{color:'#fff'}}> <BiBookAdd  style={{marginRight:'5px',marginTop:'5px'}}/>Lập Phiếu Xuất</Link></button>
            
-              
             </div>
             <div className="header_list">
               <p style={{flex:0.5}}>STT</p>

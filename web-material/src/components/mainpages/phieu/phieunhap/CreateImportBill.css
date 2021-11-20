@@ -1,16 +1,4 @@
-.react-datepicker-popper {
-    right: 70px;
-}
-
-.react-datepicker__triangle {
-    left: -115px !important;
-}
-
-.react-datepicker {
-    left: -215px;
-}
-
-.button-date-picker {
+/* .button-date-picker {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -19,7 +7,7 @@
     height: 30px;
     border: 1px solid #333;
     border-radius: 5px;
-}
+} */
 
 .create-importbill {
     display: block;
