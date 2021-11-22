@@ -19,7 +19,7 @@ const KhoSchema = new Schema({
         required: true,
     },
     images:{
-        type: String,
+        type: Object,
         required: true,
     }
 })

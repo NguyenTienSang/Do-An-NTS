@@ -117,17 +117,14 @@ const statisticCtrl = {
             {
                 const phieunhap = await PhieuNhap.find({"manv" : manv, "ngay":{$gte:startDateFilter,$lt:endDateFilter}}).populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpn').populate({path :'ctpn',populate: {path: 'mavt'}})
                 // const phieunhap = await PhieuNhap.find({"manv" : manv, "ngay":{$gte:startDateFilter,$lt:endDateFilter}})
+                console.log('phieunhap : ',phieunhap)
                 res.json(phieunhap);
             }
             else if(optionbill === 'PhieuXuat')
             {
-                const phieuxuat = await PhieuXuat.find({"manv" : manv, "ngay":{$gte:startDateFilter,$lt:endDateFilter}}).populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpn').populate({path :'ctpn',populate: {path: 'mavt'}})
-                // const phieunhap = await PhieuNhap.find({"manv" : manv, "ngay":{$gte:startDateFilter,$lt:endDateFilter}})
+                const phieuxuat = await PhieuXuat.find({"manv" : manv, "ngay":{$gte:startDateFilter,$lt:endDateFilter}}).populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpx').populate({path :'ctpx',populate: {path: 'mavt'}})
+                console.log('phieuxuat : ',phieuxuat)
                 res.json(phieuxuat);
-            }
-            else if(optionbill === 'TatCa')
-            { const phieu = await PhieuNhap.find().populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpn').populate({path :'ctpn',populate: {path: 'mavt'}})
-                res.json(phieu);
             }
         } catch (error) {
             return res.status(500).json({ msg: error.message });

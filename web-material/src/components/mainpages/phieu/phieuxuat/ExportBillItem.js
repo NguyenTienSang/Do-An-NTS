@@ -14,58 +14,6 @@ function ExportBillItem({exportbill,stt}) {
   const Format = (number) => {
     return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + " VND"
 }
-
-  // console.log('phiếu nhập : ',exportbill);
-  // return (
-  //   <div>
-  //     <div className="exportbill_item_element">
-  //               <div style={{flex:0.5}} className="exportbill_item_element">
-  //               <p>{stt+1}</p>
-  //               </div>
-  //               <div className="exportbill_item_element">
-  //               <p>{exportbill.tenpx}</p>
-  //               </div>
-  //               <div className="exportbill_item_element">
-  //               <p>{(exportbill.ngay).slice(8,10)}-{(exportbill.ngay).slice(5,7)}-{(exportbill.ngay).slice(0,4)}</p>
-  //               </div>
-
-  //               <div className="exportbill_item_element">
-  //               <p>{exportbill.manv.hoten}</p>
-  //               </div>
-
-  //               <div className="exportbill_item_element">
-  //               <p>{exportbill.manv.madaily.tendl}</p>
-  //               </div>
-
-  //               <div className="exportbill_item_element">
-  //               <p>{exportbill.makho.tenkho}</p>
-  //               </div>
-                
-  //               <div className="exportbill_item_element">
-  //               <p>{
-  //                  Format(onLoadTotal())
-  //               }   
-  //                   </p>
-  //               </div>
-  //                 <div style={{flex:0.6}} className="exportbill_item_element">
-  //                 {/* <button onClick={() => ViewDetailImportBill(importbill)}> <GrView/></button> */}
-  //                 <button onClick={() => {
-  //                         setDetailExport(!detailexport)
-  //                 }}>{detailexport ? <GrView/> : <BiHide/>} </button>
-  //                 </div>
-  //       </div>
-  //       <div>
-      
-  //        {
-  //          detailexport  ? <DetailExportBill key={exportbill._id}  importbill={exportbill}/> : <></>
-  //        }
-  //       </div>
-  //   </div>
-    
-  // )
-
-
-  //---------------------------------------------------------------------------- 
     return (
       <div>
         <div className="exportbill_item">

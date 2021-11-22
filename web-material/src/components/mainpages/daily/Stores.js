@@ -113,6 +113,7 @@ function Stores() {
   const AddStore = () => {
     setOnEdit(false);
     setStore(initialStore);
+    setImages(false);
     setLoading(false);
     document.getElementById("modal_container").classList.add("modal_active");
   }
@@ -251,6 +252,7 @@ function Stores() {
                 type="text"
                 name="tendl"
                 placeholder="Nhập tên đại lý"
+                autoComplete="off"
                 id="tendl"
                 required
                 value={store.tendl}
@@ -264,6 +266,7 @@ function Stores() {
                 type="text"
                 name="diachi"
                 placeholder="Nhập địa chỉ"
+                autoComplete="off"
                 id="diachi"
                 required
                 value={store.diachi}
@@ -277,6 +280,7 @@ function Stores() {
                 type="number"
                 name="sodienthoai"
                 placeholder="Nhập số điện thoại"
+                autoComplete="off"
                 id="sodienthoai"
                 required
                 value={store.sodienthoai}
@@ -304,7 +308,7 @@ function Stores() {
 
 
             <div className="option-button">
-                <button id="add" onClick={AddToListStore}>Thêm</button>
+                <button id="add" onClick={AddToListStore}>{onEdit ? 'Cập nhật' : 'Thêm'}</button>
                 <button id="close"   onClick={CloseModalStore}>Hủy</button>
             </div>
 

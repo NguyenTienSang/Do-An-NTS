@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import { GlobalState } from "../../../GlobalState";
 import ImportBillItem from "../phieu/phieunhap/ImportBillItem";
@@ -22,16 +22,27 @@ function StatisticImportBill() {
   const [importbills] = state.importbillAPI.importbills;
   const [searchTerm,setSearchTerm] = useState("");
   const [manv,setMaNV] = useState("");
-  const [optionbill,setOptionBill] = useState("TatCa");
-  const [billsfilter,setBillsFilter] = useState(importbills);
+  const [optionbill,setOptionBill] = useState("PhieuNhap");
+  const [billsfilter,setBillsFilter] = useState();
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
  
-
+  // useEffect (async() => {
+  //   const startDateFilter =  moment(startDate).format('YYYY-MM-DD');
+  //   const endDateFilter =  moment(endDate).format('YYYY-MM-DD');
+  //       const res = await axios.post('/api/thongke/phieunhapnhanvien',
+  //         { manv,startDateFilter,endDateFilter,optionbill}
+  //   );
+  //   setBillsFilter(res.data);
+  // },[])
 
   const filterbill = async () => {
-
-    if(startDate.getTime() > endDate.getTime())
+    
+    if(manv === "")
+    {
+      alert('Vui lòng nhập mã nhân viên')
+    }
+    else if(startDate.getTime() > endDate.getTime())
     {
       alert('Thời gian không hợp lệ')
     }
@@ -122,8 +133,8 @@ function StatisticImportBill() {
             }}
           >
           
-            <option value="TatCa" selected>Tất cả</option>
-            <option value="PhieuNhap">Phiếu Nhập</option>
+           
+            <option value="PhieuNhap" selected>Phiếu Nhập</option>
             <option value="PhieuXuat">Phiếu Xuất</option>
           </select>
 
@@ -168,7 +179,7 @@ function StatisticImportBill() {
         
             {
               optionbill === 'PhieuNhap' ? 
-                (    billsfilter.filter(importbill=>{
+                (    billsfilter?.filter(importbill=>{
                   if(searchTerm === "") 
                   {
                       return importbill;
@@ -189,53 +200,28 @@ function StatisticImportBill() {
                       </> 
                     )
                 }))
-                : (
-                  optionbill === 'PhieuXuat' ? (
-                    billsfilter.filter(exportbill=>{
-                      if(searchTerm === "") 
-                      {
-                          return exportbill;
-                      }
-                      else if(exportbill.tenpx.toLowerCase().includes(searchTerm.toLowerCase()))
-                      {
-                          return exportbill;
-                      }
-                  }).map((exportbill,index) => {
-                      
-                        return(
-                          <>
-                          <ExportBillItem
-                            key={exportbill._id}
-                            exportbill={exportbill}
-                            stt={index}
-                          />
-                          </> 
-                        )
-                    })
-                  ) : (
-                    billsfilter.filter(importbill=>{
-                      if(searchTerm === "") 
-                      {
-                          return importbill;
-                      }
-                      else if(importbill.tenpn.toLowerCase().includes(searchTerm.toLowerCase()))
-                      {
-                          return importbill;
-                      }
-                  }).map((importbill,index) => {
-                      
-                        return(
-                          <>
-                          <ImportBillItem
-                            key={importbill._id}
-                            importbill={importbill}
-                            stt={index}
-                          />
-                          </> 
-                        )
-                    })
-                  )
-                )
+                : 
+                (    billsfilter?.filter(exportbill=>{
+                  if(searchTerm === "") 
+                  {
+                      return exportbill;
+                  }
+                  else if(exportbill.tenpx.toLowerCase().includes(searchTerm.toLowerCase()))
+                  {
+                      return exportbill;
+                  }
+              }).map((exportbill,index) => {
+                  
+                    return(
+                      <>
+                      <ExportBillItem
+                        key={exportbill._id}
+                        exportbill={exportbill}
+                        stt={index}
+                      />
+                      </> 
+                    )
+                }))
             }
 
 

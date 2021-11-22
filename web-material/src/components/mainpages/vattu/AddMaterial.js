@@ -6,7 +6,7 @@ import { useHistory, useParams } from "react-router-dom";
 
 const initialMaterial = {
   tenvt:"",
-  soluong:"",
+  soluong:0,
   gianhap:0,
   giaxuat:0,
   donvi:"",
@@ -197,7 +197,7 @@ function AddMaterial(props) {
           />
         </div>
 
-        <div className="row">
+        {/* <div className="row">
           <label htmlFor="price">Số lượng</label>
           <input
             type="number"
@@ -207,7 +207,7 @@ function AddMaterial(props) {
             value={material.soluong}
             onChange={handleChangeInput}
           />
-        </div>
+        </div> */}
 
         <div className="row">
           <label htmlFor="price">Giá nhập</label>

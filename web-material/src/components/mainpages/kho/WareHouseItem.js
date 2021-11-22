@@ -3,7 +3,7 @@ import {RiDeleteBin6Line} from 'react-icons/ri';
 import {FaUserEdit} from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
-function WareHouseItem({warehouse,stt}) {
+function WareHouseItem({warehouse,stt,EditWareHouse,DeleteWareHouse}) {
     return (
         <div className="warehouse_item">
         <div style={{flex:0.5}} className="warehouse_item_element">
@@ -13,7 +13,7 @@ function WareHouseItem({warehouse,stt}) {
         <h2>{warehouse.tenkho}</h2>
         </div>
         <div className="warehouse_item_element">
-          <img src={warehouse.images} alt="" />
+          <img src={warehouse.images.url} alt="" />
         </div>
          
         <div className="warehouse_item_element">
@@ -27,10 +27,10 @@ function WareHouseItem({warehouse,stt}) {
           {warehouse.sodienthoai}
           </div>
           <div style={{flex:0.6}} className="warehouse_item_element">
-            <button style={{fontSize:30}}><FaUserEdit/></button>
+            <button style={{fontSize:30}} onClick={() => EditWareHouse(warehouse)}><FaUserEdit/></button>
           </div>
           <div style={{flex:0.6}} className="warehouse_item_element">
-          <button style={{fontSize:30}}><RiDeleteBin6Line/></button>
+          <button onClick={() => DeleteWareHouse(warehouse._id,warehouse.images.public_id)} style={{fontSize:30}}><RiDeleteBin6Line/></button>
           </div>
           <div style={{flex:0.6}} className="warehouse_item_element">
 

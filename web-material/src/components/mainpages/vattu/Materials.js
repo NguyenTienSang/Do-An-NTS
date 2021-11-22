@@ -15,7 +15,7 @@ import {BiBookAdd} from 'react-icons/bi';
 const initialMaterial = {
   tenvt:"",
   donvi:"",
-  soluong:"",
+  soluong:0,
   gianhap:"",
   giaxuat:"",
   trangthai:"Đang kinh doanh",
@@ -254,7 +254,7 @@ function Materials() {
               <p style={{flex:0.6}}>Xóa</p>
             </div>
             {
-             materials.filter(material=>{
+             materials?.filter(material=>{
               if(searchTerm === "") 
               {
                   return material;
@@ -306,7 +306,7 @@ function Materials() {
               />
             </div>
 
-            <div className="row">
+            {/* <div className="row">
               <label htmlFor="soluong">Số lượng</label>
               <input
                 type="number"
@@ -317,7 +317,7 @@ function Materials() {
                 value={material.soluong}
                 onChange={handleChangeInput}
               />
-            </div>
+            </div> */}
 
             <div className="row">
               <label htmlFor="price">Giá nhập</label>

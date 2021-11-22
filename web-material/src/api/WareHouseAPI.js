@@ -3,6 +3,7 @@ import axios from "axios";
 
 function WareHouseAPI() {
   const [warehouses, setWareHouses] = useState([]);
+  const [callback, setCallback] = useState(false);
 
     const getWareHouses = async () => {
       const res = await axios.get('/api/kho');
@@ -11,10 +12,11 @@ function WareHouseAPI() {
   
  useEffect(() => {
   getWareHouses()
- },[])
+ },[callback])
 
   return {
-    warehouses: [warehouses,setWareHouses]
+    warehouses: [warehouses,setWareHouses],
+    callback: [callback, setCallback],
   }
 }
 
