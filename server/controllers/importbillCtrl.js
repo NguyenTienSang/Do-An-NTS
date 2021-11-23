@@ -58,6 +58,26 @@ const importbillCtrl = {
             }
             const newPhieuNhap = new PhieuNhap({tenpn,ngay,manv,makho,ctpn})
             await newPhieuNhap.save();
+            
+            const vattu = await VatTu.find();
+
+            ctpn.map(ctpnitem => {
+                console.log('ctpnitem : ',ctpnitem)
+                 vattu.map(async vt => {
+                     console.log('typeof(vt._id) : ',typeof(vt._id.toString()));
+                     console.log('typeof(ctpnitem.mavt) : ',typeof(ctpnitem.mavt));
+                     console.log('vt._id : ',vt._id);
+                    console.log('ctpnitem.mavt : ',ctpnitem.mavt);
+                    if(vt._id.toString() === ctpnitem.mavt)
+                    {
+                        vt.soluong += ctpnitem.soluong;
+                        await VatTu.findOneAndUpdate({ _id: (vt._id).toString() },vt, {new:true});
+                    }
+                });
+            })
+            // console.log('vt new : ',vattu);   
+            // VatTu.update(filter,{vattu}) 
+           
             res.json({
                 success: true,
                 message: 'Đã thêm thành công',

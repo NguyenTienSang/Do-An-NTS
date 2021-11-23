@@ -97,7 +97,7 @@ function CreateExportBill() {
     </button>
   );
 
-  const param = useParams();
+  // const param = useParams();
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -121,6 +121,7 @@ function CreateExportBill() {
                   id="inputsearch"
                   required
                   autocomplete="off"
+                  disabled={exportbill.makho== "" ? true : false}
                   onChange={(event)=> {
                     setSearchTerm(event.target.value);
                     document.getElementById("list-material").style.display = "block";
@@ -135,7 +136,7 @@ function CreateExportBill() {
             <p>Giá nhập</p>
           </div>
         {
-          materials.filter(material=>{
+          materials?.filter(material=>{
               if(searchTerm == "") 
               {
                   return null;
@@ -144,7 +145,7 @@ function CreateExportBill() {
               {
                   return material;
               }
-          }).map((material,index)=>(
+          })?.map((material,index)=>(
             <div className="item-material" onClick={() =>
             {
               setOnSearch(false)
@@ -248,7 +249,7 @@ function CreateExportBill() {
            <p>Tổng Tiền</p>
          </div>
           {
-            detailexportbill.map((item,index) => {
+            detailexportbill?.map((item,index) => {
               return (
                <div className="item-bill">
                <div>{index+1}</div>

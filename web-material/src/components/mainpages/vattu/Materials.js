@@ -39,6 +39,9 @@ function Materials() {
   const [onEdit, setOnEdit] = useState(false);
   const [callback, setCallback] = state.materialAPI.callback;
 
+  useEffect( () =>{
+    setCallback(!callback);
+  },[])
 
   useEffect(() => {
     if (param.id) {
@@ -54,6 +57,7 @@ function Materials() {
       setMaterial(initialMaterial);
       setImages(false);
     }
+   
   }, [param.id, materials]);
 
   const handleUpload = async (e) => {

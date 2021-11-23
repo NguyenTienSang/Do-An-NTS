@@ -1,6 +1,6 @@
 const VatTu = require('../models/VatTu');
-const CTPhieuNhap = require('../models/CTPhieuNhap');
-const CTPhieuXuat = require('../models/CTPhieuXuat');
+const PhieuNhap = require('../models/PhieuNhap');
+const PhieuXuat = require('../models/PhieuXuat');
 
 
 const materialCtrl = {
@@ -31,7 +31,6 @@ const materialCtrl = {
         }
       },
     createMaterial: async (req, res) => {
-  
       try {
         const {tenvt,soluong,gianhap,giaxuat,donvi,trangthai,images} = req.body;
         console.log('tenvt : ',tenvt);
@@ -92,8 +91,41 @@ const materialCtrl = {
 
     deleteMaterial: async (req, res) => {
       try {
+
+        //Nếu có vật tư cần xóa trong phiếu nhập
+        const phieunhap = await PhieuNhap.find().populate({path :'ctpn',populate: {path: 'mavt'}});
+        phieunhap.map(pn => {
+          
+            pn.ctpn.find(ctpn => {
+              
+                if(ctpn.mavt._id.toString() === req.params.id)
+                {
+                   
+                    return res.status(500).json({message: 'Vật tư đã có trong chi tiết phiếu nhập, không thể xóa' })
+                }
+            })
+        })
+   
+   //Nếu có vật tư cần xóa trong phiếu xuất
+        const phieuxuat = await PhieuXuat.find().populate({path :'ctpx',populate: {path: 'mavt'}});
+        phieuxuat.map(px => {
+            console.log('pn.ctpn : ',px.ctpx)
+            pn.ctpn.find(ctpn => {
+                console.log('ctpn : ',ctpx.mavt._id)
+                console.log('req.params.id : ',req.params.id)
+                console.log('typeof(ctpx.mavt._id) : ',typeof(ctpx.mavt._id))
+                console.log('typeof(req.params.id) : ',typeof(req.params.id))
+                if(ctpx.mavt._id.toString() === req.params.id)
+                {
+                    console.log('Không được xóa')
+                    return res.status(500).json({message: 'Vật tư đã có trong chi tiết phiếu xuất, không thể xóa' })
+                }
+            })
+        })    
+   
+        //Không nằm trong 2 trường hợp kia thì cho xóa
         await VatTu.findByIdAndDelete(req.params.id);
-        res.json({ message: "Xóa vật tư thành công" });
+        return res.json({ message: "Xóa vật tư thành công" });
       } catch (err) {
         return res.status(500).json({ message: err.message });
       }
@@ -108,11 +140,11 @@ const materialCtrl = {
             return res.status(400)
             .json({success: false,message:"Tên vật tư không được trống"})
         }
-        if(!soluong)
-        {
-            return res.status(400)
-            .json({success: false,message:"Số lượng không được trống"})
-        }
+        // if(!soluong)
+        // {
+        //     return res.status(400)
+        //     .json({success: false,message:"Số lượng không được trống"})
+        // }
         if(!gianhap)
         {
             return res.status(400)
@@ -150,28 +182,7 @@ const materialCtrl = {
         console.log(error)
 		res.status(500).json({message: 'Cập nhật vật tư thất bại' })
     }
-
-      try {
-        const { title, price, description, content, images, category } = req.body;
-        if (!images) return res.status(400).json({ message: "No image upload" });
-  
-        await Products.findOneAndUpdate(
-          { _id: req.params.id },
-          {
-            title: title.toLowerCase(),
-            price,
-            description,
-            content,
-            images,
-            category,
-          }
-        );
-  
-        res.json({ message: "Updated a Product" });
-      } catch (err) {
-        return res.status(500).json({ message: err.message });
-      }
-    },
+    }
   };
 
   module.exports = materialCtrl;

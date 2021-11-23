@@ -132,7 +132,7 @@ function CreateImportBill() {
             <p>Giá nhập</p>
           </div>
         {
-          materials.filter(material=>{
+          materials?.filter(material=>{
               if(searchTerm == "") 
               {
                   return null;
