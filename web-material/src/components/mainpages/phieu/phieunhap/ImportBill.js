@@ -17,9 +17,9 @@ function ImportBill() {
   }
   return (
     <div className="layout">
-    <div className="layout-first"><NavBar/></div>
+    <div className="layout-first"><Header/></div>
     <div className="layout-second">
-      <Header/>
+    <NavBar/>
         <div className="importbills">
         <div className="header-title">
               <div className="title-tab">

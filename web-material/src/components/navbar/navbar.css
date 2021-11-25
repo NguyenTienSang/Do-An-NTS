@@ -4,16 +4,12 @@
     margin: 0;
     flex-direction: column;
     width: 210px;
-    height: auto;
+    height: 100%;
     background-color: #f3f2f3;
     border-right: 1px solid rgb(138, 138, 138);
 }
 
-.navbar .navigation {
-    width: 100%;
-}
-
-.navbar .navigation .navbar-content .item-narbar {
+.navbar .item-navbar {
     display: flex;
     justify-content: flex-start;
     flex-direction: row;
@@ -23,37 +19,43 @@
     border-bottom: 1px solid rgb(138, 138, 138);
 }
 
-.navbar .navigation .navbar-content .item-narbar a {
+.navbar .item-navbar a {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    width: 100%;
+    width: 210px;
     height: 100%;
     margin: 0px;
     padding-left: 10px;
     color: #000;
 }
 
-.navbar .navigation .navbar-content .item-narbar a svg {
+.navbar .item-navbar a svg {
     margin-left: 0px;
     margin-right: 10px;
 }
 
-.navbar .navigation .navbar-content .item-narbar:hover {
+.navbar .item-navbar:hover {
     background-color: #0198fc;
-    color: #fff !important;
 }
 
-.navbar .navigation .navbar-content .item-narbar:hover > a {
+.navbar .item-navbar.active {
+    background-color: #0198fc;
+}
+
+.navbar .item-navbar.active > a {
     color: #fff;
 }
 
-.navbar .navigation .navbar-content .item-narbar:hover > .sub-menu {
+.navbar .item-navbar:hover > a {
+    color: #fff;
+}
+
+.navbar .item-navbar:hover > .sub-menu {
     display: block;
     color: #333;
 }
-
-.navbar-content .item-narbar .sub-menu {
+.item-navbar .sub-menu {
     display: none;
     max-width: 210px;
     width: 100%;
@@ -61,8 +63,7 @@
     left: 210px;
     /* border: 1px solid #333; */
 }
-
-.navbar-content .item-narbar .sub-menu .sub-menu-item {
+.item-navbar .sub-menu .sub-menu-item {
     display: flex;
     align-items: center;
     height: 35px;
@@ -73,19 +74,15 @@
     border-left: none;
     background-color: #fff;
 }
-
-.navbar-content .item-narbar .sub-menu .sub-menu-item a {
+.item-navbar .sub-menu .sub-menu-item a {
     width: 100%;
 }
-
-.navbar-content .item-narbar .sub-menu .sub-menu-item:hover {
+.item-navbar .sub-menu .sub-menu-item:hover {
     background-color: #0198fc;
 }
-
-.navbar-content .item-narbar .sub-menu .sub-menu-item:hover > a {
+.item-navbar .sub-menu .sub-menu-item:hover > a {
     color: #fff;
 }
-
-.navbar-content .item-narbar .sub-menu .sub-menu-item:first-child {
+.item-navbar .sub-menu .sub-menu-item:first-child {
     border-bottom: none;
 }

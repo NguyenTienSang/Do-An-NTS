@@ -41,10 +41,10 @@ const exportbillCtrl = {
             .json({success: false,message:"Phiếu xuất chưa có vật tư"})
         }
     
-        console.log('tenpx : ',tenpx);
-        console.log('ngay : ',ngay);
-        console.log('manv : ',manv);
-        console.log('kho : ',makho);
+        // console.log('tenpx : ',tenpx);
+        // console.log('ngay : ',ngay);
+        // console.log('manv : ',manv);
+        // console.log('kho : ',makho);
         console.log('ctpx : ',ctpx);
         try {
             const phieuxuat = await PhieuXuat.findOne({ tenpx })
@@ -57,10 +57,24 @@ const exportbillCtrl = {
             }
             const newPhieuXuat = new PhieuXuat({tenpx,ngay,manv,makho,ctpx})
             await newPhieuXuat.save();
+            
+            ctpx?.map(async ctpxitem => {
+                // console.log('Tên vt : ',ctpxitem.mavt);
+                // console.log('Số lượng vt : ',ctpxitem.soluong);
+
+                const soluongvt = await VatTu.findById((ctpxitem.mavt).toString(),{"soluong": 1,"_id": 0})
+                // console.log("soluongvt : ",soluongvt.soluong);
+                await VatTu.findOneAndUpdate({ _id: (ctpxitem.mavt).toString() },{soluong: soluongvt.soluong - ctpxitem.soluong}, {new:true});
+            })
+
+            
+
+
             res.json({
                 success: true,
-                message: 'Đã thêm thành công',
-                phieuxuat: newPhieuXuat
+                message: 'Đã thêm thành công'
+                // ,
+                // phieuxuat: newPhieuXuat
             })
     
         } catch (error) {

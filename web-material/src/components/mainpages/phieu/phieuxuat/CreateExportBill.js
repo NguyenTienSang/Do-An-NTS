@@ -21,6 +21,7 @@ function CreateExportBill() {
   const state = useContext(GlobalState);
   const [token] = state.token;
   const [materials] = state.materialAPI.materials;
+  const [materialsfilter,setMaterialsFilter] = useState(materials);
   const [warehouses] = state.warehouseAPI.warehouses;
   const [exportbills] = state.exportbillAPI.exportbills;
   const [detailexportbill, setDetailExportBill] = useState([]);
@@ -33,6 +34,9 @@ function CreateExportBill() {
   const [hdn, setHDN] = useState(new Date("10-20-2021"));
   const [searchTerm,setSearchTerm] = useState("");
   const [onSearch, setOnSearch] = useState(false);
+  const [madailyfilter,setMaDaiLyFilter] = useState("allstores");
+  const [makhofilter,setMaKhoFilter] = useState("allwarehouses");
+  
   const [exportbill, setExportBill] = useState({
     tenpx: "",
     ngay: "",
@@ -40,6 +44,19 @@ function CreateExportBill() {
     makho: ""
   });
 
+
+  useEffect(async() => {
+    console.log('load lại dữ liệu materialsfilter');
+    const res = await axios.post('/api/thongke/vattu',
+          //  [JSON.parse(localStorage.getItem('inforuser')).madaily._id,exportbill.makho]
+          {madailyfilter: JSON.parse(localStorage.getItem('inforuser')).madaily._id,makhofilter: exportbill.makho}
+    );
+    console.log('Dữ liệu thống kê : ',res.data)
+    // console.log('madailyfilter : ',madailyfilter);
+    // console.log('makhofilter : ',makhofilter);
+
+    setMaterialsFilter(res.data);
+},[exportbill.makho])
 
   
 
@@ -108,9 +125,9 @@ function CreateExportBill() {
  
   return (
     <div className="layout">
-    <div className="layout-first"><NavBar/></div> 
+    <div className="layout-first"><Header/></div> 
     <div className="layout-second">
-      <Header/>
+    <NavBar/>
       <div className="create-exportbill">
         <div className="row search-material">
           <label>Tìm vật tư</label>
@@ -136,7 +153,7 @@ function CreateExportBill() {
             <p>Giá nhập</p>
           </div>
         {
-          materials?.filter(material=>{
+          materialsfilter?.filter(material=>{
               if(searchTerm == "") 
               {
                   return null;
@@ -286,38 +303,73 @@ function CreateExportBill() {
       }  
 
      </div>
-     <div className="button-option">
-     <button onClick={async() =>
+     <div className="button-option-exportbill">
+     <button className={exportbill.makho == "" ? "deactive" : null} onClick={async() =>
             {
+
+            // const test = JSON.parse(localStorage.getItem('inforuser'));
+            //    console.log('test : ',test.madaily._id);
+            //    console.log('mã kho : ',exportbill.makho)
               if(detailexportbill.length==0)
               {
                   alert('Phiếu chưa có vật tư, vui lòng thêm  vật tư vào phiếu')
               }
               else
               {
-                exportbill.ngay = exportbill.ngay.slice(0,3)+(parseInt(exportbill.ngay.slice(3,5))+1)+exportbill.ngay.slice(5,10);
-                console.log('exportbill nè : ',exportbill)
-                console.log('detailexportbill nè : ',detailexportbill)
-              
-                  try {
-                    const res = await axios.post(
-                             "/api/phieuxuat",
-                             {...exportbill,ctpx: detailexportbill.map(item => ({
-                              mavt : item._id, giaxuat : item.giaxuat,soluong : item.quantity
-                            })) },
-                             {
-                               headers: { Authorization: token },
-                             }
-                           );
-                           console.log('exportbill nè2 : ',exportbill)
-                           alert(res.data.message);
-                           setCallback(!callback);
-                   } catch (err) {
-                       alert(err.response.data.message);
-                   }
+                //Kiểm tra vượt số lượng tồn trong kho
+                  var checkoverstorage = false;
+                  var materialoverstorage = {
+                    tenvt: ""
+                  };
+                  detailexportbill?.map(ctpx => {
+                    if(!checkoverstorage)
+                    {
+                      materialoverstorage = materialsfilter.find(vt => {
+                      if(ctpx._id === vt._id)
+                      {
+                        if(ctpx.quantity > vt.soluong)
+                        {
+                              checkoverstorage = true;
+                        }
+                        return ctpx.quantity > vt.soluong;
+                      }
+                    })
+                  }  
+                  })
+               
+                if(!checkoverstorage)//Nếu đủ số lượng tồn
+                {
+                  exportbill.ngay = exportbill.ngay.slice(0,3)+(parseInt(exportbill.ngay.slice(3,5))+1)+exportbill.ngay.slice(5,10);
+                  console.log('exportbill nè : ',exportbill)
+                  console.log('detailexportbill nè : ',detailexportbill)
+                  // setCallback(!callback);
+                    try {
+                      const res = await axios.post(
+                               "/api/phieuxuat",
+                               {...exportbill,ctpx: detailexportbill.map(item => ({
+                                mavt : item._id, giaxuat : item.giaxuat,soluong : item.quantity
+                              })) },
+                               {
+                                 headers: { Authorization: token },
+                               }
+                             );
+                             console.log('exportbill nè2 : ',exportbill)
+                             alert(res.data.message);
+                             setCallback(!callback);
+                     } catch (err) {
+                         alert(err.response.data.message);
+                     }
+                }  
+                else{
+                  console.log('Số lượng tồn không đủ : ',materialoverstorage);
+                  // materialoverstorage = materialoverstorage.tenvt;
+                  alert(materialoverstorage.tenvt+' Không đủ số lượng tồn');
+                  // console.log()
+                }
               }
             }}>Lập Phiếu</button>
-      <button>Hủy</button>
+      {/* <button>Hủy</button> */}
+      <Link to="/phieuxuat"><button>Hủy</button></Link>
      </div>
       </div>
       </div>

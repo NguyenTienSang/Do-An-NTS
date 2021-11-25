@@ -31,7 +31,7 @@ function Stores() {
   const [stores] = state.storeAPI.stores;
   const [onEdit, setOnEdit] = useState(false);
   const [callback, setCallback] = state.storeAPI.callback;
-
+ 
 
   useEffect(() => {
     if (param.id) {
@@ -205,9 +205,9 @@ function Stores() {
   return (
     <>
   <div className="layout">
-    <div className="layout-first"><NavBar/></div>
+    <div className="layout-first"><Header/></div>
     <div className="layout-second">
-      <Header/>
+      <NavBar/>
       <div className="stores">
       <div className="header-title">
               <div className="title-tab">

@@ -160,7 +160,7 @@
     cursor: pointer;
 }
 
-.button-option {
+.button-option-exportbill {
     display: flex;
     justify-content: center;
     margin-top: 20px;
@@ -168,7 +168,7 @@
     width: 100%;
 }
 
-.button-option button {
+.button-option-exportbill button {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -179,10 +179,16 @@
     background-color: rgb(26, 148, 255);
     color: #fff;
     margin-right: 0px;
-    /* margin-left: 0px; */
 }
 
-.button-option a {
+button.deactive {
+    background-color: rgb(143, 155, 178);
+    border: none;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.button-option-exportbill a {
     color: #fff;
     width: 100%;
 }

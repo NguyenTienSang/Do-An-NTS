@@ -9,10 +9,10 @@ import Header from "../../header/Header";
 function Statistic() {
   return (
     <div className="layout">
-             <div className="layout-first"><NavBar/></div>
+             <div className="layout-first"><Header/></div>
              <div className="layout-second">
-               <Header/>
-              <div className="statistic-container">
+             <NavBar/>
+              <div className="statistic">
                 <ul>
                   <li className="statistic-item">
                           <Link to={'/thongkephieunhap'}><p>Thống kê <br/> nhân viên</p> </Link>

@@ -21,6 +21,7 @@ function CreateImportBill() {
   const state = useContext(GlobalState);
   const [token] = state.token;
   const [materials] = state.materialAPI.materials;
+  const [materialsfilter,setMaterialsFilter] = useState(materials);
   const [warehouses] = state.warehouseAPI.warehouses;
   const [importbills] = state.importbillAPI.importbills;
   const [detailimportbill, setDetailImportBill] = useState([]);
@@ -39,6 +40,19 @@ function CreateImportBill() {
     manv: "",
     makho: ""
   });
+
+  useEffect(async() => {
+    console.log('load lại dữ liệu materialsfilter');
+    const res = await axios.post('/api/thongke/timkiemvattuphieunhap',
+          //  [JSON.parse(localStorage.getItem('inforuser')).madaily._id,exportbill.makho]
+          {makhofilter: importbill.makho}
+    );
+    console.log('Dữ liệu thống kê : ',res.data)
+    // console.log('madailyfilter : ',madailyfilter);
+    // console.log('makhofilter : ',makhofilter);
+
+    setMaterialsFilter(res.data);
+},[importbill.makho])
 
   useEffect(() => {
     setImportBill({
@@ -105,9 +119,9 @@ function CreateImportBill() {
  
   return (
     <div className="layout">
-    <div className="layout-first"><NavBar/></div> 
+    <div className="layout-first"><Header/></div> 
     <div className="layout-second">
-      <Header/>
+    <NavBar/>
       <div className="create-importbill">
         <div className="row search-material">
           <label>Tìm vật tư</label>
@@ -118,6 +132,7 @@ function CreateImportBill() {
                   id="inputsearch"
                   required
                   autocomplete="off"
+                  disabled={importbill.makho== "" ? true : false}
                   onChange={(event)=> {
                     setSearchTerm(event.target.value);
                     document.getElementById("list-material").style.display = "block";
@@ -132,7 +147,7 @@ function CreateImportBill() {
             <p>Giá nhập</p>
           </div>
         {
-          materials?.filter(material=>{
+          materialsfilter?.filter(material=>{
               if(searchTerm == "") 
               {
                   return null;
@@ -281,8 +296,10 @@ function CreateImportBill() {
       }  
 
      </div>
-     <div className="button-option">
-     <button onClick={async() =>
+     <div className="button-option-importbill">
+     <button 
+     className={importbill.makho == "" ? "deactive" : null}
+     onClick={async() =>
             {
               if(detailimportbill.length==0)
               {

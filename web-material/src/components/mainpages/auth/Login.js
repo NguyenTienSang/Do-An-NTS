@@ -24,7 +24,7 @@ const Login = () => {
             // const res = await axios.get('/api/employee');
             await axios.post("/api/auth/login", { ...user });
             localStorage.setItem('firstLogin', true);
-            window.location.href = "/";
+            window.location.href = "/trangchu";
        
         } catch (error) {
             alert(error.response.data.msg);

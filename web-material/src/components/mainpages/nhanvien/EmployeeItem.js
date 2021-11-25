@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useContext } from "react";
 import { Link } from 'react-router-dom';
 import {RiDeleteBin6Line} from 'react-icons/ri';
 import {FaUserEdit} from 'react-icons/fa';
 import {GrView} from 'react-icons/gr';
+import { GlobalState } from '../../../GlobalState';
+
 
 function EmployeeItem({employee,stt,EditEmployee,DeleteEmployee}) {
-    console.log(employee);
+  const state = useContext(GlobalState);
+  const [isAdmin] = state.userAPI.isAdmin;
+
     return (
         <div className="employee_item">
         <div style={{flex:0.5}} className="employee_item_element">
@@ -28,7 +32,9 @@ function EmployeeItem({employee,stt,EditEmployee,DeleteEmployee}) {
           <div className="employee_item_element">
           {employee.tinhtrang}
           </div>
-          <div style={{flex:0.6}} className="employee_item_element">
+          {
+            isAdmin ? <>
+              <div style={{flex:0.6}} className="employee_item_element">
             <button style={{fontSize:30}} style={{fontSize:30}} onClick={() => EditEmployee(employee)}><FaUserEdit/></button>
           </div>
           <div style={{flex:0.6}} className="employee_item_element">
@@ -37,6 +43,10 @@ function EmployeeItem({employee,stt,EditEmployee,DeleteEmployee}) {
           <div style={{flex:0.6}} className="employee_item_element">
           <button><Link to={`/detail_employee/${employee._id}`}><GrView/></Link></button>
           </div>
+            </>
+          : null
+          }
+         
       </div>
     )
 }

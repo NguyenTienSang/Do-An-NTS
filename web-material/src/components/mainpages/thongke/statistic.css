@@ -1,9 +1,16 @@
-.statistic-container ul {
-    display: flex;
-    margin: 100px 0px;
+.statistic {
+    display: block;
+    justify-items: center;
+    width: 100%;
+    /* margin: 20px; */
 }
 
-.statistic-container ul .statistic-item {
+.statistic ul {
+    display: flex;
+    margin-top: 75px;
+}
+
+.statistic ul .statistic-item {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,7 +21,7 @@
     background-color: rgb(26, 148, 255);
 }
 
-.statistic-container ul .statistic-item a {
+.statistic ul .statistic-item a {
     color: #fff;
 }
 
@@ -26,5 +33,3 @@
 /*--------------------- StatisticMaterial ---------------------*/
 @import url("./statisticmaterial.css");
 
-/*--------------------- StatisticImportBill ---------------------*/
-@import url("./statisticimportbill.css");

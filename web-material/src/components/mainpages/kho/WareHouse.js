@@ -33,6 +33,7 @@ function WareHouses() {
   const [warehouses] = state.warehouseAPI.warehouses;
   const [callback, setCallback] = state.warehouseAPI.callback;
   
+  const inforuser = JSON.parse(localStorage.getItem('inforuser'));
 
   useEffect(() => {
     if (param.id) {
@@ -216,9 +217,9 @@ function WareHouses() {
   return (
     <>
     <div className="layout">
-    <div className="layout-first"><NavBar/></div>
+    <div className="layout-first"><Header/></div>
     <div className="layout-second">
-      <Header/>
+    <NavBar/>
         <div className="warehouses">
 
         <div className="header-title">
@@ -226,7 +227,9 @@ function WareHouses() {
                 <h2 style={{display:'flex',alignItems:'center'}}><GiExplosiveMaterials style={{marginRight:'5px'}}/>Kho</h2>
               </div>
            
-              <button className='add-item' onClick={AddWareHouse}><BiBookAdd  style={{marginRight:'5px',marginTop:'5px'}}/>Thêm Kho</button>
+              {
+                isAdmin ? <button className='add-item' onClick={AddWareHouse}><BiBookAdd  style={{marginRight:'5px',marginTop:'5px'}}/>Thêm Kho</button> : null
+              }
             
             </div>
 
@@ -237,20 +240,43 @@ function WareHouses() {
               <p>Đại lý</p>
               <p>Địa chỉ</p>
               <p>SĐT</p>
-              <p style={{flex:0.6}}>Cập nhật</p>
-              <p style={{flex:0.6}}>Xóa</p>
+              {
+                isAdmin ? 
+                <>
+                    <p style={{flex:0.6}}>Cập nhật</p>
+                    <p style={{flex:0.6}}>Xóa</p>
+                </>
+                : null
+              }
               <p style={{flex:0.6}}>Xem kho</p>
             </div>
             {warehouses?.map((warehouse,index) => {
-                return( 
-                  <WareHouseItem
-                    key={warehouse._id}
-                    warehouse={warehouse}
-                    stt={index}
-                    EditWareHouse={EditWareHouse}
-                    DeleteWareHouse={DeleteWareHouse}
-                  />
-                )
+                 if(isAdmin)
+                 {
+                  return( 
+                    <WareHouseItem
+                      key={warehouse._id}
+                      warehouse={warehouse}
+                      stt={index}
+                      EditWareHouse={EditWareHouse}
+                      DeleteWareHouse={DeleteWareHouse}
+                    />
+                  )
+                  }
+                  else {
+                    if(warehouse.madaily._id.toString() === inforuser.madaily._id.toString())
+                    {
+                      return( 
+                        <WareHouseItem
+                          key={warehouse._id}
+                          warehouse={warehouse}
+                          stt={index}
+                          EditWareHouse={EditWareHouse}
+                          DeleteWareHouse={DeleteWareHouse}
+                        />
+                      )
+                    }
+                  }
             })}
         </div>
 

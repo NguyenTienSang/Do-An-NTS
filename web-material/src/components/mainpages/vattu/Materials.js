@@ -218,9 +218,10 @@ function Materials() {
   return (
     <>
     <div className="layout">
-    <div className="layout-first"><NavBar/></div>
+    <div className="layout-first"><Header/></div>
       <div className="layout-second">
-        <Header/>
+        
+        <NavBar/>
         <div className="materials">
         <div className="row search-material">
           <label>Tìm vật tư</label>
@@ -242,7 +243,10 @@ function Materials() {
                 <h2 style={{display:'flex',alignItems:'center'}}><GiExplosiveMaterials style={{marginRight:'5px'}}/>Vật Tư</h2>
               </div>
            
-              <button className='add-item' onClick={AddMaterial}><BiBookAdd  style={{marginRight:'5px',marginTop:'5px'}}/>Thêm Vật Tư</button>
+           {
+             isAdmin ? <button className='add-item' onClick={AddMaterial}><BiBookAdd  style={{marginRight:'5px',marginTop:'5px'}}/>Thêm Vật Tư</button> : null
+           }
+              
            
               
             </div>
@@ -254,8 +258,14 @@ function Materials() {
               <p>Giá nhập</p>
               <p>Giá xuất</p>
               <p style={{flex:0.6}}>Trạng thái</p>
-              <p style={{flex:0.6}}>Cập nhật</p>
-              <p style={{flex:0.6}}>Xóa</p>
+            {
+              isAdmin ? 
+              <>
+                <p style={{flex:0.6}}>Cập nhật</p>
+                <p style={{flex:0.6}}>Xóa</p>
+              </> 
+              : null
+            }
             </div>
             {
              materials?.filter(material=>{

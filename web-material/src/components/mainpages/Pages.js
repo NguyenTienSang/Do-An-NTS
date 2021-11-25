@@ -38,15 +38,15 @@ function Pages() {
     const [isAdmin] = state.userAPI.isAdmin;
     return (
         <Switch>
-            <Route path="/" exact component={isLogged ?  HomePage : Login } />
+            <Route path="/trangchu" exact component={isLogged ?  HomePage : Login } />
               
-            <Route path="/nhanvien" exact component={isAdmin ?  Employees : NotFound}/>
+            <Route path="/nhanvien" exact component={Employees}/>
             <Route path="/add_employee" exact component={AddEmployee}/>
-            <Route path="/detail_employee/:id" exact component={DetailEmployee} />
+            <Route path="/detail_employee/:_id" exact component={DetailEmployee} />
             <Route path="/add_material" exact component={AddMaterial} />
             <Route path="/vattu" exact component={Materials} />
             <Route path="/daily" exact component={isAdmin ?  Stores : NotFound} />
-            <Route path="/kho" exact component={isAdmin ?  WareHouses : NotFound} />
+            <Route path="/kho" exact component={WareHouses} />
             <Route path="/phieunhap" exact component={ImportBill} />
             <Route path="/ctphieunhap" exact component={DetailImportBill} />
             <Route path="/lapphieunhap" exact component={CreateImportBill} />

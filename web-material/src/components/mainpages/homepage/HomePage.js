@@ -6,9 +6,9 @@ function HomePage() {
     return (
          <div className="layout">
                 
-                  <div className="layout-first"><NavBar/></div>
+                  <div className="layout-first"><Header/></div>
                   <div className="layout-second">
-                    <Header/>
+                  <NavBar/>
                     <h1>HomePage</h1>
                   </div>
         </div>

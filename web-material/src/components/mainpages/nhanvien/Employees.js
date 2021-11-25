@@ -11,6 +11,8 @@ import {BsFillPersonLinesFill} from 'react-icons/bs';
 import {BiBookAdd} from 'react-icons/bi';
 
 
+
+
 const initialEmployee = {
   hoten:"",
   madaily:"",
@@ -29,7 +31,6 @@ function Employees() {
   
   const [images, setImages] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const [isAdmin] = state.userAPI.isAdmin;
   const [token] = state.token;
 
@@ -42,6 +43,8 @@ function Employees() {
   const [onEdit, setOnEdit] = useState(false);
   const [callback, setCallback] = state.employeeAPI.callback;
   
+  const inforuser = JSON.parse(localStorage.getItem('inforuser'));
+
   
   useEffect(() => {
     console.log('param.id : ');
@@ -223,9 +226,9 @@ function Employees() {
   return (
     <>
     <div className="layout">
-    <div className="layout-first"><NavBar/></div>
+    <div className="layout-first"><Header/></div>
     <div className="layout-second">
-      <Header/>
+    <NavBar/>
       <div className="employees">
       <div className="row search-employee">
           <label>Tìm nhân viên</label>
@@ -242,15 +245,17 @@ function Employees() {
                   }}
                 />
         </div>
-      <div className="header-title">
+        <div className="header-title">
               <div className="title-tab">
                 <h2 style={{display:'flex',alignItems:'center'}}><BsFillPersonLinesFill style={{marginRight:'5px'}}/>Nhân Viên</h2>
               </div>
-           
-              <button className='add-item' onClick={AddEmployee}><BiBookAdd  style={{marginRight:'5px',marginTop:'5px'}}/>Thêm Nhân Viên</button>
+           {
+             isAdmin ?  <button className='add-item' onClick={AddEmployee}><BiBookAdd  style={{marginRight:'5px',marginTop:'5px'}}/>Thêm Nhân Viên</button> : null
+           }
+             
            
               
-            </div>
+        </div>
           <div className="header_list">
             <p style={{flex:0.5}}>STT</p>
             <p>Họ tên</p>
@@ -258,9 +263,16 @@ function Employees() {
             <p>Đại lý</p>
             <p style={{flex:0.5}}>Quyền</p>
             <p>Tình trạng</p>
-            <p style={{flex:0.6}}>Cập nhật</p>
-            <p style={{flex:0.6}}>Xóa</p>
-            <p style={{flex:0.6}}>Chi tiết</p>
+            {
+              isAdmin ?
+              <>
+              <p style={{flex:0.6}}>Cập nhật</p>
+              <p style={{flex:0.6}}>Xóa</p>
+              <p style={{flex:0.6}}>Chi tiết</p>
+              </>
+              : null
+            }
+          
           </div>
           {employees.filter(employee=>{
               if(searchTerm === "") 
@@ -273,15 +285,34 @@ function Employees() {
               }
           }).map((employee,index) => {
             console.log(employee);
-              return( 
-                <EmployeeItem
-                  key={employee._id}
-                  employee={employee}
-                  stt={index}
-                  EditEmployee={EditEmployee}
-                  DeleteEmployee={DeleteEmployee}
-                />
-              )
+
+
+              if(isAdmin)
+              {
+                return( 
+                  <EmployeeItem
+                    key={employee._id}
+                    employee={employee}
+                    stt={index}
+                    EditEmployee={EditEmployee}
+                    DeleteEmployee={DeleteEmployee}
+                  />
+                )
+              }
+              else {
+                if(employee.madaily._id.toString() === inforuser.madaily._id.toString())
+                {
+                  return( 
+                    <EmployeeItem
+                      key={employee._id}
+                      employee={employee}
+                      stt={index}
+                      EditEmployee={EditEmployee}
+                      DeleteEmployee={DeleteEmployee}
+                    />
+                  )
+                }
+              }
           })}
       </div>
      

@@ -1,0 +1,40 @@
+.layout .layout-second .title-statistic-material {
+    display: flex;
+    justify-content: space-around;
+    font-size: 32px;
+    font-weight: 400;
+}
+
+.container-filter {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.container-filter .search-material,
+.filter-select {
+    margin: 0px;
+}
+
+.container-filter .search-material input,
+.filter-select select {
+    width: 200px;
+    height: 30px;
+    border: 1px solid #999;
+    border-radius: 8px;
+}
+
+input:focus,
+.filter-select select:focus {
+    outline: none;
+}
+
+.container-filter .search-material,
+.filter-select select option {
+    height: 30px;
+}
+
+.container-filter .search-material,
+.filter-select .select-store {
+    margin-right: 10px;
+}

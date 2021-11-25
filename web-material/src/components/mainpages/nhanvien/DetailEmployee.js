@@ -13,12 +13,12 @@ function DetailEmployee() {
   
     useEffect(() => {
       console.log("re render");
-      if (params.id) {
+      if (params._id) {
         employees.forEach((employee) => {
-          if (employee._id === params.id) setDetailEmployee(employee);
+          if (employee._id === params._id) setDetailEmployee(employee);
         });
       }
-    }, [params.id, employees]);
+    }, [params._id, employees]);
 
     if (detailEmployee.length === 0) return null;
     console.log('Thông tin chi tiết nhân viên',detailEmployee);
@@ -26,9 +26,9 @@ function DetailEmployee() {
         <>
             <div>
                 <div className="layout">
-                    <div className="layout-first"><NavBar/></div>
+                    <div className="layout-first"><Header/></div>
                     <div className="layout-second">
-                        <Header/>
+                    <NavBar/>
                         <div className="infor-detail">
                         <p>Họ tên: {detailEmployee.hoten}</p>
                         <p>Đại lý: {detailEmployee.madaily.tendl}</p>

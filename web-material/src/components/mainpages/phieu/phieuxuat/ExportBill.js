@@ -21,9 +21,9 @@ function ExporttBill() {
   }
   return (
     <div className="layout">
-    <div className="layout-first"><NavBar/></div>
+    <div className="layout-first"><Header/></div>
     <div className="layout-second">
-      <Header/>
+    <NavBar/>
         <div className="exportbills">
         <div className="header-title">
               <div className="title-tab">

@@ -45,12 +45,14 @@ p {
 .layout {
   width: 100%;
   display: flex;
+  flex-direction: column;
 }
 
 .layout .layout-first {
-  width: 250px;
+  width: 100%;
 }
 .layout .layout-second {
+  display: flex;
   margin: 0;
   width: 100%;
 }

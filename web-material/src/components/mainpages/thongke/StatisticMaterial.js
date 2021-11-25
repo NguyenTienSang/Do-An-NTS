@@ -60,12 +60,12 @@ function StatisticMaterial() {
 
   return (
     <div className="layout">
-             <div className="layout-first"><NavBar/></div>
+             <div className="layout-first"><Header/></div>
              <div className="layout-second">
-               <Header/>
-               <p className="title-statistic-material">Thống kê vật tư</p>
+             <NavBar/>
+               
           <div className="materials">
-
+          <p className="title-statistic-material">Thống kê vật tư</p>
         <div className="container-filter">
           <div className="row search-material">
           <label>Tìm vật tư : </label>
