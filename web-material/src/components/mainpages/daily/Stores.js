@@ -65,7 +65,7 @@ function Stores() {
 
       let formData = new FormData();
       formData.append("file", file);
-
+      console.log('data file : ',file)
       setLoading(true);
       const res = await axios.post("/api/upload", formData, {
         headers: {
@@ -133,7 +133,7 @@ function Stores() {
   const AddToListStore = async () => {
         // alert('Thêm thành công : '+material.tenvt);
         console.log('Dữ liệu thêm mới : ',{...store, images });
-      
+        console.log('test token : ',token);
         //Thêm mới
         if(!onEdit)
         {
@@ -187,7 +187,7 @@ function Stores() {
       );
       //Xóa vật tư trong db
       const deletestore = await axios.delete(
-               `/api/daily//${id}`,
+               `/api/daily/${id}`,
                {
                  headers: { Authorization: token },
                }

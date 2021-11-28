@@ -122,6 +122,7 @@ const authCtrl = {
   login: async (req, res) => {
     try {
       const { username, password } = req.body;
+      console.log('req.body : ', req.body);
       if (!username) return res.status(400).json({ msg: "Username không được trống" });
 
       if (!password) return res.status(400).json({ msg: "Password không được trống" });
@@ -145,8 +146,9 @@ const authCtrl = {
         httpOnly: true,
         path: '/api/auth/refresh_token'
     })
+    console.log('user : ',user);
       // console.log('Đã lưu cookie',req.cookies.refreshtoken);
-      res.json({accesstoken})
+      res.json({accesstoken,user})
       // console.log(accesstoken);
     } catch (err) {
       return res.status(500).json({ msg: err.message });

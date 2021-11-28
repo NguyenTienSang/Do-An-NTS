@@ -410,13 +410,14 @@ function Employees() {
             <div className="row">
               <label htmlFor="price">Số điện thoại</label>
               <input
-                type="number"
+                // type="number"
                 name="sodienthoai"
-                placeholder="Nhập số điện thoại"
+                placeholder="Nhập số điện thoại1"
                 id="sodienthoai"
                 required
                 value={employee.sodienthoai}
-                min="0"
+                // min="0"
+                maxlength="10"
                 onChange={handleChangeInput}
               />
             </div>

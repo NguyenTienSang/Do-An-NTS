@@ -56,6 +56,7 @@ router.post("/upload",(req, res) => {
 router.post("/destroy", (req, res) => {
   try {
     const { public_id } = req.body;
+    console.log('public_id : ',req.body);
     if (!public_id) return res.status(400).json({ msg: "Bạn chưa chọn ảnh" });
 
     cloudinary.v2.uploader.destroy(public_id, async (err, result) => {

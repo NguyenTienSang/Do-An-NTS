@@ -5,7 +5,7 @@ import { Switch, Route } from "react-router-dom";
 import { GlobalState } from "../../GlobalState";
 import HomePage from "./homepage/HomePage";
 import Employees from "./nhanvien/Employees";
-import AddEmployee from "./nhanvien/AddEmployee";
+// import AddEmployee from "./nhanvien/AddEmployee";
 
 import Materials from "./vattu/Materials";
 // import AddMaterial from "./vattu/AddMaterial";
@@ -41,7 +41,7 @@ function Pages() {
             <Route path="/trangchu" exact component={isLogged ?  HomePage : Login } />
               
             <Route path="/nhanvien" exact component={Employees}/>
-            <Route path="/add_employee" exact component={AddEmployee}/>
+            {/* <Route path="/add_employee" exact component={AddEmployee}/> */}
             <Route path="/detail_employee/:_id" exact component={DetailEmployee} />
             <Route path="/add_material" exact component={AddMaterial} />
             <Route path="/vattu" exact component={Materials} />

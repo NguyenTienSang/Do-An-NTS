@@ -31,6 +31,7 @@ const storeCtrl = {
   
         try {
             const {tendl,diachi,sodienthoai,images} = req.body;
+            console.log('data input : ',req.body);
             if(!tendl)
             {
                 return res.status(400)
@@ -59,11 +60,13 @@ const storeCtrl = {
                 .json({success: false,message:"Ảnh không được trống"})
             }
             
+            console.log('test');
   
             const daily = await DaiLy.findOne({ tendl })
     
             if (daily)
             {
+                console.log("Đại lý đã tồn tại");
                 return res
                 .status(400)
                 .json({message: 'Tên đại lý đã tồn tại' })
@@ -77,13 +80,14 @@ const storeCtrl = {
             })
     
         } catch (err) {
-            console.log(err)
+            // console.log(err)
             return res.status(500).json({ message: err.message });
         }
   
       },
 
     deleteStore: async (req, res)  => {
+        console.log('req.params.id : ',req.params.id)
         try {
             const ktnhanvien = await NhanVien.findOne({madaily: req.params.id})
            
@@ -121,7 +125,7 @@ const storeCtrl = {
     updateStore: async (req, res)  => {
         try {
 
-            const {tendl,diachi,sodienthoai,images} = req.body;
+            const {tendl,diachi,sodienthoai,images,tendlcheck} = req.body;
     
             if(!tendl)
             {
@@ -146,7 +150,9 @@ const storeCtrl = {
         
             const daily = await DaiLy.findOne({ tendl })
     
-            if (daily)
+            console.log('đại lý : ',daily);
+
+            if (daily !== null && daily.tendl != tendlcheck)
             {
                 return res
                 .status(400)
@@ -165,7 +171,7 @@ const storeCtrl = {
         res.json({success: true, message: "Cập nhật thành công",daily: updatedDaiLy})
         } catch (error) {
             console.log(error)
-		res.status(500).json({message: 'Internal server error' })
+		res.status(500).json({message: 'Internal server error 1' })
         }
     },
     
