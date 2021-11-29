@@ -130,7 +130,7 @@ export default function DanhSachDaiLy({navigation,route}){
                                                     }
                                                     else if(route.params.page == 'EditEmployee')
                                                     {
-                                                        navigation.navigate('EditEmployee',{madl: item._id})
+                                                        navigation.navigate('EditEmployee',{daily: item})
                                                     }
                                                     else if(route.params.page == 'ThongKeTheoNamTungDaiLy')
                                                     {

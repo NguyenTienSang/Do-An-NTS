@@ -1,11 +1,11 @@
 import React, { createContext, useState, useEffect} from "react";
 
-// import UserAPI from "./api/UserAPI";
+import UserAPI from "./api/UserAPI";
 // import MaterialAPI from './api/MaterialAPI';
 import EmployeeAPI from './api/EmployeeAPI';
 import StoresAPI from "./api/StoreAPI";
-// import WareHouseAPI from "./api/WareHouseAPI";
-// import ImportBillAPI from "./api/ImportBillAPI"
+import WareHouseAPI from "./api/WareHouseAPI";
+import ImportBillAPI from "./api/ImportBillAPI"
 // import ExportBillAPI from "./api/ExportBillAPI"
 // import StatisticAPI from "./api/StatisticAPI"
 
@@ -41,11 +41,11 @@ export const DataProvider = ({ children }) => {
     // materialAPI: MaterialAPI(),
     employeeAPI: EmployeeAPI(),
     storeAPI: StoresAPI(),
-    // warehouseAPI: WareHouseAPI(),
-    // importbillAPI: ImportBillAPI(),
+    warehouseAPI: WareHouseAPI(),
+    importbillAPI: ImportBillAPI(),
     // exportbillAPI: ExportBillAPI(),
     // statisticAPI: StatisticAPI(),
-    // userAPI: UserAPI(token)
+    userAPI: UserAPI(token)
   };
 
   return <GlobalState.Provider value={state}>{children}</GlobalState.Provider>;

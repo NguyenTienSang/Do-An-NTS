@@ -18,6 +18,7 @@ import {Button} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {launchImageLibrary} from 'react-native-image-picker';
 import { APIDaiLy } from '../api/API';
+import { APIUpload } from "../api/API";
 import Header from '../components/Header';
 
 export default function AddStore({navigation}){

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useContext,useState, useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -20,181 +20,252 @@ import { DSPhieuNhap } from '../global/Data';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '../components/Header';
 import { APIPN } from '../api/API';
+import PhieuNhapItem from './PhieuNhapItem';
 import * as Animatable from 'react-native-animatable';
+import { GlobalState } from './../GlobalState';
 const SCREEN_WIDTH = Dimensions.get('window').width;  
 
 export default function DanhSachPhieuNhap({navigation}){
 
 
+    const state = useContext(GlobalState) 
+    const [importbills] = state.importbillAPI.importbills;
 
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState();
     const [search,setSearch] = useState('');
     const [textInputFocussed, setTeInputFocussed] = useState(false);
 
-        const Infor = async ()=>{
-        const token = await AsyncStorage.getItem("token");
-        await fetch(`${APIPN}`,{
-        headers:new Headers({
-          Authorization:"Bearer "+token
-        })
-        }).then(res=>res.json())
-        .then(pn=>{
-          AsyncStorage.getItem('nhanvien').then((nhanvien)=>{
-             const thongtinnv = JSON.parse(nhanvien);
-            
-              if(thongtinnv.role == 'admin')
-                {
-                  //  navigation.navigate("DanhSachPhieuNhap")
-                   setData(pn.phieunhap);
-                }
-                else if(thongtinnv.role == 'user')
-                {
-                  var datapn = [];
-                  for(var i = 0 ;i<pn.phieunhap.length; i++)
-                  {
-                    // console.log('px : ',pn.phieunhap[i]);
-                      if(pn.phieunhap[i].manv.madaily == thongtinnv.madaily._id)
-                      {
-                          console.log('push pn');
-                          datapn.push(pn.phieunhap[i]);
-                      }
-                  }
-                
-                    setData(datapn);
-                }
-          })
-            
-        }
-        )
-      }
-
-      useEffect(async ()=>{
-      if(data.length == 0)
-      {
-        await Infor();
-        setLoading("");
-      } 
-      },[loading])
-
-
-      if(data.length > 0)
-      {
-        return(
-          <View style={{flex:1}}>
-                  <Header title="Trở về" type="arrow-left"
-                    navigation={navigation} />
-            <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <Text style={styles.title} >Danh Sách Phiếu Nhập</Text>
-            <View style={styles.optionsSelect}>
-                    <Button 
-                    title="Thêm"
-                     buttonStyle={styles.buttonOption}
-                     onPress={()=>{
-                        navigation.navigate("LapPhieuNhap")
-                    }}
-                         />
-            </View>
-
-            <View style={styles.TextInput2}>
-                    <TextInput
-                        style={{width: '80%'}}
-                        placeholder="Nhập tên phiếu nhập"
-                        onChangeText={(text) =>  setSearch(text)}
-
-                        onFocus={() => {
-                        setTeInputFocussed(false);
-                        }}
-                        onBlur={() => {
-                        setTeInputFocussed(true);
-                        }}
-                    />
-
-                <Animatable.View
-                    animation={textInputFocussed ? '' : 'fadeInLeft'}
-                    duration={400}>
-                    <Icon
-                    name="search"
-                    iconStyle={{color: "#86939e"}}
-                    type="fontisto"
-                    style={{marginRight: 100}}
-                    onPress={() => console.log('hello')}
-                    />
-                </Animatable.View>
-            </View>
-                 
-                  <View style={{display:'flex',justifyContent:'space-around',alignItems:'center',flexDirection:'row',height:40,borderWidth:1,borderStyle:'solid',borderColor:'#333',paddingLeft:5,paddingRight:5}}>
-                          <Text style={{flex:0.8}}>Tên Phiếu</Text>
-                          <Text style={{flex:1.1,marginLeft:10}}>Ngày Lập</Text>
-                          <Text style={{flex:1.1,marginLeft:15}}>Nhân Viên</Text>
-                          <Text style={{flex:1.1}}>Kho</Text>
-                  </View>       
-                  <ScrollView>
-                     <View style={styles.listPrice}>
-                      {
-                          data.filter(item=>{
-                            if(search == "") 
-                            {
-                                return item;
-                            }
-                            else if(item.tenpn.toLowerCase().includes(search.toLowerCase()))
-                            {
-                                return item;
-                            }
-                        }).map(item=>(
-                              <View key={item._id}>
-                                      <View style={{display:'flex',justifyContent:'space-around',flexDirection:'column',alignItems:'center',height:100,borderLeftWidth:1,borderRightWidth:1,borderBottomWidth:1,borderStyle:'solid',borderColor:'#333',paddingTop:5,paddingBottom:5,paddingLeft:5,paddingRight:5}}>
-                                         <View style={{display:'flex',flexDirection:'row'}}>
-                                            <Text style={{flex:0.8,marginLeft:10}}>{item.tenpn}</Text>
-                                            <Text style={{flex:1.1,marginLeft:-20}}>{(item.ngay).slice(8,10)}-{(item.ngay).slice(5,7)}-{(item.ngay).slice(0,4)}</Text>
-                                            <Text style={{display:'flex',justifyContent:'center',flex:1.1,marginLeft:'auto',marginRight:'auto'}}>{item.manv.hoten}</Text>
-                                            <Text style={{display:'flex',justifyContent:'center',flex:1.1,marginLeft:'auto',marginRight:'auto'}}>{item.makho.tenkho}</Text>
-                                         </View>
-                                         <View>
-                                            <Button  
-                                                  title="Chi Tiết"
-                                                  buttonStyle={[styles.buttonOption]}
-                                                  onPress={()=>{
-                                                      navigation.navigate("ChiTietPhieuNhap",{id:item._id,tenpn:item.tenpn,ngay : item.ngay,username: item.manv.username,hoten : item.manv.hoten})
-                                                  }}
-                                            /> 
-                                         </View>
-                                      </View>
-                              </View>
-                          ))
-                      }
-                  </View>
-                  </ScrollView>
-          
-          </View>
       
-          </View>
-      )
-      }
 
-      if(loading == '')
-      {
-          if(data.length == 0)
-          {
-              return (
-                  <View style={{flex:1}}>
-                     <Header title="Trở về" type="arrow-left" navigation={navigation} />
-                     <Text style={{marginTop:300,marginLeft:'auto',marginRight:'auto',fontSize:20}}>Đại lý này chưa có phiếu nhập</Text>
-                  </View>
-              )
-          }
-      }
-      if(loading === undefined)
-      {
-          if(data.length == 0)
-          {
-              return (
-                  <View>
-                      <Text style={{marginTop:350,marginLeft:'auto',marginRight:'auto'}}>Đang load dữ liệu</Text>
-                  </View>
-              )
-          }
-      }
+      // useEffect(async ()=>{
+      // if(data.length == 0)
+      // {
+      //   await Infor();
+      //   setLoading("");
+      // } 
+      // },[loading])
+
+
+      useEffect(() => {
+   
+      }, [ importbills]);
+
+      return(
+        <View style={{flex:1}}>
+                <Header title="Trở về" type="arrow-left"
+                  navigation={navigation} />
+          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+          <Text style={styles.title} >Danh Sách Phiếu Nhập</Text>
+          <View style={styles.optionsSelect}>
+                  <Button 
+                  title="Thêm"
+                   buttonStyle={styles.buttonOption}
+                   onPress={()=>{
+                      navigation.navigate("LapPhieuNhap")
+                  }}
+                       />
+          </View>
+
+          <View style={styles.TextInput2}>
+                  <TextInput
+                      style={{width: '80%'}}
+                      placeholder="Nhập tên phiếu nhập"
+                      onChangeText={(text) =>  setSearch(text)}
+
+                      onFocus={() => {
+                      setTeInputFocussed(false);
+                      }}
+                      onBlur={() => {
+                      setTeInputFocussed(true);
+                      }}
+                  />
+
+              <Animatable.View
+                  animation={textInputFocussed ? '' : 'fadeInLeft'}
+                  duration={400}>
+                  <Icon
+                  name="search"
+                  iconStyle={{color: "#86939e"}}
+                  type="fontisto"
+                  style={{marginRight: 100}}
+                  onPress={() => console.log('hello')}
+                  />
+              </Animatable.View>
+          </View>
+               
+                {/* <View style={{display:'flex',justifyContent:'space-around',alignItems:'center',flexDirection:'row',height:40,borderWidth:1,borderStyle:'solid',borderColor:'#333',paddingLeft:5,paddingRight:5}}>
+                        <Text style={{flex:0.8}}>Tên Phiếu</Text>
+                        <Text style={{flex:1.1,marginLeft:10}}>Ngày Lập</Text>
+                        <Text style={{flex:1.1,marginLeft:15}}>Nhân Viên</Text>
+                        <Text style={{flex:1.1}}>Kho</Text>
+                </View>        */}
+                <ScrollView>
+                   <View style={styles.listPrice}>
+                    {
+                        importbills?.filter(phieunhap=>{
+                          if(search == "") 
+                          {
+                              return phieunhap;
+                          }
+                          else if(phieunhap.tenpn.toLowerCase().includes(search.toLowerCase()))
+                          {
+                              return phieunhap;
+                          }
+                      })?.map((phieunhap,index)=>(
+                        <PhieuNhapItem
+                        key={phieunhap._id}
+                        phieunhap={phieunhap}
+                        stt={index}
+                        ></PhieuNhapItem>
+                            // <View key={item._id}>
+                            //         <View style={{display:'flex',justifyContent:'space-around',flexDirection:'column',alignItems:'center',height:100,borderLeftWidth:1,borderRightWidth:1,borderBottomWidth:1,borderStyle:'solid',borderColor:'#333',paddingTop:5,paddingBottom:5,paddingLeft:5,paddingRight:5}}>
+                            //            <View style={{display:'flex',flexDirection:'row'}}>
+                            //               <Text style={{flex:0.8,marginLeft:10}}>{item.tenpn}</Text>
+                            //               <Text style={{flex:1.1,marginLeft:-20}}>{(item.ngay).slice(8,10)}-{(item.ngay).slice(5,7)}-{(item.ngay).slice(0,4)}</Text>
+                            //               <Text style={{display:'flex',justifyContent:'center',flex:1.1,marginLeft:'auto',marginRight:'auto'}}>{item.manv.hoten}</Text>
+                            //               <Text style={{display:'flex',justifyContent:'center',flex:1.1,marginLeft:'auto',marginRight:'auto'}}>{item.makho.tenkho}</Text>
+                            //            </View>
+                            //            <View>
+                            //               <Button  
+                            //                     title="Chi Tiết"
+                            //                     buttonStyle={[styles.buttonOption]}
+                            //                     onPress={()=>{
+                            //                         navigation.navigate("ChiTietPhieuNhap",{phieunhap : item})
+                            //                     }}
+                            //               /> 
+                            //            </View>
+                            //         </View>
+                            // </View>
+                        ))
+                    }
+                </View>
+                
+                </ScrollView>
+        
+        </View>
+    
+        </View>
+    )
+
+
+      // if(data.length > 0)
+      // {
+      //   return(
+      //     <View style={{flex:1}}>
+      //             <Header title="Trở về" type="arrow-left"
+      //               navigation={navigation} />
+      //       <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+      //       <Text style={styles.title} >Danh Sách Phiếu Nhập</Text>
+      //       <View style={styles.optionsSelect}>
+      //               <Button 
+      //               title="Thêm"
+      //                buttonStyle={styles.buttonOption}
+      //                onPress={()=>{
+      //                   navigation.navigate("LapPhieuNhap")
+      //               }}
+      //                    />
+      //       </View>
+
+      //       <View style={styles.TextInput2}>
+      //               <TextInput
+      //                   style={{width: '80%'}}
+      //                   placeholder="Nhập tên phiếu nhập"
+      //                   onChangeText={(text) =>  setSearch(text)}
+
+      //                   onFocus={() => {
+      //                   setTeInputFocussed(false);
+      //                   }}
+      //                   onBlur={() => {
+      //                   setTeInputFocussed(true);
+      //                   }}
+      //               />
+
+      //           <Animatable.View
+      //               animation={textInputFocussed ? '' : 'fadeInLeft'}
+      //               duration={400}>
+      //               <Icon
+      //               name="search"
+      //               iconStyle={{color: "#86939e"}}
+      //               type="fontisto"
+      //               style={{marginRight: 100}}
+      //               onPress={() => console.log('hello')}
+      //               />
+      //           </Animatable.View>
+      //       </View>
+                 
+      //             <View style={{display:'flex',justifyContent:'space-around',alignItems:'center',flexDirection:'row',height:40,borderWidth:1,borderStyle:'solid',borderColor:'#333',paddingLeft:5,paddingRight:5}}>
+      //                     <Text style={{flex:0.8}}>Tên Phiếu</Text>
+      //                     <Text style={{flex:1.1,marginLeft:10}}>Ngày Lập</Text>
+      //                     <Text style={{flex:1.1,marginLeft:15}}>Nhân Viên</Text>
+      //                     <Text style={{flex:1.1}}>Kho</Text>
+      //             </View>       
+      //             <ScrollView>
+      //                <View style={styles.listPrice}>
+      //                 {
+      //                     importbills?.filter(item=>{
+      //                       if(search == "") 
+      //                       {
+      //                           return item;
+      //                       }
+      //                       else if(item.tenpn.toLowerCase().includes(search.toLowerCase()))
+      //                       {
+      //                           return item;
+      //                       }
+      //                   })?.map(item=>(
+      //                         <View key={item._id}>
+      //                                 <View style={{display:'flex',justifyContent:'space-around',flexDirection:'column',alignItems:'center',height:100,borderLeftWidth:1,borderRightWidth:1,borderBottomWidth:1,borderStyle:'solid',borderColor:'#333',paddingTop:5,paddingBottom:5,paddingLeft:5,paddingRight:5}}>
+      //                                    <View style={{display:'flex',flexDirection:'row'}}>
+      //                                       <Text style={{flex:0.8,marginLeft:10}}>{item.tenpn}</Text>
+      //                                       <Text style={{flex:1.1,marginLeft:-20}}>{(item.ngay).slice(8,10)}-{(item.ngay).slice(5,7)}-{(item.ngay).slice(0,4)}</Text>
+      //                                       <Text style={{display:'flex',justifyContent:'center',flex:1.1,marginLeft:'auto',marginRight:'auto'}}>{item.manv.hoten}</Text>
+      //                                       <Text style={{display:'flex',justifyContent:'center',flex:1.1,marginLeft:'auto',marginRight:'auto'}}>{item.makho.tenkho}</Text>
+      //                                    </View>
+      //                                    <View>
+      //                                       <Button  
+      //                                             title="Chi Tiết"
+      //                                             buttonStyle={[styles.buttonOption]}
+      //                                             onPress={()=>{
+      //                                                 navigation.navigate("ChiTietPhieuNhap",{id:item._id,tenpn:item.tenpn,ngay : item.ngay,username: item.manv.username,hoten : item.manv.hoten})
+      //                                             }}
+      //                                       /> 
+      //                                    </View>
+      //                                 </View>
+      //                         </View>
+      //                     ))
+      //                 }
+      //             </View>
+      //             </ScrollView>
+          
+      //     </View>
+      
+      //     </View>
+      // )
+      // }
+
+      // if(loading == '')
+      // {
+      //     if(data.length == 0)
+      //     {
+      //         return (
+      //             <View style={{flex:1}}>
+      //                <Header title="Trở về" type="arrow-left" navigation={navigation} />
+      //                <Text style={{marginTop:300,marginLeft:'auto',marginRight:'auto',fontSize:20}}>Đại lý này chưa có phiếu nhập</Text>
+      //             </View>
+      //         )
+      //     }
+      // }
+      // if(loading === undefined)
+      // {
+      //     if(data.length == 0)
+      //     {
+      //         return (
+      //             <View>
+      //                 <Text style={{marginTop:350,marginLeft:'auto',marginRight:'auto'}}>Đang load dữ liệu</Text>
+      //             </View>
+      //         )
+      //     }
+      // }
 
 
 }

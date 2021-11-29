@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-
+import axios from "axios";
+import React, { useContext, useState, useEffect  } from "react";
 import {
     SafeAreaView,
     ScrollView,
@@ -13,97 +13,113 @@ import {
     Alert
     } from 'react-native';
 
+import {GlobalState} from "../GlobalState";    
 import {Button} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchImageLibrary} from 'react-native-image-picker';
 import CheckBox from '@react-native-community/checkbox';
 import { APINhanVien } from '../api/API';
+import { APIUpload } from '../api/API';
+
 
 export default function EditEmployee({navigation,route}){
 
-    const [iddl,setIDDL] = useState('');
-    const [id,setID] = useState(route.params.id);
-    const [hoten,setHoTen] = useState(route.params.hoten);
-    var [madaily,setMaDL] = useState(route.params.madl);
-    const [diachi,setDiaChi] = useState(route.params.diachi);
-    const [username,setUserName] = useState(route.params.username);
-    const [password,setPassWord] = useState(route.params.password);
-    const [sodienthoai,setSDT] = useState(route.params.sodienthoai);
-    const [cmnd, setCMND] = useState(route.params.cmnd);
-    const [role, setRole] = useState(route.params.role);
-    const [imageShow, setImageShow] = useState(route.params.images);
-    const [imageData, setImageData] = useState(route.params.images);
-    const [toggleAdmin, setToggleAdmin] = useState(false);
-    const [toggleUser, setToggleUser] = useState(false);
+    const state = useContext(GlobalState);
+    const [token] = state.token;
+
+    const [callback, setCallback] = state.employeeAPI.callback;
+    const [toggleRole, setToggleRole] = useState(false);
+
     const [loading, setLoading] = useState(0);
 
-    useEffect(async ()=>{
-    if(route.params.role == 'admin')
-    {
-        setToggleAdmin(true);
-    }
-    else if(route.params.role == 'user')
-    {
-        setToggleUser(true);
-    }
-      },[])
+    const [employee, setEmployee] = useState({
+        _id: route.params.nhanvien._id,
+        hoten: route.params.nhanvien.hoten,
+        madaily: route.params.nhanvien.madaily._id,
+        diachi: route.params.nhanvien.diachi,
+        username: route.params.nhanvien.username,
+        password: route.params.nhanvien.password,
+        role: route.params.nhanvien.role,
+        sodienthoai: route.params.nhanvien.sodienthoai,
+        cmnd: route.params.nhanvien.cmnd,
+        tinhtrang: route.params.nhanvien.tinhtrang,
+        images: route.params.nhanvien.images,
+    })
 
-      AsyncStorage.getItem('kt').then(kt => {
-          console.log('load 1');
-        if(kt == 1)
-        {
-            madaily = route.params.madl;
-            setMaDL(madaily);
-          AsyncStorage.setItem('kt','0');
+    if(route.params.nhanvien.role === 'admin')
+    {
+        // setToggleRole(true);
+        toggleRole = true;
+    }
+
+
+    if(route.params.daily !== undefined)
+    {
+        // setEmployee({...employee,madaily: route.params.daily._id})
+        employee.madaily = route.params.daily._id;
+    }
+
+
+    
+
+    // useEffect(async ()=>{
+    // if(route.params.role == 'admin')
+    // {
+    //     setToggleAdmin(true);
+    // }
+    // else if(route.params.role == 'user')
+    // {
+    //     setToggleUser(true);
+    // }
+    //   },[])
+
+    //   AsyncStorage.getItem('kt').then(kt => {
+    //       console.log('load 1');
+    //     if(kt == 1)
+    //     {
+    //         madaily = route.params.madl;
+    //         setMaDL(madaily);
+    //       AsyncStorage.setItem('kt','0');
             
-        }
-      })
+    //     }
+    //   })
     
 
   
     const SuaNhanVien = async ()=>{
-        const token = await AsyncStorage.getItem("token");
-        console.log('id  nè : ',route.params.id);
+        // const token = await AsyncStorage.getItem("token");
+        // console.log('id  nè : ',route.params.id);
         console.log('token : ',token);
-       fetch(`${APINhanVien}/${id}`,{
-         method:"PUT",
-         headers: {
-        'Content-Type': 'application/json',
-          Authorization :'Bearer '+token
-        },
-        body:JSON.stringify({
-            "hoten":hoten,
-            "madaily":madaily,
-            "diachi":diachi,
-            "username":username,
-            "password":password,
-            "sodienthoai": sodienthoai,
-            "cmnd":cmnd,
-            "tinhtrang": true,
-            "role":role,
-            "images":imageData
-        })
-       })
-       .then(res=>res.json())
-       .then(async (data)=>{
-              try {
-                Alert.alert(
+        console.log('employee : ',employee);
+
+
+        axios.put(
+            `${APINhanVien}/${employee._id}`,
+            { ...employee },
+            {
+              headers: { Authorization: token },
+            }
+          ).then((res) => {
+
+            Alert.alert(
                     'Thông báo',
-                    data.message,
-                    [
-                      { text: "OK", onPress: () => {
-                        navigation.replace('NhanVien');  
-                      } }
-                    ],
-                    );
-              } catch (e) {
-                Alert.alert('Thông báo',data.message);
-              }
-       })
+                    res.data.message,
+                [
+                { text: "OK", onPress: () => {
+                    setCallback(!callback);
+                navigation.replace("NhanVien");
+                } }
+                ],
+                );     
+
+         
+          }).catch(error => {
+            Alert.alert('Thông báo',error.response.data.message);
+          })
     }
 
         
-    const openGallery = () => {
+    const openGallery = async () => {
         const options = {
         storageOptions: {
         path: 'images',
@@ -121,39 +137,63 @@ export default function EditEmployee({navigation,route}){
         } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
         } else {
-        // You can also display the image using data:
-        const uri = response.assets[0].uri ;
+        
+        // console.log('data response.assets : ',response.assets[0]);    
+
+        const uri = response.assets[0].uri;
         const type = response.assets[0].type;
+        const size = response.assets[0].fileSize;
         const name = response.assets[0].fileName;
-        const source = {uri,type,name};
+        const source = {uri,type,size,name};
+        console.log('source',source);
             handleUpload(source);
         }
         });
         };
 
 
-        const handleUpload = (photo) => {
-            const data = new FormData()
-            data.append('file',photo);
-            data.append('upload_preset','material');
-            data.append("cloud_name","ntsit1999")
-            
-            fetch("https://api.cloudinary.com/v1_1/ntsit1999/image/upload", {
-                method: "POST",
-                body: data,
-                headers:{
-                    'Accept' : 'application/json',
-                    'Content-Type':'multipart/form-data'
-                }
-            }).then(res => res.json())
-            .then(data => {
-                // setimageUriGallary(photo.uri);
-                setImageShow(photo.uri);
-                setImageData(data.secure_url)
-                console.log('Cloud : ',data.secure_url);
-            }).catch(err => {
-                Alert.alert("Lỗi trong khi upload")
-            })
+        //---------------------------------------//
+
+        const handleUpload = async (file) => {
+            const token = await AsyncStorage.getItem("token");
+            console.log('token : ',token);
+            console.log('file data : ',file);
+
+            try {
+                // if (!isAdmin) return alert("Bạn không phải là Admin");
+                // const file = e.target.files[0];
+          
+                if (!file) return alert("File không tồn tài");
+          
+                if (file.size > 1024 * 1024)
+                  return alert("Size quá lớn");//1mb
+          
+                if (file.type !== "image/jpeg" && file.type !== "image/png")
+                  return alert("Định dạng file không đúng");
+          
+                let formData = new FormData();
+                formData.append("file", file);
+                console.log('data file : ',file)
+                // setLoading(true);
+                console.log('-------------- test --------------');
+
+                const res = await axios.post(`${APIUpload}`, formData, {
+                  headers: {
+                    "content-type": "multipart/form-data",
+                    Authorization: token,
+                  },
+                });
+                // setLoading(false);
+                console.log('dữ liệu ảnh : ',res.data);
+                console.log('dữ liệu ảnh url : ',res.data.url);
+
+                // setImageShow(res.data.url);
+                // setImageData(res.data)
+
+                setEmployee({...employee,images : res.data})
+              } catch (err) {
+                alert(err.response.data.message);
+              }
         }
 
     return(
@@ -167,16 +207,17 @@ export default function EditEmployee({navigation,route}){
                         <Text>Họ tên   </Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Họ tên"
-                             value={hoten}
-                             onChangeText={(text) =>  setHoTen(text)}
+                             value={employee.hoten}
+                            //  onChangeText={(text) =>  setHoTen(text)
+                                onChangeText={(text) =>  setEmployee({...employee,hoten : text})}
                         />
                     </View>
 
                     <View style={styles.rowInput}>
-                        <Text>Mã đại lý</Text>
+                        <Text>Đại lý</Text>
                         <TextInput style={styles.textInput} 
-                             placeholder="Mã đại lý"
-                             value={madaily}
+                             placeholder="Tên đại lý"
+                             value={route.params.daily === undefined ?  route.params.nhanvien.madaily.tendl : route.params.daily.tendl}
                              editable={false}
                             //  onChangeText={(text) =>  setMaDL(text)}
                         />
@@ -196,8 +237,9 @@ export default function EditEmployee({navigation,route}){
                         <Text>Địa chỉ   </Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Địa chỉ"
-                             value={diachi}
-                             onChangeText={(text) =>  setDiaChi(text)}
+                             value={employee.diachi}
+                            //  onChangeText={(text) =>  setDiaChi(text)}
+                             onChangeText={(text) =>  setEmployee({...employee,diachi : text})}
                         />
                     </View>
 
@@ -205,8 +247,9 @@ export default function EditEmployee({navigation,route}){
                         <Text>SĐT   </Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Số điện thoại"
-                             value={sodienthoai}
-                             onChangeText={(text) =>  setSDT(text)}
+                             value={employee.sodienthoai}
+                            //  onChangeText={(text) =>  setSDT(text)}
+                             onChangeText={(text) =>  setEmployee({...employee,sodienthoai : text})}
                         />
                     </View>
 
@@ -214,10 +257,12 @@ export default function EditEmployee({navigation,route}){
                         <Text>CMND        </Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Chứng minh nhân dân"
-                             value={cmnd}
+                             value={employee.cmnd}
                              maxLength={9}
                              keyboardType = 'numeric'
-                             onChangeText={(text) =>  setCMND(text)}
+                            //  onChangeText={(text) =>  setCMND(text)}
+                             onChangeText={(text) =>  setEmployee({...employee,cmnd : text})}
+                             
                         />
                     </View>                   
                   
@@ -226,20 +271,24 @@ export default function EditEmployee({navigation,route}){
                         <Text>Admin</Text>
                         <CheckBox
                             disabled={false}
-                            value={toggleAdmin}
+                            value={toggleRole}
                             onValueChange={() => 
                                 {
-                                    if(toggleAdmin == true)
+                                    if(employee.role === 'admin')
                                     {
-                                        setToggleAdmin(false);
-                                        setToggleUser(true);
-                                        setRole('user')
+                                        setEmployee({...employee,role : 'user'})
+                                        setToggleRole(false);
+                                        // setToggleAdmin(false);
+                                        // setToggleUser(true);
+                                        // setRole('user')
                                     }
-                                    else if(toggleAdmin == false)
+                                    else if(employee.role === 'user')
                                     {
-                                        setToggleAdmin(true);
-                                        setToggleUser(false);
-                                        setRole('admin')
+                                        setEmployee({...employee,role : 'admin'})
+                                        setToggleRole(true);
+                                        // setToggleAdmin(true);
+                                        // setToggleUser(false);
+                                        // setRole('admin')
                                     }
                                 
                                 }
@@ -248,20 +297,24 @@ export default function EditEmployee({navigation,route}){
                         <Text>User</Text>
                         <CheckBox
                             disabled={false}
-                            value={toggleUser}
+                            value={!toggleRole}
                             onValueChange={() => 
                                 {
-                                    if(toggleUser == true)
+                                    if(employee.role === 'admin')
                                     {
-                                        setToggleAdmin(true);
-                                        setToggleUser(false);
-                                        setRole('admin')
+                                        setEmployee({...employee,role : 'user'})
+                                        setToggleRole(false);
+                                        // setToggleAdmin(false);
+                                        // setToggleUser(true);
+                                        // setRole('user')
                                     }
-                                    else if(toggleUser == false)
+                                    else if(employee.role === 'user')
                                     {
-                                        setToggleAdmin(false);
-                                        setToggleUser(true);
-                                        setRole('user')
+                                        setEmployee({...employee,role : 'admin'})
+                                        setToggleRole(true);
+                                        // setToggleAdmin(true);
+                                        // setToggleUser(false);
+                                        // setRole('admin')
                                     }
                                 }
                             }
@@ -290,7 +343,7 @@ export default function EditEmployee({navigation,route}){
 
                     <View style={{width:300, height:240,display:'flex',justifyContent:'center',textAlign:'center',alignItems:'center',marginLeft:'auto',marginRight:'auto',marginTop:40,marginBottom:40, borderWidth:1, borderStyle:'solid',borderColor:'#333'}}>
                                 <Image
-                                    source={{uri:imageShow}}
+                                    source={{uri:employee.images.url}}
                                         style={{
                                             width:300, 
                                             height:240,

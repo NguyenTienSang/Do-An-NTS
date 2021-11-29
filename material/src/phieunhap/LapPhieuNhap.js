@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+
+import React, { useContext, useState, useEffect  } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -22,229 +23,248 @@ import Header from '../components/Header';
 import { APIPN } from '../api/API';
 import { APICTPN } from '../api/API';
 import { APIVattu } from '../api/API';
+import { GlobalState } from '../GlobalState';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment'
 
 export default function LapPhieuNhap({navigation,route}){
 
+  const state = useContext(GlobalState);
+  const [inforuser] = state.userAPI.inforuser;
+  const [token] = state.token;
+  console.log('inforuser : ',inforuser)
   const [datacart, setDataCart] = useState([]);
   const [loading, setLoading] = useState(0);
   var [makh,setMaKH] = useState('');
   const [tenpn,setTenPN] = useState('');
   const [id,setID] = useState('');
   var [madl,setMaDL] = useState('');
-  const [currentDate,setcurrentDate] = useState('');
-  const [datehdn,setDateHDN] = useState('');
-  var [token,setToken] = useState('');
+
+
+  const [date, setDate] = useState(moment());
+  const [show, setShow] = useState(false);
+  // const [datehd,setDateHD] = useState(new Date());
+
+  // var [token,setToken] = useState('');
 
 
   if(route.params !== undefined)
     {
-      makh = route.params.idkho;
+      makh = route.params.kho.idkho;
     }
 
-  var _idpn = "";
-  const getToken = async () => {
-    token =  await AsyncStorage.getItem("token");
-    console.log("token1 : ",token);
-  }
+
+
+    const onDateChange = (event, selectedDate) => {
+      const currentDate = selectedDate || date;
+      setShow(false)
+      setDate(moment(currentDate));
+    };
+
+  // var _idpn = "";
+  // const getToken = async () => {
+  //   // token =  await AsyncStorage.getItem("token");
+  //   console.log("token1 : ",token);
+  // }
  
 
-  AsyncStorage.getItem('kt').then(kt => {
-    if(kt == 1)
-    {
-      setLoading(loading+1);
-      AsyncStorage.setItem('kt','0');
-    }
-  })
+  // AsyncStorage.getItem('kt').then(kt => {
+  //   if(kt == 1)
+  //   {
+  //     setLoading(loading+1);
+  //     AsyncStorage.setItem('kt','0');
+  //   }
+  // })
 
   const Format = (number) => {
     return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + " VND"
   }
 
 
-  const LapPN = async ()=>{
-    await fetch(`${APIPN}`,{
-      method:"POST",
-      headers: {
-     'Content-Type': 'application/json',
-       Authorization :'Bearer '+token
-     },
-     body:JSON.stringify({
-       "tenpn" : tenpn,
-       "ngay" : (datehdn.slice(3,5) + '-' + (parseInt(datehdn.slice(0,2))+1).toString() + '-' + datehdn.slice(6,datehdn.length)),
-       "manv" : id,
-       "makho" : makh
-     })
-    })
-    .then(res=>res.json())
-    .then(async (data)=>{
-           try {
-             console.log('Thông báo',data.message);
-           } catch (e) {
-             console.log('Thông báo',data.message);
-           }
-    })
-  }
+  // const LapPN = async ()=>{
+  //   await fetch(`${APIPN}`,{
+  //     method:"POST",
+  //     headers: {
+  //    'Content-Type': 'application/json',
+  //      Authorization :'Bearer '+token
+  //    },
+  //    body:JSON.stringify({
+  //      "tenpn" : tenpn,
+  //      "ngay" : (datehdn.slice(3,5) + '-' + (parseInt(datehdn.slice(0,2))+1).toString() + '-' + datehdn.slice(6,datehdn.length)),
+  //      "manv" : id,
+  //      "makho" : makh
+  //    })
+  //   })
+  //   .then(res=>res.json())
+  //   .then(async (data)=>{
+  //          try {
+  //            console.log('Thông báo',data.message);
+  //          } catch (e) {
+  //            console.log('Thông báo',data.message);
+  //          }
+  //   })
+  // }
 
 
 
-  const IDPN = async ()=>{
-  await fetch(`${APIPN}`,{
-  headers:new Headers({
-    Authorization:"Bearer "+token
-  })
-  }).then(res=>res.json())
-  .then(pn=>{
-    pn.phieunhap.some(item => {
-      if(item.tenpn == tenpn)
-      {
-        _idpn = item._id;
-        console.log('_idpn1 : ',item._id);
-        console.log('_idpn2 : ',_idpn);
-      }
-    })
-  }
-  )
-  }
+  // const IDPN = async ()=>{
+  // await fetch(`${APIPN}`,{
+  // headers:new Headers({
+  //   Authorization:"Bearer "+token
+  // })
+  // }).then(res=>res.json())
+  // .then(pn=>{
+  //   pn.phieunhap.some(item => {
+  //     if(item.tenpn == tenpn)
+  //     {
+  //       _idpn = item._id;
+  //       console.log('_idpn1 : ',item._id);
+  //       console.log('_idpn2 : ',_idpn);
+  //     }
+  //   })
+  // }
+  // )
+  // }
 
  
-  const LapCTPN = async () => {
-    datacart.map(async ctpn => {
-    await fetch(`${APICTPN}`,{
-       method:"POST",
-       headers: {
-      'Content-Type': 'application/json',
-        Authorization :'Bearer '+token
-      },
-      body:JSON.stringify({
-        "mapn" : _idpn,
-        "mavt" :ctpn.material._id,
-        "soluong" : ctpn.quantity
-      })
-     })
-     .then(res=>res.json())
-     .then(async (data)=>{
-            try {
-              //Cập nhật số lượng từ hóa đơn nhập, xuất
-             await fetch(`${APIVattu}`,{
-              headers:new Headers({
-                Authorization:"Bearer "+token
-              })
-              }).then(res=>res.json())
-              .then(async vt=>{
-                for(var i=0; i<vt.vattu.length; i++)
-                {
-                  for(var j = 0; j<datacart.length; j++)
-                  {
-                        if(vt.vattu[i]._id == datacart[j].material._id)
-                        {
-                          await fetch(`${APIVattu}/${vt.vattu[i]._id}`,{
-                            method:"PUT",
-                            headers: {
-                          'Content-Type': 'application/json',
-                            Authorization :'Bearer '+token
-                          },
-                          body:JSON.stringify({
-                            "tenvt":vt.vattu[i].tenvt,
-                            "soluong":vt.vattu[i].soluong + datacart[j].quantity,
-                            "gianhap":vt.vattu[i].gianhap,
-                            "giaxuat":vt.vattu[i].giaxuat,
-                            "donvi":vt.vattu[i].donvi,
-                            "images":vt.vattu[i].images
-                          })
-                          })
-                          .then(res=>res.json())
-                          .then(async (dataput)=>{
-                                try {
-                                  console.log('Thông báo',dataput.message);
-                                } catch (e) {
-                                  console.log('Thông báo',dataput.message);
-                                }
-                          })
-                          break;
-                        }
-                  }
-                }
-              })
+  // const LapCTPN = async () => {
+  //   datacart.map(async ctpn => {
+  //   await fetch(`${APICTPN}`,{
+  //      method:"POST",
+  //      headers: {
+  //     'Content-Type': 'application/json',
+  //       Authorization :'Bearer '+token
+  //     },
+  //     body:JSON.stringify({
+  //       "mapn" : _idpn,
+  //       "mavt" :ctpn.material._id,
+  //       "soluong" : ctpn.quantity
+  //     })
+  //    })
+  //    .then(res=>res.json())
+  //    .then(async (data)=>{
+  //           try {
+  //             //Cập nhật số lượng từ hóa đơn nhập, xuất
+  //            await fetch(`${APIVattu}`,{
+  //             headers:new Headers({
+  //               Authorization:"Bearer "+token
+  //             })
+  //             }).then(res=>res.json())
+  //             .then(async vt=>{
+  //               for(var i=0; i<vt.vattu.length; i++)
+  //               {
+  //                 for(var j = 0; j<datacart.length; j++)
+  //                 {
+  //                       if(vt.vattu[i]._id == datacart[j].material._id)
+  //                       {
+  //                         await fetch(`${APIVattu}/${vt.vattu[i]._id}`,{
+  //                           method:"PUT",
+  //                           headers: {
+  //                         'Content-Type': 'application/json',
+  //                           Authorization :'Bearer '+token
+  //                         },
+  //                         body:JSON.stringify({
+  //                           "tenvt":vt.vattu[i].tenvt,
+  //                           "soluong":vt.vattu[i].soluong + datacart[j].quantity,
+  //                           "gianhap":vt.vattu[i].gianhap,
+  //                           "giaxuat":vt.vattu[i].giaxuat,
+  //                           "donvi":vt.vattu[i].donvi,
+  //                           "images":vt.vattu[i].images
+  //                         })
+  //                         })
+  //                         .then(res=>res.json())
+  //                         .then(async (dataput)=>{
+  //                               try {
+  //                                 console.log('Thông báo',dataput.message);
+  //                               } catch (e) {
+  //                                 console.log('Thông báo',dataput.message);
+  //                               }
+  //                         })
+  //                         break;
+  //                       }
+  //                 }
+  //               }
+  //             })
 
-              Alert.alert(
-                'Thông báo',
-                'Lập phiếu nhập thành công',
-                [
-                  { text: "OK", onPress: () => {
-                    navigation.navigate("PhieuNhap");
+  //             Alert.alert(
+  //               'Thông báo',
+  //               'Lập phiếu nhập thành công',
+  //               [
+  //                 { text: "OK", onPress: () => {
+  //                   navigation.navigate("PhieuNhap");
 
-                  } }
-                ],
-                );
-            } catch (e) {
-              Alert.alert('Thông báo',data.message);
-            }
-     })
-    })
-  }
+  //                 } }
+  //               ],
+  //               );
+  //           } catch (e) {
+  //             Alert.alert('Thông báo',data.message);
+  //           }
+  //    })
+  //   })
+  // }
 
 
-
-  
-
-  useEffect(()=>{
-    AsyncStorage.getItem('cart').then((data)=>{
-      console.log('render');
-      if (data !== null) {
-        data = JSON.parse(data);
-        setDataCart(data);
-        }
-      })
-      .catch((err)=>{
-        alert(err)
-      })
-  },[loading])
-  
 
   
 
-  useEffect(async () => {
-    InforPN= async ()=>{
-      // const token = await AsyncStorage.getItem("token");
-    await fetch(`${APIPN}`,{
-    headers:new Headers({
-      Authorization:"Bearer "+token
-    })
-    }).then(res=>res.json())
-    .then(pn=>{
-      const newtenpn = 'PN' +  (pn.phieunhap.length + 1);
-      setTenPN(newtenpn);
+  // useEffect(()=>{
+  //   AsyncStorage.getItem('cart').then((data)=>{
+  //     console.log('render');
+  //     if (data !== null) {
+  //       data = JSON.parse(data);
+  //       setDataCart(data);
+  //       }
+  //     })
+  //     .catch((err)=>{
+  //       alert(err)
+  //     })
+  // },[loading])
+  
 
-    }
-    )
-   }
-    await  getToken();
-    await InforPN();
+  
+
+  // useEffect(async () => {
+  //   InforPN= async ()=>{
+  //     // const token = await AsyncStorage.getItem("token");
+  //   await fetch(`${APIPN}`,{
+  //   headers:new Headers({
+  //     Authorization:"Bearer "+token
+  //   })
+  //   }).then(res=>res.json())
+  //   .then(pn=>{
+  //     const newtenpn = 'PN' +  (pn.phieunhap.length + 1);
+  //     setTenPN(newtenpn);
+
+  //   }
+  //   )
+  //  }
+  //   await  getToken();
+  //   await InforPN();
     
-      const day = new Date().getDate();
-      const month = new Date().getMonth()+1;
-      const year = new Date().getFullYear();
+  //     const day = new Date().getDate();
+  //     const month = new Date().getMonth()+1;
+  //     const year = new Date().getFullYear();
   
-      setToken(token);
-      setcurrentDate(
-        day+'-'+month+'-'+year
-      )
-      setDateHDN(currentDate);
-      setID(await  AsyncStorage.getItem('nhanvien').then((nhanvien)=>{
-        const  thongtinnv = JSON.parse(nhanvien);
-        // console.log('id1 : ',thongtinnv._id);
-        return thongtinnv._id;
-     }));
+  //     // setToken(token);
+  //     setcurrentDate(
+  //       day+'-'+month+'-'+year
+  //     )
+  //     setDateHDN(currentDate);
+  //     setID(await  AsyncStorage.getItem('nhanvien').then((nhanvien)=>{
+  //       const  thongtinnv = JSON.parse(nhanvien);
+  //       // console.log('id1 : ',thongtinnv._id);
+  //       return thongtinnv._id;
+  //    }));
 
-     setMaDL(await  AsyncStorage.getItem('nhanvien').then((nhanvien)=>{
-      const  thongtinnv = JSON.parse(nhanvien);
-      // console.log('hi');
-      madl = thongtinnv.madaily._id;
-      console.log('id1 : ',madl);
-      return thongtinnv.madaily._id;
-   }));
+  //    setMaDL(await  AsyncStorage.getItem('nhanvien').then((nhanvien)=>{
+  //     const  thongtinnv = JSON.parse(nhanvien);
+  //     // console.log('hi');
+  //     madl = thongtinnv.madaily._id;
+  //     console.log('id1 : ',madl);
+  //     return thongtinnv.madaily._id;
+  //  }));
    
-  },[])
+  // },[])
 
 
 
@@ -264,14 +284,32 @@ export default function LapPhieuNhap({navigation,route}){
        </View>
        <View style={{display:'flex',flexDirection:'row',alignItems:'center',marginBottom:10}}>
          <Text>Ngày lập      </Text>
-          <DatePicker
+         {
+           show &&
+           (
+            <DateTimePicker
+            value={new Date(date)}
+            mode='date'
+            minimumDate={new Date(moment().subtract(30,'d'))}
+            maximumDate={new Date(moment())}
+            onChange={onDateChange}
+             />
+           )
+         }
+         
+
+          {/* <Text onPress={()=> setShow(true)}>{moment(date).format('DD/MM/YYYY')}</Text> */}
+          <Text onPress={()=> setShow(true)}>{date.format('DD/MM/YYYY')}</Text>
+
+
+         {/* <DatePicker
             style={{width: 300}}
             date={datehdn}
             mode="date"
             placeholder= "Vui lòng chọn ngày"
             format="DD-MM-YYYY"
-            minDate="01-01-2021"
-            maxDate= {currentDate}
+            minDate={new Date("01-01-2010")}
+            maxDate={new Date("01-11-2021")}
             confirmBtnText="Confirm"
             cancelBtnText="Cancel"
             customStyles={{
@@ -292,14 +330,51 @@ export default function LapPhieuNhap({navigation,route}){
               setDateHDN(datechange);
               console.log('Ngày : ',datechange);
             }}
-          />
+          /> */}
+
+
+
+ {/* <TextInput style={styles.textInput} 
+                value={datehd}
+                // editable = {false}
+          /> */}
+
+         {/* <DatePicker
+            style={{width: 300}}
+            date={datehdn}
+            mode="date"
+            placeholder= "Vui lòng chọn ngày"
+            format="DD-MM-YYYY"
+            minDate={new Date("01-01-2010")}
+            maxDate= {new Date()}
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
+            customStyles={{
+              dateIcon: {
+                position: 'absolute',
+                left: 40,
+                top: 4,
+                marginLeft: 0
+              },
+              dateInput: {
+                marginLeft: 29,
+                borderWidth:1,
+                borderStyle:'solid',
+                borderColor:'#999'
+              }
+            }}
+            onDateChange={(datechange) => {
+              setDateHDN(datechange);
+              console.log('Ngày : ',datechange);
+            }}
+          /> */}
        </View>
 
        <View style={{display:'flex',flexDirection:'row',alignItems:'center',marginBottom:10}}>
          <Text>Mã nhân viên      </Text>
          <TextInput style={styles.textInput} 
                 // placeholder="Mã nhân viên"
-                value={id}
+                value={inforuser._id}
                 editable = {false}
           />
        </View>
@@ -307,8 +382,8 @@ export default function LapPhieuNhap({navigation,route}){
                     <View style={styles.rowInput}>
                         <Text>Mã kho              </Text>
                         <TextInput style={styles.textInput} 
-                             placeholder="Mã kho"
-                             value={makh}
+                             placeholder="Kho"
+                             value={route.params !== undefined ? route.params.kho.tenkho : ''}
                              editable={false}
                         />
                     </View>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { APIPN } from "./API";
 
 
 function ImportBillAPI() {
@@ -7,9 +8,8 @@ function ImportBillAPI() {
   const [callback, setCallback] = useState(false);
 
     const getImportBills = async () => {
-      const res = await axios.get('/api/phieunhap');
+      const res = await axios.get(`${APIPN}`);
       setImportBills(res.data);
-
     };
   
  useEffect(() => {

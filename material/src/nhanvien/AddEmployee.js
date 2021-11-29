@@ -22,6 +22,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {launchImageLibrary} from 'react-native-image-picker';
 import CheckBox from '@react-native-community/checkbox';
 import { APIThemNhanVien } from '../api/API';
+import { APIUpload } from "../api/API";
+import { APIDestroy } from "../api/API";
 import Header from '../components/Header';
 
 
@@ -31,7 +33,7 @@ const initialEmployee = {
     diachi:"",
     username:"",
     password:"",
-    role:"",
+    role:"admin",
     sodienthoai:"",
     cmnd:"",
     tinhtrang:"Đang làm",
@@ -82,7 +84,6 @@ export default function AddEmployee({navigation,route}){
         console.log('route.params.daily._id : ',route.params.daily._id)
     }
     const ThemNhanVien = async ()=>{
-        // const token = await AsyncStorage.getItem("token");
 
         axios.post(
             `${APIThemNhanVien}`,
@@ -103,67 +104,13 @@ export default function AddEmployee({navigation,route}){
                 ],
                 );     
 
-            // alert(res.data.message);
-            // setCallback(!callback);
-  
+         
           }).catch(error => {
             Alert.alert('Thông báo',error.response.data.message);
           })
          
 
 
-
-    //    fetch(`${APIThemNhanVien}`,{
-    //      method:"POST",
-    //      headers: {
-    //     'Content-Type': 'application/json',
-    //       Authorization :'Bearer '+token
-    //     },
-    //     body:JSON.stringify({
-    //         "hoten":hoten,
-    //         "madaily":madl,
-    //         "diachi":diachi,
-    //         "username":username,
-    //         "password":password,
-    //         "sodienthoai": sdt,
-    //         "cmnd":cmnd,
-    //         "tinhtrang": true,
-    //         "role":role,
-    //         "images":imageData
-    //     })
-    //    })
-    //    .then(res=>res.json())
-    //    .then(async (data)=>{
-    //           try {
-    //             if(data.success)
-    //             {
-    //               Alert.alert(
-    //                   'Thông báo',
-    //                   data.message,
-    //                   [
-    //                     { text: "OK", onPress: () => {
-    //                       navigation.replace("NhanVien");
-      
-    //                     } }
-    //                   ],
-    //                   );
-    //             }
-    //             else if(!data.success)
-    //             {
-    //               Alert.alert(
-    //                   'Thông báo',
-    //                   data.message,
-    //                   [
-    //                     { text: "OK", onPress: () => {
-    //                      console.log(data.message);
-    //                     } }
-    //                   ],
-    //                   );
-    //             }
-    //           } catch (e) {
-    //             Alert.alert('Thông báo',data.message);
-    //           }
-    //    })
     }
 
   
@@ -225,7 +172,7 @@ export default function AddEmployee({navigation,route}){
                 // setLoading(true);
                 console.log('-------------- test --------------');
 
-                const res = await axios.post("http://192.168.1.10:5000/api/upload", formData, {
+                const res = await axios.post(`${APIUpload}`, formData, {
                   headers: {
                     "content-type": "multipart/form-data",
                     Authorization: token,

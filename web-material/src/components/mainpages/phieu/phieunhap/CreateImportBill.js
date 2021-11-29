@@ -20,6 +20,7 @@ function CreateImportBill() {
 
   const state = useContext(GlobalState);
   const [token] = state.token;
+  const [inforuser] = state.userAPI.inforuser;
   const [materials] = state.materialAPI.materials;
   const [materialsfilter,setMaterialsFilter] = useState(materials);
   const [warehouses] = state.warehouseAPI.warehouses;

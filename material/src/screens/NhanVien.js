@@ -9,6 +9,7 @@ import { GiaBan } from '../global/Data';
 import EditEmployee from './../nhanvien/EditEmployee';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { APINhanVien } from '../api/API';
+import { APIDestroy } from "../api/API";
 import {Icon} from 'react-native-elements';
 import { GlobalState } from '../GlobalState';
 import {colors, parameters} from '../global/styles';
@@ -28,67 +29,49 @@ export default function NhanVien({navigation}){
     // const [loading, setLoading] = useState();
     const [search,setSearch] = useState('');
     const [token] = state.token;
+    const [callback, setCallback] = state.employeeAPI.callback;
     // const searchNV = (textsearch) => {
     //         console.log(textsearch);
     // }
 
-    const Delete = async (id) => {
-        // const token = await AsyncStorage.getItem("token");
-        fetch(`${APINhanVien}/${id}`,{
-            method:"DELETE",
-            headers: {
-                'Content-Type': 'application/json',
-                  Authorization :'Bearer '+token
-                }
-            })
-            .then(res=>res.json())
-            .then(async (data)=>{
-              try {
-                  if(data.success)
-                  {
-                    Alert.alert(
-                        'Thông báo',
-                        data.message,
-                        [
-                          { text: "OK", onPress: () => {
-                            navigation.replace("NhanVien");
-        
-                          } }
-                        ],
-                        );
-                  }
-                  else if(!data.success)
-                  {
-                    Alert.alert(
-                        'Thông báo',
-                        data.message,
-                        [
-                          { text: "OK", onPress: () => {
-                           console.log('Xóa thất bại');
-        
-                          } }
-                        ],
-                        );
-                  }
-              } catch (e) {
-                Alert.alert('Thông báo',data.message);
-              }
-       })
-    }    
-  
-//     const Infor = async ()=>{
-//       const res = await axios.get('http://192.168.1.10:5000/api/nhanvien');
-//       setData(res.data);
-   
-//      }
-//   useEffect(async ()=>{
-//     if(data.length == 0)
-//     {
-//         await Infor();
-//         setLoading("");
-//     } 
-//   },[loading])
 
+    const DeleteEmployee = async (id, public_id) => {
+        // const token = await AsyncStorage.getItem("token");
+
+        console.log('token : ',token)
+
+        axios.post(
+            `${APIDestroy}`,
+            {
+              public_id,
+            },
+            { headers: { Authorization: token } }
+          ).then(() => {
+            axios.delete(
+                `${APINhanVien}/${id}`,
+                {
+                  headers: { Authorization: token },
+                }
+              ).then(res => {
+                Alert.alert(
+                    'Thông báo',
+                    res.data.message,
+                    [
+                        { text: "OK", onPress: () => {
+                            setCallback(!callback);    
+                        // navigation.replace("NhanVien");
+                        } }
+                    ],
+                    );
+              }).catch(error => {
+                Alert.alert('Thông báo  Thất Bại 1',error.response.data.message);
+              })
+          }).catch(error => {
+            Alert.alert('Thông báo Thất Bại 2',error.response.data.message);
+          })
+        }
+
+  
 
   useEffect(() => {
    
@@ -190,11 +173,7 @@ export default function NhanVien({navigation}){
                                                       onPress={()=>{
                                                           // console.log('madl : ' ,item.madaily);
                                                           // AsyncStorage.setItem('kt','0');
-                                                          navigation.navigate('EditEmployee',{id : item._id,hoten : item.hoten,
-                                                              madl: item.madaily._id, diachi : item.diachi,
-                                                              username: item.username, password: item.password,
-                                                              sodienthoai : item.sodienthoai,cmnd: item.cmnd,
-                                                              role: item.role, images: item.images})
+                                                          navigation.navigate('EditEmployee',{nhanvien: item})
                                                           }}
                                                           />
   
@@ -202,7 +181,8 @@ export default function NhanVien({navigation}){
                                                       title="Xóa"
                                                       buttonStyle={styles.buttonOption}
                                                       onPress={()=>{
-                                                          Delete(item._id);
+                                                        DeleteEmployee(item._id,item.images.public_id);
+                                                          
                                                               }}
                                                       />     
                                                   </View>
