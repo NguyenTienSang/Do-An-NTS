@@ -48,7 +48,7 @@ export default function AddStore({navigation}){
      
 
         axios.post(
-            "http://192.168.1.10:5000/api/daily",
+            "http://192.168.1.4:5000/api/daily",
             {...store,images: imageData},
             {
               headers: { Authorization: token },
@@ -129,7 +129,7 @@ export default function AddStore({navigation}){
                 // setLoading(true);
                 console.log('-------------- test --------------');
 
-                const res = await axios.post("http://192.168.1.10:5000/api/upload", formData, {
+                const res = await axios.post("http://192.168.1.4:5000/api/upload", formData, {
                   headers: {
                     "content-type": "multipart/form-data",
                     Authorization: token,

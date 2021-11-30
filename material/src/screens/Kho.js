@@ -1,11 +1,12 @@
-import React, {useState,useEffect} from 'react';
+import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import {View, Text, ScrollView , StyleSheet,Dimensions,Image,Alert,TextInput} from 'react-native';
 // import BangGia from './BangGia';
 import {Button} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '../components/Header';
-import { APIKho } from '../api/API';
+import { APIKho,APIDestroy } from '../api/API';
+import { GlobalState } from '../GlobalState';
 import {Icon} from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 const SCREEN_WIDTH = Dimensions.get('window').width;  
@@ -13,84 +14,50 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function Kho({navigation}){
 
-    const [data, setData] = useState([]);
+    const state = useContext(GlobalState);
     const [loading, setLoading] = useState();
     const [search,setSearch] = useState('');
     const [textInputFocussed, setTeInputFocussed] = useState(false);
+    const [token] = state.token;
+    const [warehouse] = state.warehouseAPI.warehouses;
 
-    const Delete = async (id) => {
-        console.log('Xóa');
-        const token = await AsyncStorage.getItem("token");
-        fetch(`${APIKho}/${id}`,{
-            method:"DELETE",
-            headers: {
-                'Content-Type': 'application/json',
-                  Authorization :'Bearer '+token
+    const [callback, setCallback] = state.warehouseAPI.callback;
+
+
+    const DeleteWareHouse = async (id, public_id) => {
+        axios.post(
+            `${APIDestroy}`,
+            {
+              public_id,
+            },
+            { headers: { Authorization: token } }
+          ).then(() => {
+            axios.delete(
+                `${APIKho}/${id}`,
+                {
+                  headers: { Authorization: token },
                 }
-            })
-            .then(res=>res.json())
-            .then(async (data)=>{
-              try {
-                if(data.success)
-                  {
-                    Alert.alert(
-                        'Thông báo',
-                        data.message,
-                        [
-                          { text: "OK", onPress: () => {
-                            navigation.replace("Kho");
+              ).then(res => {
+                Alert.alert(
+                    'Thông báo',
+                    res.data.message,
+                    [
+                        { text: "OK", onPress: () => {
+                            setCallback(!callback);    
+                        // navigation.replace("NhanVien");
+                        } }
+                    ],
+                    );
+              }).catch(error => {
+                Alert.alert('Thông báo',error.response.data.message);
+              })
+          }).catch(error => {
+            Alert.alert('Thông báo',error.response.data.message);
+          })
         
-                          } }
-                        ],
-                        );
-                  }
-                  else if(!data.success)
-                  {
-                    Alert.alert(
-                        'Thông báo',
-                        data.message,
-                        [
-                          { text: "OK", onPress: () => {
-                           console.log('Xóa thất bại');
-        
-                          } }
-                        ],
-                        );
-                  }
-              } catch (e) {
-                Alert.alert('Thông báo',data.message);
-              }
-       })
     }    
   
-    const Infor = async ()=>{
-        const res = await axios.get('http://192.168.1.10:5000/api/kho');
-        setData(res.data);
-    //     const token = await AsyncStorage.getItem("token");
-    //   await fetch(`${APIKho}`,{
-    //   headers:new Headers({
-    //     Authorization:"Bearer "+token
-    //   })
-    //   }).then(res=>res.json())
-    //   .then(kh=>{
-    //       setData(kh.kho);
-    //   }
-    //   )
-     }
 
-  useEffect(async ()=>{
-    
-    if(data.length == 0)
-    {
-        await Infor()
-        setLoading("");
-    } 
-    
-  },[loading])
-  
-  if(data.length > 0)
-  {
-      
     return(
         <View style={{
             flex:1
@@ -153,7 +120,8 @@ export default function Kho({navigation}){
                 <ScrollView>
                 <View style={styles.listPrice}>
                     {
-                        data.filter(item=>{
+                        warehouse?
+                        warehouse.filter(item=>{
                             if(search == "") 
                             {
                                 return item;
@@ -174,17 +142,14 @@ export default function Kho({navigation}){
                                                         title="Cập nhật"
                                                         buttonStyle={[styles.buttonOption,{marginBottom:40}]}
                                                         onPress={()=>{
-                                                        navigation.navigate('EditKho',{id : item._id,tenkho : item.tenkho,
-                                                            madaily: item.madaily._id, diachi : item.diachi,
-                                                            sodienthoai: item.sodienthoai,images: item.images})
+                                                        navigation.navigate('EditKho',{kho : item})
                                                         }}
                                                         />
                                                     <Button 
                                                     title="Xóa"
                                                     buttonStyle={styles.buttonOption}
                                                     onPress={()=>{
-                                                            Delete(item._id);
-                                                            setLoading("");
+                                                            DeleteWareHouse(item._id,item.images.public_id);
                                                             }}
                                                     />
                                             </View>
@@ -214,68 +179,25 @@ export default function Kho({navigation}){
                                                         title="Số lượng tồn"
                                                         buttonStyle={{ width: 150,height: 40,borderRadius: 5,backgroundColor: '#1b94ff',marginRight:5,marginLeft:5}}
                                                         onPress={()=>{
-                                                        navigation.navigate('SoLuongTonKho',{id : item._id})
+                                                        navigation.navigate('SoLuongTonKho',{makho : item._id})
                                                         }}
                                                         />
                                        </View>
                                     </View> 
                             </View>
                         ))
+                        :
+                        <View>
+                        <Text style={{marginTop:350,marginLeft:'auto',marginRight:'auto'}}>Danh sách kho trống</Text>
+                        </View> 
+
                     }
                 </View>
                 </ScrollView>
         </View>
     )
-  }
-  if(loading == '')
-  {
-      if(data.length == 0)
-      {
-          return (
-            <View style={{
-                flex:1
-            }}>
-                 <View style={styles.header}>
-            <View style={{marginLeft: 20}}>
-                <Icon
-                type="material-community"
-                name="arrow-left"
-                color='white'
-                size={28}
-                onPress={()=>{navigation.navigate("HomeScreen")}}
-                />
-            </View>
-            <View>
-                <Text style={styles.headerText}>Trở về</Text>
-            </View>
-            </View>
-                    <View style={styles.optionsSelect}>
-                            <Button 
-                            title="Thêm"
-                             buttonStyle={styles.buttonOption}
-                             onPress={()=>{
-                                navigation.navigate("AddKho")
-                            }}
-                                 />
-                    </View>
-                 <Text style={{marginTop:250,marginLeft:'auto',marginRight:'auto'}}>Danh sách kho trống</Text>
-              </View>
-          )
-      }
-  }
-  if(loading === undefined)
-  {
-      if(data.length == 0)
-      {
-          return (
-              <View>
-                  <Text style={{marginTop:350,marginLeft:'auto',marginRight:'auto'}}>Đang load dữ liệu</Text>
-              </View>
-          )
-      }
-  }
+
   
-    
 }
 
 const styles = StyleSheet.create({

@@ -402,15 +402,12 @@ const statisticCtrl = {
                                         }
                                         return ctpx.mavt._id === listmaterialitem._id;
                             })
-                           
-                          
                         })
                     })
                         console.log('listmaterialfilter : ',listmaterialfilter)
                         res.json(listmaterialfilter)
                 }
             }
-           
         } catch (error) {
             res.status(500).json({ message: 'Thống kê thất bại' })
         }
@@ -458,7 +455,7 @@ const statisticCtrl = {
         } catch (error) {
             return res.status(500).json({ msg: error.message });
         }
-    }
+    },
     /* */
    /* Truyền vào mã đại lý, mã kho
     Nếu đại lý == allstores là tất cả đại lý -> trả vật danh sách vật tư của toàn đại lý
@@ -472,6 +469,117 @@ const statisticCtrl = {
     + Kho cụ thể: Lọc danh sách
 
     */
+
+
+
+
+    //Thống kê lợi nhuận năm
+    statisticProfitYear: async (req,res) => {
+
+        //Lấy ra danh sách phiếu nhập theo tháng
+        var phieunhap;
+        const nam = 2021
+        // for(var i=1; i<=12; i++)
+        // {
+            //  phieunhap = await PhieuNhap.find({ "$expr": { "$eq": [{ "$month": "$ngay" },i]  } })
+            //  phieunhap = await PhieuNhap.find({ $expr: { $and} })
+
+// phieunhap = await PhieuNhap.find({ "$expr": { $and: [{ $eq": [{ "$month": "$ngay" },i] }, { $eq": [{ "$year: "$ngay" },2021] }] } })
+phieunhap = await PhieuNhap.find({ $expr: { $and: [{ $eq: [{ $month: "$ngay" },12] }, { $eq: [{ $year: "$ngay" },2020] }] } })
+
+
+        // }
+       
+        return res.json(phieunhap)
+        /*
+            Hướng cũ:
+            - Tạo ra mảng gồm 12 tháng
+            - Lấy ra toàn bộ danh sách vật tư
+            - Lấy ra chi tiết phiếu nhập
+            - Lấy ra chi tiết phiếu xuất
+            - Tính số lượng nhập của từng vật tư trong 12 tháng
+            - Tính số lượng xuất của từng vật tư trong 12 tháng
+            - Tính doanh thu = (số lượng xuất * giá xuất - số lượng nhập * giá nhập)
+
+        */
+            
+        /*
+            Hướng mới
+            - Gán vào mảng object
+            - 
+            vattu{
+
+                - Id vật tư
+                - Tên vật tư
+                - Số lượng tồn
+                - Giá nhập
+                - Giá xuất
+                12 tháng
+               - so luong nhap
+               - so luong xuat
+               - Doanh Thu
+               -> Tổng doanh thu vật tư trong 12 tháng
+               -> Tổng doanh thu đại lý trong 12 tháng
+
+                Nếu mà lấy dưới database thì trả về json
+
+
+
+
+            }
+
+            - Dùng mongo find ra phiếu nhập tháng 1- 12    
+            - Dùng mongo find ra phiếu xuất tháng 1- 12   
+
+            for(int i=1; i <= 12; i++)
+            {
+                PN.find($and: [{ngay: {&ne: }}])
+            }
+
+            Object Tháng {
+
+            }
+
+
+            In ra vật tư tháng 1
+            Gốm
+          Object  {
+            + _id
+            + Tên vt
+            + Giá nhập
+            + Giá xuất
+            + Số lượng nhập
+            + Số lượng xuất
+            + Doanh thu -> Suy ra từ (số lượng xuất * giá xuất - số lượng nhập * giá nhập)
+            }
+          
+
+
+            Tổng doanh thu đại lý hiện trên đầu
+            - Trong mỗi bảng là một vật tư -> Cuối bảng là tổng doanh thu vật tư 12 tháng
+            - Tạo mảng tháng, số lượng nhập, số lượng xuất gồm 12 phần tử
+            - Lấy ra danh sách vật tư chỉ có trong đại lý
+
+            Lọc phiếu nhập -> lọc map ct phiếu nhập
+           
+            -> Tạo ra mảng vật tư filter
+             find danh sách mảng vật tư filter
+            -> Nếu mà undefined (không có) -> Thêm vật tư đó vào trong mảng
+            tăng số lượng nhập lên
+            Biến doanh thu = - (số lượng nhập * giá nhập)   
+            
+            Lọc phiếu xuất -> Ọc map
+
+        */
+
+
+        // try {
+        //     const {year,madailyfilter} = req.body;
+        // } catch (error) {
+            
+        // }
+       
+    }
 }
 
 module.exports = statisticCtrl;

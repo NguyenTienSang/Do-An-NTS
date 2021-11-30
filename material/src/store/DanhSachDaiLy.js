@@ -122,7 +122,7 @@ export default function DanhSachDaiLy({navigation,route}){
                                                     }
                                                     else if(route.params.page == 'EditKho')
                                                     {
-                                                        navigation.navigate('EditKho',{madl: item._id})
+                                                        navigation.navigate('EditKho',{daily: item})
                                                     }
                                                     else if(route.params.page == 'AddEmployee')
                                                     {
@@ -134,7 +134,7 @@ export default function DanhSachDaiLy({navigation,route}){
                                                     }
                                                     else if(route.params.page == 'ThongKeTheoNamTungDaiLy')
                                                     {
-                                                        navigation.navigate('ThongKeTheoNamTungDaiLy',{id: item._id,tendl: item.tendl})
+                                                        navigation.navigate('ThongKeTheoNamTungDaiLy',{daily: item})
                                                     }
                                                     else if(route.params.page == 'ThongKeTheoGiaiDoanTungDaiLy')
                                                     {

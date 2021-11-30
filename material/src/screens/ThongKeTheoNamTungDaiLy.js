@@ -39,8 +39,8 @@ export default function ThongKeTheoNamTungDaiLy({navigation,route}){
 
     if(route.params !== undefined)
     {
-        madl = route.params.id;
-        tendaily = route.params.tendl
+        madl = route.params.daily.id;
+        tendaily = route.params.daily.tendl
     }
 
     useEffect(()=>{
@@ -70,7 +70,7 @@ export default function ThongKeTheoNamTungDaiLy({navigation,route}){
             )
 
 
-
+//Thống kê vật tư phiếu nhập
         await fetch('http://192.168.1.6:3000/api/ctphieunhap',{
                 headers:new Headers({
                   Authorization:"Bearer "+token
@@ -96,7 +96,7 @@ export default function ThongKeTheoNamTungDaiLy({navigation,route}){
                     setDataCTPN(datactpn);
                 }
                 )    
-
+//Thống kê vật tư phiếu xuất
         await fetch('http://192.168.1.6:3000/api/ctphieuxuat',{
                     headers:new Headers({
                       Authorization:"Bearer "+token
@@ -149,10 +149,10 @@ export default function ThongKeTheoNamTungDaiLy({navigation,route}){
                     </View> */}
 
                     <View style={styles.rowInput}>
-                        <Text style={{display:'flex',alignItems:'center',textAlign:'center',marginTop:15,marginRight:15}}>Tên đại lý</Text>
+                        <Text style={{display:'flex',alignItems:'center',textAlign:'center',marginTop:15,marginRight:15}}>Đại lý</Text>
                         <TextInput style={{  display:'flex',justifyContent:'center',textAlign:'center',alignItems:'center',borderWidth:1,borderStyle:'solid',borderColor:'#999',borderRadius:5,width:240,height:38,marginTop:20}} 
-                             placeholder="Tên đại lý"
-                             value={tendaily}
+                             placeholder="Vui lòng chọn đại lý"
+                             value={route.params !== undefined ? route.params.daily.tendl : ''}
                              editable={false}
                             //  onChangeText={(text) =>  setMaDL(text)}
                         />
@@ -213,12 +213,15 @@ export default function ThongKeTheoNamTungDaiLy({navigation,route}){
                                         <Text style={{display:'flex',flex:1.1,justifyContent:'center',alignItems:'center',textAlign:'center',borderLeftWidth:1,height:40,paddingTop:10}}>Số lượng xuất</Text>
                                         <Text style={{display:'flex',flex:1.1,justifyContent:'center',alignItems:'center',textAlign:'center',borderLeftWidth:1,height:40,paddingTop:10}}>Doanh thu</Text>
                                     </View>
+                                   
                                     {
                                         sothang.map((itemsothang) =>{
                                             slnhap[itemsothang] = 0;
                                             slxuat[itemsothang] = 0;
                                         })
                                     }
+                                     {/* Tính số lượng nhập */}
+                                
                                     {
                                         //  console.log('ctpn : ',ctpn.ctphieunhap[0].mapn.manv.madl);
                                         datactpn.map(itemctpn => {
@@ -229,7 +232,8 @@ export default function ThongKeTheoNamTungDaiLy({navigation,route}){
                                                 console.log('Số lượng nhập tháng '+thang+' : ',slnhap[thang-1]);  
                                             }
                                         })
-                                    }
+                                    } 
+                                      {/* Tính số lượng xuất */}
                                     {
                                          datactpx.map(itemctpx => {
                                             if((itemvattu._id == itemctpx.mavt._id) && (year == parseInt((itemctpx.mapx.ngay).slice(0,4))))

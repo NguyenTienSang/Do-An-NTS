@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import axios from "axios";
+import React, { useContext, useState, useEffect  } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -13,243 +14,126 @@ import {
   TouchableOpacity
   } from 'react-native';
 
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import DatePicker from 'react-native-datepicker'
-import {Icon,Button} from 'react-native-elements';
-import NumericInput from 'react-native-numeric-input'
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { APIPX } from '../api/API';
-import { APICTPX } from '../api/API';
-import { APIVattu } from '../api/API';
-import Header from '../components/Header';
+  import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+  // import DatePicker from 'react-native-datepicker'
+  import {Icon,Button} from 'react-native-elements';
+  import NumericInput from 'react-native-numeric-input'
+  import AsyncStorage from '@react-native-async-storage/async-storage';
+  import Header from '../components/Header';
+  import { APIPN } from '../api/API';
+  import { APICTPN } from '../api/API';
+  import { APIVattu } from '../api/API';
+  import DateTimePicker from '@react-native-community/datetimepicker';
+  import moment from 'moment'
+  import { GlobalState } from '../GlobalState';
 
 export default function LapPhieuXuat({navigation,route}){
 
+  const state = useContext(GlobalState);
+  const [inforuser] = state.userAPI.inforuser;
+  const [token] = state.token;
+  console.log('token : ',token);
+  console.log('inforuser : ',inforuser)
+  const [exportbills] = state.exportbillAPI.exportbills;
+  const [detailexportbill, setDetailExportBill] = useState([]);
+  const [callback, setCallback] = state.exportbillAPI.callback;
   const [datacart, setDataCart] = useState([]);
-  const [loading, setLoading] = useState(0);
-  var [makh,setMaKH] = useState('');
-  const [tenpx,setTenPX] = useState('');
+  const [loading, setLoading] = useState(true);
   const [id,setID] = useState('');
   var [madl,setMaDL] = useState('');
-  const [currentDate,setcurrentDate] = useState('');
-  const [datehdx,setDateHDX] = useState('');
-  var [token,setToken] = useState('');
-
-  // AsyncStorage.getItem('dachonkho').then(dachonkho => {
-  //   if(dachonkho == 1)
-  //   {
-  //     makh = route.params.idkho;
-  //     setMaKH(makh);
-  //     AsyncStorage.setItem('dachonkho','0');
-  //   }
-  // })
-  if(route.params !== undefined)
-  {
-    makh = route.params.idkho;
-  }
-  var _idpx = "";
-  const getToken = async () => {
-    token =  await AsyncStorage.getItem("token");
-    console.log("token1 : ",token);
-  }
-  AsyncStorage.getItem('kt').then(kt => {
-    if(kt == 1)
-    {
-      setLoading(loading+1);
-      AsyncStorage.setItem('kt','0');
-    }
-  })
-
-  const Format = (number) => {
-    return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + " VND"
-  }
+  const [datehdn,setDateHDN] = useState(new Date());
+  const [onSearch, setOnSearch] = useState(false);
+  const [exportbill, setExportBill] = useState({
+    tenpx: "",
+    ngay: moment(),
+    manv: inforuser._id,
+    makho: ""
+  });
 
 
-  const LapPX = async ()=>{
-    console.log('Hi');
-    await fetch(`${APIPX}`,{
-      method:"POST",
-      headers: {
-     'Content-Type': 'application/json',
-       Authorization :'Bearer '+token
-     },
-     body:JSON.stringify({
-       "tenpx" : tenpx,
-       "ngay" : (datehdx.slice(3,5) + '-' + datehdx.slice(0,2) + '-' + datehdx.slice(6,datehdx.length)),
-       "manv" : id,
-       "makho" : makh
-     })
-    })
-    .then(res=>res.json())
-    .then(async (data)=>{
-           try {
-             console.log('Thông báo',data.message);
-           } catch (e) {
-            Alert.alert('Thông báo',data.message);
-           }
-    })
-  }
+      const [date, setDate] = useState(moment());
+      const [show, setShow] = useState(false);
 
 
 
-  const IDPX = async ()=>{
-  await fetch(`${APIPX}`,{
-  headers:new Headers({
-    Authorization:"Bearer "+token
-  })
-  }).then(res=>res.json())
-  .then(px=>{
-    px.phieuxuat.some(item => {
-      if(item.tenpx == tenpx)
+    //Set mã kho
+    AsyncStorage.getItem('kt').then(async kt => {
+      console.log('Chọn kho  : ',kt)
+      if(kt == 'chonkho')
       {
-        _idpx = item._id;
-        console.log('_idpx1 : ',item._id);
-        console.log('_idpx2 : ',_idpx);
+    
+        // exportbill.makho = route.params.kho._id;
+        setExportBill({...exportbill,makho : route.params.kho._id})
+        setLoading(!loading);
+        console.log('Set loading lại')
+        AsyncStorage.setItem('kt','none');
       }
     })
-  }
-  )
-  }
-
- 
-  const LapCTPX = async () => {
-    datacart.map(async ctpx => {
-      console.log('mavt : ',ctpx.material.id);
-      console.log('soluong : ',ctpx.quantity);
-      const token = await AsyncStorage.getItem("token");
-    await fetch(`${APICTPX}`,{
-       method:"POST",
-       headers: {
-      'Content-Type': 'application/json',
-        Authorization :'Bearer '+token
-      },
-      body:JSON.stringify({
-        "mapx" : _idpx,
-        "mavt" :ctpx.material.id,
-        "soluong" : ctpx.quantity
-      })
-     })
-     .then(res=>res.json())
-     .then(async (data)=>{
-            try {
-              await fetch(`${APIVattu}`,{
-                headers:new Headers({
-                  Authorization:"Bearer "+token
-                })
-                }).then(res=>res.json())
-                .then(async vt=>{
-                  for(var i=0; i<vt.vattu.length; i++)
-                  {
-                    for(var j = 0; j<datacart.length; j++)
-                    {
-                          if(vt.vattu[i]._id == datacart[j].material.id)
-                          {
-                           
-                            await fetch(`${APIVattu}/${vt.vattu[i]._id}`,{
-                              method:"PUT",
-                              headers: {
-                            'Content-Type': 'application/json',
-                              Authorization :'Bearer '+token
-                            },
-                            body:JSON.stringify({
-                              "tenvt":vt.vattu[i].tenvt,
-                              "soluong":vt.vattu[i].soluong - datacart[j].quantity,
-                              "gianhap":vt.vattu[i].gianhap,
-                              "giaxuat":vt.vattu[i].giaxuat,
-                              "donvi":vt.vattu[i].donvi,
-                              "images":vt.vattu[i].images
-                            })
-                            })
-                            .then(res=>res.json())
-                            .then(async (dataput)=>{
-                                  try {
-                                    console.log('Thông báo',dataput.message);
-                                  } catch (e) {
-                                    console.log('Thông báo',dataput.message);
-                                  }
-                            })
-                            break;
-                          }
-                    }
-                  }
-                })
 
 
-              Alert.alert(
-                'Thông báo',
-                'Lập phiếu xuất thành công',
-                [
-                  { text: "OK", onPress: () => {
-                    navigation.navigate("PhieuXuat");
-                  } }
-                ],
-                );
-            } catch (e) {
-            //  console.log('Thông báo',data.message);
-              Alert.alert('Thông báo',data.message);
-            }
-     })
+      //Set ngày lập
+      const onDateChange = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShow(false)
+        setDate(moment(currentDate));
+        console.log('currentDate : ',currentDate);
+        setExportBill({...exportbill,ngay : moment(currentDate)})
+        console.log('exportbill.ngay : ',exportbill.ngay)
+      };
+
+
+
+    //Load lại trang khi thêm vật tư
+    AsyncStorage.getItem('kt').then(kt => {
+      if(kt == 'themvt')
+      {
+        setLoading(!loading);
+        AsyncStorage.setItem('kt','none');
+      }
     })
-  }
 
-
-
-  
-
-  useEffect(()=>{
-    AsyncStorage.getItem('cart').then((data)=>{
-      console.log('render');
-      if (data !== null) {
-        data = JSON.parse(data);
-        setDataCart(data);
-        }
-      })
-      .catch((err)=>{
-        alert(err)
-      })
-  },[loading])
-
-  useEffect(async () => {
-    InforPX= async ()=>{
-    await fetch(`${APIPX}`,{
-    headers:new Headers({
-      Authorization:"Bearer "+token
-    })
-    }).then(res=>res.json())
-    .then(px=>{
-      const newtenpx = 'PX' + (px.phieuxuat.length + 1);
-      setTenPX(newtenpx);
+    const Format = (number) => {
+      return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + " VND"
     }
-    )
-   }
-   await  getToken();
-   await InforPX();
 
-    
-      const day = new Date().getDate();
-      const month = new Date().getMonth()+1;
-      const year = new Date().getFullYear();
-  
-      setToken(token);
-      setcurrentDate(
-        day+'-'+month+'-'+year
-      )
-      setDateHDX(currentDate);
-      setID(await  AsyncStorage.getItem('nhanvien').then((nhanvien)=>{
-        const  thongtinnv = JSON.parse(nhanvien);
-        // console.log('id1 : ',thongtinnv._id);
-        return thongtinnv._id;
-     }));
 
-     setMaDL(await  AsyncStorage.getItem('nhanvien').then((nhanvien)=>{
-      const  thongtinnv = JSON.parse(nhanvien);
-      // console.log('hi');
-      madl = thongtinnv.madaily._id;
-      console.log('id1 : ',madl);
-      return thongtinnv.madaily._id;
-   }));
-   
-  },[])
+    useEffect(()=>{
+      console.log('Load lại')
+      AsyncStorage.getItem('cart').then((data)=>{
+        // if (data !== null) {
+          data = JSON.parse(data);
+          setDataCart(data);
+          // }
+        })
+        .catch((err)=>{
+          alert(err)
+        })
+    },[loading])
+
+
+    useEffect(() => {
+      setExportBill({
+        tenpx:'PX' + (exportbills.length+1),
+        ngay: moment(new Date()).format('MM-DD-yyy'),
+        manv: inforuser._id,
+        makho:"",
+        ctpx: []
+      })
+      setDetailExportBill([])
+    },[exportbills])
+
+
+// console.log('inforuser : ',inforuser.madaily._id)
+
+    useEffect(async () => {
+
+      // Exportbills
+
+      setExportBill({...exportbill,tenpx : 'PX' + (exportbills.length+1)})
+
+    },[])
+
+
 
    return (
       <View>             
@@ -261,47 +145,37 @@ export default function LapPhieuXuat({navigation,route}){
         <View style={{display:'flex',flexDirection:'row',alignItems:'center',marginBottom:10}}>
           <Text>Tên phiếu xuất   </Text>
           <TextInput style={styles.textInput} 
-                value={tenpx}
+                value={exportbill.tenpx}
                 editable = {false}
           />
        </View>
        <View style={{display:'flex',flexDirection:'row',alignItems:'center',marginBottom:10}}>
-         <Text>Ngày lập     </Text>
-          <DatePicker
-            style={{width: 300}}
-            date={datehdx}
-            mode="date"
-            placeholder= "Vui lòng chọn ngày"
-            format="DD-MM-YYYY"
-            minDate="01-07-2021"
-            maxDate= {currentDate}
-            confirmBtnText="Confirm"
-            cancelBtnText="Cancel"
-            customStyles={{
-              dateIcon: {
-                position: 'absolute',
-                left: 40,
-                top: 4,
-                marginLeft: 0
-              },
-              dateInput: {
-                marginLeft: 29,
-                borderWidth:1,
-                borderStyle:'solid',
-                borderColor:'#999'
-              }
-            }}
-            onDateChange={(datechange) => {
-              setDateHDX(datechange);
-              console.log('Ngày : ',datechange);
-            }}
-          />
+       <Text>Ngày lập      </Text>
+         {
+           show &&
+           (
+            <DateTimePicker
+            value={new Date(date)}
+            mode='date'
+            minimumDate={new Date(moment().subtract(30,'d'))}
+            maximumDate={new Date(moment())}
+            onChange={onDateChange}
+             />
+           )
+         }
+         
+       
+          <Text>{date.format('DD/MM/YYYY')}</Text>
+          <Button buttonStyle={styles.buttonAction} title="Chọn ngày" onPress={()=> setShow(true)}/>
        </View>
+
+
+
        <View style={{display:'flex',flexDirection:'row',alignItems:'center',marginBottom:10}}>
          <Text>Mã nhân viên     </Text>
          <TextInput style={styles.textInput} 
                 // placeholder="Mã nhân viên"
-                value={id}
+                value={exportbill.manv}
                 editable = {false}
           />
        </View>
@@ -310,7 +184,7 @@ export default function LapPhieuXuat({navigation,route}){
                         <Text>Mã kho            </Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Mã kho"
-                             value={makh}
+                             value={route.params !== undefined ? route.params.kho.tenkho : ''}
                              editable={false}
                             //  onChangeText={(text) =>  setMaDL(text)}
                         />
@@ -330,13 +204,14 @@ export default function LapPhieuXuat({navigation,route}){
         </View>
         <View style={{borderWidth:1,borderStyle:'solid',borderColor:'#999'}}>
                 <View style={{display:'flex',justifyContent:'space-between',textAlign:'center',alignItems:'center',flexDirection:'row',paddingLeft:10,paddingRight:10,height:40}}>
+                <Text style={{display:'flex',justifyContent:'center',textAlign:'center'}}>Mã VT</Text>
                 <Text>Tên VT</Text>
                 <Text>Giá</Text>
                 <Text>Số Lượng</Text>
         </View>
            {
             
-              datacart.map((item,i)=>{
+              datacart?.map((item,i)=>{
                 return (
                  <View style={{borderTopWidth:1,borderStyle:'solid',borderColor:'#999',paddingTop:7,paddingBottom:7}}>
                  <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',paddingLeft:10,paddingRight:10}}>
@@ -371,11 +246,16 @@ export default function LapPhieuXuat({navigation,route}){
              
       }
       {
+         datacart !== null ?
               datacart.length > 0
               ?  <View style={{borderTopWidth:1,borderStyle:'solid',borderColor:'#999',paddingTop:7,paddingBottom:7}}>
                       <Text style={{marginLeft:'auto',marginRight:'auto'}}>Tổng cộng : {Format(onLoadTotal())}</Text>
                 </View>
               :  <View style={{borderTopWidth:1,borderStyle:'solid',borderColor:'#999',paddingTop:7,paddingBottom:7}}>
+                       <Text style={{marginLeft:'auto',marginRight:'auto'}}>Tổng cộng : 0 VND</Text>
+                  </View>
+                  :
+                  <View style={{borderTopWidth:1,borderStyle:'solid',borderColor:'#999',paddingTop:7,paddingBottom:7}}>
                        <Text style={{marginLeft:'auto',marginRight:'auto'}}>Tổng cộng : 0 VND</Text>
                   </View>
       }
@@ -384,44 +264,54 @@ export default function LapPhieuXuat({navigation,route}){
 
           </View>
        
-       <View style={styles.groupButtonAction}>
-          <Button buttonStyle={[styles.buttonAction,{width: 250}]} title="Thêm Vật Tư Vào Danh Sách"
+          <View style={styles.groupButtonAction}>
+       <Button disabled={exportbill.makho === "" ? true : false} buttonStyle={[styles.buttonAction,{width: 250}]} title="Thêm Vật Tư Vào Danh Sách"
                                 onPress={() => {
-                                   if(makh == '')
-                                   {
-                                     alert('Vui lòng chọn kho')
-                                   } 
-                                   else if(makh != '')
-                                   {
-                                     navigation.navigate("BangGiaXuat",{id : makh})
-                                   }
+                                  console.log('Mã kho : ',exportbill.makho)
+                                  console.log('Mã đại lý : ',inforuser.madaily._id)
+                                  navigation.navigate("BangGiaXuat",{madaily: inforuser.madaily._id,makho: exportbill.makho})
                                     }
                                   }
                         />
        </View>
 
-      <View style={styles.groupButtonAction}>
-                    <Button buttonStyle={styles.buttonAction} title="Lập Hóa Đơn"
+       <View style={styles.groupButtonAction}>
+                    <Button  disabled={datacart === null ||  datacart.length == 0 ? true : false} buttonStyle={styles.buttonAction} title="Lập Hóa Đơn"
                             onPress={async () => {
-                              if(datacart.length == 0)
-                              {
-                                alert('Chưa có vật tư không thể lập hóa đơn')
-                              }
-                              else {
-                                const ktsoluongton =  datacart.some(giohang => {
-                                   return (giohang.quantity > giohang.material.soluong);
-                                 })
-                                 if(ktsoluongton)
-                                 {
-                                    alert('Số lượng tồn không đủ');
-                                 }
-                                 else if(!ktsoluongton)
-                                 {
-                                    await LapPX();
-                                    await IDPX();
-                                    await LapCTPX();
-                                 }
-                              }
+                              console.log('Tên phiếu : ',exportbill.tenpx);
+                              console.log('Ngày lập : ',JSON.stringify(exportbill.ngay).slice(0,11));
+                              console.log('Mã nhân viên : ',exportbill.manv);
+                              console.log('Mã kho : ',exportbill.makho);
+                              console.log('datacart : ',datacart);
+
+                              try {
+                                const res = await axios.post(
+                                         "http://192.168.1.4:5000/api/phieuxuat",
+                                         {...exportbill,ctpx: datacart.map(item => ({
+                                          mavt : item.material._id, giaxuat : item.material.giaxuat,soluong : item.quantity
+                                        })) },
+                                         {
+                                           headers: { Authorization: token },
+                                         }
+                                       );
+                                       console.log('exportbill nè : ',exportbill)
+                                       
+                                       Alert.alert(
+                                        'Thông báo',
+                                        res.data.message,
+                                        [
+                                          { text: "OK", onPress: () => {
+                                            setCallback(!callback);
+                                            navigation.navigate("PhieuXuat");
+                        
+                                          } }
+                                        ],
+                                        );
+                                      
+                                       
+                               } catch (err) {
+                                   alert(err.response.data.message);
+                               }
                                 }
                               }
                     />

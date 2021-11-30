@@ -256,6 +256,8 @@ export default function AddEmployee({navigation,route}){
                         />
                     </View>
 
+
+                  
                     <View style={styles.rowInput}>
                         <Text>SĐT           </Text>
                         <TextInput style={styles.textInput} 
@@ -326,7 +328,7 @@ export default function AddEmployee({navigation,route}){
                         />
                     </View>
 
-                <View style={styles.rowInput}>
+                {/* <View style={styles.rowInput}>
                     <Text>Tình trạng</Text>
                     <Picker
                             style={styles.pickerDropdown}
@@ -338,7 +340,7 @@ export default function AddEmployee({navigation,route}){
                                 <Picker.Item label="Nghỉ việc" value="Nghỉ việc"/>
                                 
                         </Picker>         
-                </View>
+                </View> */}
                
 
                     <View>

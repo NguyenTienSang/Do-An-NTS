@@ -7,7 +7,7 @@ function EmployeeAPI() {
   const [callback, setCallback] = useState(false);
 
     const getEmployees = async () => {
-      const res = await axios.get('http://192.168.1.10:5000/api/nhanvien');
+      const res = await axios.get('http://192.168.1.4:5000/api/nhanvien');
       // console.log('Danh sách nhân viên : ',res.data);
       setEmployees(res.data);
     };

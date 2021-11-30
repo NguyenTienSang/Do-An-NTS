@@ -72,7 +72,7 @@ export default function DanhSachKho({navigation,route}){
             <View style={styles.TextInput2}>
                 <TextInput
                     style={{width: '80%'}}
-                    placeholder="Nhập tên đại lý"
+                    placeholder="Nhập tên kho"
                     onChangeText={(text) =>  setSearch(text)}
 
                     onFocus={() => {
@@ -123,13 +123,19 @@ export default function DanhSachKho({navigation,route}){
                                                     AsyncStorage.setItem('kt','1');
                                                     if(route.params.page == 'LapPhieuNhap')
                                                     {
+                                                        AsyncStorage.setItem('kt','chonkho');
+                                                        AsyncStorage.setItem('cart','');//Chọn lại kho -> Tiến hành xóa danh sách vật tư trong phiếu
+
+
                                                         navigation.navigate('LapPhieuNhap',{kho: item})     
                                                     }
                                                     else if(route.params.page == 'LapPhieuXuat')
                                                     {
-                                                        AsyncStorage.setItem('dachonkho','1');
-                                                        console.log('về nè');
-                                                        navigation.navigate('LapPhieuXuat',{idkho: item._id})
+                                                      
+                                                        AsyncStorage.setItem('kt','chonkho');
+                                                        AsyncStorage.setItem('cart','');//Chọn lại kho -> Tiến hành xóa danh sách vật tư trong phiếu
+
+                                                        navigation.navigate('LapPhieuXuat',{kho: item}) 
                                                     }
                                                     }}
                                                     />

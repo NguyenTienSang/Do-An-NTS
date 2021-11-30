@@ -86,6 +86,7 @@ const warehouseCtrl = {
         try {
             const {tenkho,madaily,diachi,sodienthoai,images} = req.body;
          
+            console.log('test : ',req.body)
           if(!tenkho)
           {
               return res.status(400)

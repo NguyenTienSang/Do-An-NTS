@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useContext, useState, useEffect  } from "react";
+import {Picker} from "@react-native-picker/picker";
 import {
     SafeAreaView,
     ScrollView,
@@ -28,7 +29,7 @@ export default function EditEmployee({navigation,route}){
     const [token] = state.token;
 
     const [callback, setCallback] = state.employeeAPI.callback;
-    const [toggleRole, setToggleRole] = useState(false);
+    
 
     const [loading, setLoading] = useState(0);
 
@@ -46,11 +47,13 @@ export default function EditEmployee({navigation,route}){
         images: route.params.nhanvien.images,
     })
 
-    if(route.params.nhanvien.role === 'admin')
-    {
-        // setToggleRole(true);
-        toggleRole = true;
-    }
+    // if()
+    // {
+    //     // setToggleRole(true);
+    //     toggleRole = true;
+    // }
+
+    const [toggleRole, setToggleRole] = useState(route.params.nhanvien.role === 'admin' ? true : false);
 
 
     if(route.params.daily !== undefined)
@@ -243,6 +246,7 @@ export default function EditEmployee({navigation,route}){
                         />
                     </View>
 
+
                     <View style={styles.rowInput}>
                         <Text>SĐT   </Text>
                         <TextInput style={styles.textInput} 
@@ -270,13 +274,14 @@ export default function EditEmployee({navigation,route}){
                         <Text>Quyền   </Text>
                         <Text>Admin</Text>
                         <CheckBox
-                            disabled={false}
+                            // disabled={false}
                             value={toggleRole}
                             onValueChange={() => 
                                 {
                                     if(employee.role === 'admin')
                                     {
                                         setEmployee({...employee,role : 'user'})
+                                        console.log('toggleRole : ',toggleRole)
                                         setToggleRole(false);
                                         // setToggleAdmin(false);
                                         // setToggleUser(true);
@@ -285,6 +290,7 @@ export default function EditEmployee({navigation,route}){
                                     else if(employee.role === 'user')
                                     {
                                         setEmployee({...employee,role : 'admin'})
+                                        console.log('toggleRole : ',toggleRole)
                                         setToggleRole(true);
                                         // setToggleAdmin(true);
                                         // setToggleUser(false);
@@ -303,6 +309,7 @@ export default function EditEmployee({navigation,route}){
                                     if(employee.role === 'admin')
                                     {
                                         setEmployee({...employee,role : 'user'})
+                                        console.log('toggleRole : ',toggleRole)
                                         setToggleRole(false);
                                         // setToggleAdmin(false);
                                         // setToggleUser(true);
@@ -311,6 +318,7 @@ export default function EditEmployee({navigation,route}){
                                     else if(employee.role === 'user')
                                     {
                                         setEmployee({...employee,role : 'admin'})
+                                        console.log('toggleRole : ',toggleRole)
                                         setToggleRole(true);
                                         // setToggleAdmin(true);
                                         // setToggleUser(false);
@@ -322,14 +330,19 @@ export default function EditEmployee({navigation,route}){
                     </View>                   
 
 
-                    {/* <View style={styles.rowInput}>
-                        <Text>Quyền   </Text>
-                        <TextInput style={styles.textInput} 
-                             placeholder="Quyền"
-                             value={role}
-                             onChangeText={(text) =>  setRole(text)}
-                        />
-                    </View> */}
+                    <View style={styles.rowInput}>
+                    <Text>Tình trạng</Text>
+                    <Picker
+                            style={styles.pickerDropdown}
+                            selectedValue={employee.tinhtrang}
+                            onValueChange={(itemValue) => setEmployee({...employee,tinhtrang: itemValue})}
+                        >
+                                <Picker.Item label="Đang làm" value="Đang làm"/>
+                                <Picker.Item label="Chuyển công tác" value="Chuyển công tác"/>
+                                <Picker.Item label="Nghỉ việc" value="Nghỉ việc"/>
+                                
+                        </Picker>         
+                </View>
 
                     <View>
                             <Button title="Thêm Ảnh" buttonStyle={styles.buttonAddPicture} 
@@ -418,4 +431,15 @@ const styles = StyleSheet.create({
         marginRight:'auto',
         marginLeft:'auto'
     },
+    pickerDropdown: {
+        width:230,
+        height:50,
+        borderWidth:1,
+        borderStyle:'solid',
+        borderRadius:8,
+        borderColor:'#000',
+        backgroundColor:'#dbdbdb',
+        color:'#000'
+    }
+
 })

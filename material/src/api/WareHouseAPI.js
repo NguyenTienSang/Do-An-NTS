@@ -6,7 +6,7 @@ function WareHouseAPI() {
   const [callback, setCallback] = useState(false);
 
     const getWareHouses = async () => {
-      const res = await axios.get('http://192.168.1.10:5000/api/kho');
+      const res = await axios.get('http://192.168.1.4:5000/api/kho');
       setWareHouses(res.data);
     };
   

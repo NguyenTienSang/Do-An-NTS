@@ -39,7 +39,8 @@ function CreateImportBill() {
     tenpn: "",
     ngay: "",
     manv: "",
-    makho: ""
+    makho: "",
+    ctpn: []
   });
 
   useEffect(async() => {

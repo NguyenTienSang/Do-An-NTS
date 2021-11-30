@@ -24,14 +24,14 @@ export default function DaiLy({navigation}){
         console.log('token : ',token)
 
         axios.post(
-            "http://192.168.1.10:5000/api/destroy",
+            "http://192.168.1.4:5000/api/destroy",
             {
               public_id,
             },
             { headers: { Authorization: token } }
           ).then(() => {
             axios.delete(
-                `http://192.168.1.10:5000/api/daily/${id}`,
+                `http://192.168.1.4:5000/api/daily/${id}`,
                 {
                   headers: { Authorization: token },
                 }
@@ -60,7 +60,7 @@ export default function DaiLy({navigation}){
     const Infor = async ()=>{
         const token = await AsyncStorage.getItem("token");
         const Username = await AsyncStorage.getItem("username");
-        const res = await axios.get('http://192.168.1.10:5000/api/daily');
+        const res = await axios.get('http://192.168.1.4:5000/api/daily');
         console.log('res.data : ',res.data)
         setData(res.data);
 

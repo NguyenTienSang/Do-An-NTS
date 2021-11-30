@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-
+import React, { useContext, useState, useEffect } from "react";
+import axios from "axios";
 import {
     SafeAreaView,
     ScrollView,
@@ -16,108 +16,131 @@ import {
 import {Button} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchImageLibrary} from 'react-native-image-picker';
+import { GlobalState } from "../GlobalState";
 import { APIVattu } from '../api/API';
+import { APIUpload } from "../api/API";
 
 export default function EditMaterial({navigation,route}){
+    console.log('route.params.vattu : ',route.params.vattu);
+    const state = useContext(GlobalState);
+    const [token] = state.token;
+    const [callback, setCallback] = state.materialAPI.callback;
+    const [material, setMaterial] = useState({
+        _id: route.params.vattu._id,
+        tenvt: route.params.vattu.tenvt,
+        donvi: route.params.vattu.donvi,
+        soluong: route.params.vattu.soluong,
+        gianhap: route.params.vattu.gianhap,
+        giaxuat: route.params.vattu.giaxuat,
+        trangthai:route.params.vattu.trangthai,
+        images: route.params.vattu.images,
+    });
 
-    
-        const [tenvt,setTenVT] = useState(route.params.tenvt);
-        const [soluong,setSoLuong] = useState(route.params.soluong);
-        const [gianhap,setGiaNhap] = useState(route.params.gianhap);
-        const [giaxuat,setGiaXuat] = useState(route.params.giaxuat);
-        const [donvi,setDonVi] = useState(route.params.donvi);
-        const [imageShow, setImageShow] = useState(route.params.images);
-        const [imageData, setImageData] = useState(route.params.images);
+
+    const Format = (number) => {
+        return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + " VND"
+    }
+
+
+    const openGallery = async () => {
+        const options = {
+        storageOptions: {
+        path: 'images',
+        mediaType: 'photo',
+        },
+        includeBase64: true,
+        };
         
-        const SuaVatTu = async ()=>{
-            const token = await AsyncStorage.getItem("token");
-           fetch(`${APIVattu}/${route.params.id}`,{
-             method:"PUT",
-             headers: {
-            'Content-Type': 'application/json',
-              Authorization :'Bearer '+token
-            },
-            body:JSON.stringify({
-              "tenvt":tenvt,
-              "soluong":parseInt(soluong),
-              "gianhap":parseInt(gianhap),
-              "giaxuat":parseInt(giaxuat),
-              "donvi":donvi,
-              "images":imageData
-            })
-           })
-           .then(res=>res.json())
-           .then(async (data)=>{
-                  try {
-                    Alert.alert(
-                        'Thông báo',
-                        data.message,
-                        [
-                          { text: "OK", onPress: () => {
-                            navigation.replace("ListMaterial");
-                          } }
-                        ],
-                        );
-                  } catch (e) {
-                    Alert.alert('Thông báo',data.message);
-                  }
-           })
-        }
-    
-            const openGallery = async () => {
-            const options = {
-            storageOptions: {
-            path: 'images',
-            mediaType: 'photo',
-            },
-            includeBase64: true,
-            };
-            
-            launchImageLibrary(options, response => {
-            console.log('Response = ', response);
-            if (response.didCancel) {
-            console.log('User cancelled image picker');
-            } else if (response.error) {
-            console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton);
-            } else {
-            
-            const uri = response.assets[0].uri ;
-            const type = response.assets[0].type;
-            const name = response.assets[0].fileName;
-            const source = {uri,type,name};
-            // console.log('source',source);
-                handleUpload(source);
-            }
-            });
-            };
-    
-            const handleUpload = (photo) => {
-                const data = new FormData()
-                data.append('file',photo);
-                data.append('upload_preset','material');
-                data.append("cloud_name","ntsit1999")
-                
-                fetch("https://api.cloudinary.com/v1_1/ntsit1999/image/upload", {
-                    method: "POST",
-                    body: data,
-                    headers:{
-                        'Accept' : 'application/json',
-                        'Content-Type':'multipart/form-data'
-                    }
-                }).then(res => res.json())
-                .then(data => {
-                    // setimageUriGallary(photo.uri);
-                    setImageShow(photo.uri);
-                    setImageData(data.secure_url)
-                    console.log('Cloud : ',data.secure_url);
-                }).catch(err => {
-                    Alert.alert("Lỗi trong khi upload")
-                })
-            }
-    
+        launchImageLibrary(options, response => {
+        console.log('Response = ', response);
+        if (response.didCancel) {
+        console.log('User cancelled image picker');
+        } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+        } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+        } else {
+        
+        // console.log('data response.assets : ',response.assets[0]);    
 
+        const uri = response.assets[0].uri;
+        const type = response.assets[0].type;
+        const size = response.assets[0].fileSize;
+        const name = response.assets[0].fileName;
+        const source = {uri,type,size,name};
+        console.log('source',source);
+            handleUpload(source);
+        }
+        });
+        };
+
+        const handleUpload = async (file) => {
+            const token = await AsyncStorage.getItem("token");
+            console.log('token : ',token);
+            console.log('file data : ',file);
+
+            try {
+                // if (!isAdmin) return alert("Bạn không phải là Admin");
+                // const file = e.target.files[0];
+          
+                if (!file) return alert("File không tồn tài");
+          
+                if (file.size > 1024 * 1024)
+                  return alert("Size quá lớn");//1mb
+          
+                if (file.type !== "image/jpeg" && file.type !== "image/png")
+                  return alert("Định dạng file không đúng");
+          
+                let formData = new FormData();
+                formData.append("file", file);
+                console.log('data file : ',file)
+                // setLoading(true);
+                console.log('-------------- test --------------');
+
+                const res = await axios.post(`${APIUpload}`, formData, {
+                  headers: {
+                    "content-type": "multipart/form-data",
+                    Authorization: token,
+                  },
+                });
+                // setLoading(false);
+                console.log('dữ liệu ảnh : ',res.data);
+                console.log('dữ liệu ảnh url : ',res.data.url);
+
+                // setImageShow(res.data.url);
+                // setImageData(res.data)
+
+                setMaterial({...material,images : res.data})
+              } catch (err) {
+                alert(err.response.data.message);
+              }
+        }   
+   
+        const SuaVatTu = async ()=>{
+            axios.put(
+             `${APIVattu}/${material._id}`,
+             { ...material },
+             {
+               headers: { Authorization: token },
+             }
+           ).then((res) => {
+ 
+             Alert.alert(
+                     'Thông báo',
+                     res.data.message,
+                 [
+                 { text: "OK", onPress: () => {
+                     setCallback(!callback);
+                     navigation.replace("ListMaterial");
+                 } }
+                 ],
+                 );     
+ 
+          
+           }).catch(error => {
+             Alert.alert('Thông báo',error.response.data.message);
+           })
+     }
 
 
     return(
@@ -130,38 +153,45 @@ export default function EditMaterial({navigation,route}){
                         <Text>Tên vật tư</Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Tên vật tư"
-                             value={tenvt}
-                             onChangeText={(text) =>  setTenVT(text)}
+                             value={material.tenvt}
+                            //  onChangeText={(text) =>  setTenVT(text)}
+                            onChangeText={(text) =>  setMaterial({...material,tenvt: text})}
                         />
                     </View>
 
+              
 
                     <View style={styles.rowInput}>
                         <Text>Số lượng</Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Số lượng"
-                             value={soluong}
+                             value={material.soluong.toString()}
                              editable={false}
-                             onChangeText={(text) =>  setSoLuong(text)}
+                             keyboardType = 'numeric'
+                            //  onChangeText={(text) =>  setSoLuong(text)}
+                             onChangeText={(text) =>  setMaterial({...material,soluong: text})}
                         />
                     </View>
 
+                    <Text>Giá nhập : {material.gianhap}</Text>
                     <View style={styles.rowInput}>
                         <Text>Giá nhập</Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Giá nhập"
-                             value={gianhap}
-                             onChangeText={(text) =>  setGiaNhap(text)}
+                             value={material.gianhap.toString()}
+                             keyboardType = 'numeric'
+                            //  onChangeText={(text) =>  setGiaNhap(text)}
+                             onChangeText={(text) =>  setMaterial({...material,gianhap: text})}
                         />
                     </View>
-
 
                     <View style={styles.rowInput}>
                         <Text>Giá xuất</Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Giá xuất"
-                             value={giaxuat}
-                             onChangeText={(text) =>  setGiaXuat(text)}
+                             value={material.giaxuat.toString()}
+                             keyboardType = 'numeric'
+                             onChangeText={(text) =>  setMaterial({...material,giaxuat: text})}
                         />
                     </View>
 
@@ -169,7 +199,7 @@ export default function EditMaterial({navigation,route}){
                         <Text>Đơn vị tính       </Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Đơn vị tính"
-                             value={donvi}
+                             value={material.donvi}
                              onChangeText={(text) =>  setDonVi(text)}
                         />
                     </View>
@@ -188,7 +218,7 @@ export default function EditMaterial({navigation,route}){
 
                     <View style={{width:300, height:240,display:'flex',justifyContent:'center',textAlign:'center',alignItems:'center',marginLeft:'auto',marginRight:'auto',marginTop:40,marginBottom:40, borderWidth:1, borderStyle:'solid',borderColor:'#333'}}>
                                 <Image
-                                    source={{uri:imageShow}}
+                                    source={{uri:material.images.url}}
                                         style={{
                                             width:300, 
                                             height:240,

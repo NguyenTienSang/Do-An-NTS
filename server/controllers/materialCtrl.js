@@ -108,10 +108,11 @@ const materialCtrl = {
    
    //Nếu có vật tư cần xóa trong phiếu xuất
         const phieuxuat = await PhieuXuat.find().populate({path :'ctpx',populate: {path: 'mavt'}});
+        console.log('Test')
         phieuxuat.map(px => {
             console.log('pn.ctpn : ',px.ctpx)
-            pn.ctpn.find(ctpn => {
-                console.log('ctpn : ',ctpx.mavt._id)
+            px.ctpx.find(ctpx => {
+                console.log('ctpx : ',ctpx.mavt._id)
                 console.log('req.params.id : ',req.params.id)
                 console.log('typeof(ctpx.mavt._id) : ',typeof(ctpx.mavt._id))
                 console.log('typeof(req.params.id) : ',typeof(req.params.id))
@@ -123,6 +124,7 @@ const materialCtrl = {
             })
         })    
    
+        console.log('Test')
         //Không nằm trong 2 trường hợp kia thì cho xóa
         await VatTu.findByIdAndDelete(req.params.id);
         return res.json({ message: "Xóa vật tư thành công" });

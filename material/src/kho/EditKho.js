@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-
+import axios from "axios";
+import React, { useContext, useState, useEffect } from "react";
 import {
     SafeAreaView,
     ScrollView,
@@ -15,69 +15,50 @@ import {
 
 import {Button} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { launchImageLibrary} from 'react-native-image-picker';
-import { APIKho } from '../api/API';
+import {launchImageLibrary} from 'react-native-image-picker';
+import { APIKho,APIUpload,APIDestroy, APIVattu } from '../api/API';
+
+import Header from '../components/Header';
+import { GlobalState } from "../GlobalState";
+
+const initialWareHouse = {
+    tenkho:"",
+    madaily:"",
+    diachi:"",
+    sodienthoai:0,
+    images: {
+        public_id: "",
+        url: "https://icon-library.com/images/default-user-icon/default-user-icon-3.jpg"
+    }
+    };
+
 
 export default function EditKho({navigation,route}){
 
 
-    const [iddl,setIDDL] = useState('');
-    const [id,setID] = useState(route.params.id);
-    const [tenkho,setTenKho] = useState(route.params.tenkho);
-    var [madaily,setMaDL] = useState(route.params.madaily);
-    const [diachi,setDiaChi] = useState(route.params.diachi);
-    const [sodienthoai,setSDT] = useState(route.params.sodienthoai);
-    const [imageShow, setImageShow] = useState(route.params.images);
-    const [imageData, setImageData] = useState(route.params.images);
-    
-    AsyncStorage.getItem('kt').then(kt => {
-        console.log('load 1');
-      if(kt == 1)
-      {
-          madaily = route.params.madl;
-          setMaDL(madaily);
-        AsyncStorage.setItem('kt','0');
-          
-      }
-    })
-    const SuaKho = async ()=>{
-       
-        const token = await AsyncStorage.getItem("token");
-       fetch(`${APIKho}/${id}`,{
-         method:"PUT",
-         headers: {
-        'Content-Type': 'application/json',
-          Authorization :'Bearer '+token
-        },
-        body:JSON.stringify({
-            "tenkho":tenkho,
-            "madaily":madaily,
-            "diachi":diachi,
-            "sodienthoai":sodienthoai,
-            "images":imageData
+    const state = useContext(GlobalState);
+    const [warehouse, setWareHouse] = useState({
+        _id:route.params.kho._id,
+        tenkho:route.params.kho.tenkho,
+        madaily:route.params.kho.madaily,
+        diachi:route.params.kho.diachi,
+        sodienthoai:route.params.kho.sodienthoai,
+        images: route.params.kho.images,
         })
-       })
-       .then(res=>res.json())
-       .then(async (data)=>{
-              try {
-                Alert.alert(
-                    'Thông báo',
-                    data.message,
-                    [
-                      { text: "OK", onPress: () => {
-                        navigation.replace("Kho");
-                      } }
-                    ],
-                    );
-              } catch (e) {
-                Alert.alert('Thông báo',data.message);
-              }
-       })
+    const [isAdmin] = state.userAPI.isAdmin;
+    const [token] = state.token;
+    const [callback, setCallback] = state.warehouseAPI.callback;
+
+    //-------------------------
+   
+    if(route.params.daily !== undefined)
+    {
+        warehouse.madaily = route.params.daily._id;
     }
 
 
 
-    const openGallery = () => {
+    const openGallery = async () => {
         const options = {
         storageOptions: {
         path: 'images',
@@ -95,40 +76,96 @@ export default function EditKho({navigation,route}){
         } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
         } else {
-        // You can also display the image using data:
-        const uri = response.assets[0].uri ;
+        
+        // console.log('data response.assets : ',response.assets[0]);    
+
+        const uri = response.assets[0].uri;
         const type = response.assets[0].type;
+        const size = response.assets[0].fileSize;
         const name = response.assets[0].fileName;
-        const source = {uri,type,name};
+        const source = {uri,type,size,name};
+        console.log('source',source);
             handleUpload(source);
         }
         });
         };
 
+        const handleUpload = async (file) => {
+            const token = await AsyncStorage.getItem("token");
+            console.log('token : ',token);
+            console.log('file data : ',file);
 
-        const handleUpload = (photo) => {
-            const data = new FormData()
-            data.append('file',photo);
-            data.append('upload_preset','material');
-            data.append("cloud_name","ntsit1999")
-            
-            fetch("https://api.cloudinary.com/v1_1/ntsit1999/image/upload", {
-                method: "POST",
-                body: data,
-                headers:{
-                    'Accept' : 'application/json',
-                    'Content-Type':'multipart/form-data'
-                }
-            }).then(res => res.json())
-            .then(data => {
-                // setimageUriGallary(photo.uri);
-                setImageShow(photo.uri);
-                setImageData(data.secure_url)
-                console.log('Cloud : ',data.secure_url);
-            }).catch(err => {
-                Alert.alert("Lỗi trong khi upload")
-            })
+            try {
+                // if (!isAdmin) return alert("Bạn không phải là Admin");
+                // const file = e.target.files[0];
+          
+                if (!file) return alert("File không tồn tài");
+          
+                if (file.size > 1024 * 1024)
+                  return alert("Size quá lớn");//1mb
+          
+                if (file.type !== "image/jpeg" && file.type !== "image/png")
+                  return alert("Định dạng file không đúng");
+          
+                let formData = new FormData();
+                formData.append("file", file);
+                console.log('data file : ',file)
+                // setLoading(true);
+                console.log('-------------- test --------------');
+
+                const res = await axios.post(`${APIUpload}`, formData, {
+                  headers: {
+                    "content-type": "multipart/form-data",
+                    Authorization: token,
+                  },
+                });
+                // setLoading(false);
+                console.log('dữ liệu ảnh : ',res.data);
+                console.log('dữ liệu ảnh url : ',res.data.url);
+
+                // setImageShow(res.data.url);
+                // setImageData(res.data)
+
+                setWareHouse({...warehouse,images : res.data})
+              } catch (err) {
+                alert(err.response.data.message);
+              }
         }
+
+
+
+        const SuaKho = async (e) => {
+            console.log(e);
+                // alert('Thêm thành công : '+employee.tenvt);
+                // console.log('Dữ liệu thêm mới : ',{...employee, images });
+              console.log('warehouse : ',warehouse)
+                // //Thêm mới
+                
+                  try {
+                    const res = await axios.put(
+                             `${APIKho}/${warehouse._id}`,
+                             { ...warehouse},
+                             {
+                               headers: { Authorization: token },
+                             }
+                           );
+                            Alert.alert(
+                        'Thông báo',
+                        res.data.message,
+                    [
+                    { text: "OK", onPress: () => {
+                        setCallback(!callback);
+                    navigation.replace("Kho");
+                    } }
+                    ],
+                    );   
+                          //  history.push("/vattu");
+                   } catch (error) {
+                    Alert.alert('Lỗi',error.response.data.message);
+                   }
+          }
+
+
 
 
     return(
@@ -141,8 +178,8 @@ export default function EditKho({navigation,route}){
                         <Text>Tên kho</Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Tên kho"
-                             value={tenkho}
-                             onChangeText={(text) =>  setTenKho(text)}
+                             value={warehouse.tenkho}
+                             onChangeText={(text) =>  setWareHouse({...warehouse,tenkho : text})}
                         />
                     </View>
 
@@ -150,7 +187,7 @@ export default function EditKho({navigation,route}){
                         <Text>Mã đại lý</Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Mã đại lý"
-                             value={madaily}
+                             value={route.params.daily === undefined ?  route.params.kho.madaily.tendl : route.params.daily.tendl}
                              editable={false}
                             //  onChangeText={(text) =>  setMaDL(text)}
                         />
@@ -169,8 +206,8 @@ export default function EditKho({navigation,route}){
                         <Text>Địa chỉ</Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Địa chỉ"
-                             value={diachi}
-                             onChangeText={(text) =>  setDiaChi(text)}
+                             value={warehouse.diachi}
+                             onChangeText={(text) =>  setWareHouse({...warehouse,diachi : text})}
                         />
                     </View>
 
@@ -178,10 +215,10 @@ export default function EditKho({navigation,route}){
                         <Text>SĐT     </Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Số điện thoại"
-                             value={sodienthoai}
+                             value={warehouse.sodienthoai}
                              maxLength={10}
                              keyboardType = 'numeric'
-                             onChangeText={(text) =>  setSDT(text)}
+                             onChangeText={(text) =>  setWareHouse({...warehouse,sodienthoai : text})}
                         />
                     </View>
 
@@ -197,7 +234,7 @@ export default function EditKho({navigation,route}){
 
                     <View style={{width:300, height:240,display:'flex',justifyContent:'center',textAlign:'center',alignItems:'center',marginLeft:'auto',marginRight:'auto',marginTop:40,marginBottom:40, borderWidth:1, borderStyle:'solid',borderColor:'#333'}}>
                                 <Image
-                                    source={{uri:imageShow}}
+                                    source={{uri:warehouse.images.url}}
                                         style={{
                                             width:300, 
                                             height:240,

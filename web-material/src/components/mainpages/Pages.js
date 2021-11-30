@@ -39,7 +39,10 @@ function Pages() {
     return (
         <Switch>
             <Route path="/trangchu" exact component={isLogged ?  HomePage : Login } />
+            <Route path="/" exact component={isLogged ?  HomePage : Login } />
               
+
+
             <Route path="/nhanvien" exact component={Employees}/>
             {/* <Route path="/add_employee" exact component={AddEmployee}/> */}
             <Route path="/detail_employee/:_id" exact component={DetailEmployee} />

@@ -1,12 +1,12 @@
 import React, { createContext, useState, useEffect} from "react";
 
 import UserAPI from "./api/UserAPI";
-// import MaterialAPI from './api/MaterialAPI';
+import MaterialAPI from './api/MaterialAPI';
 import EmployeeAPI from './api/EmployeeAPI';
 import StoresAPI from "./api/StoreAPI";
 import WareHouseAPI from "./api/WareHouseAPI";
 import ImportBillAPI from "./api/ImportBillAPI"
-// import ExportBillAPI from "./api/ExportBillAPI"
+import ExportBillAPI from "./api/ExportBillAPI"
 // import StatisticAPI from "./api/StatisticAPI"
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,7 +24,7 @@ export const DataProvider = ({ children }) => {
 
     if (firstLogin) {
       const refreshToken = async () => {
-        const res = await axios.get("http://192.168.1.10:5000/api/auth/refresh_token");
+        const res = await axios.get("http://192.168.1.4:5000/api/auth/refresh_token");
 
         setToken(res.data.accesstoken);
           
@@ -38,12 +38,12 @@ export const DataProvider = ({ children }) => {
 
   const state = {
     token: [token, setToken],
-    // materialAPI: MaterialAPI(),
+    materialAPI: MaterialAPI(),
     employeeAPI: EmployeeAPI(),
     storeAPI: StoresAPI(),
     warehouseAPI: WareHouseAPI(),
     importbillAPI: ImportBillAPI(),
-    // exportbillAPI: ExportBillAPI(),
+    exportbillAPI: ExportBillAPI(),
     // statisticAPI: StatisticAPI(),
     userAPI: UserAPI(token)
   };

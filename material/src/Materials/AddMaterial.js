@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import axios from "axios";
+import React, { useContext, useState, useEffect  } from "react";
+import {Picker} from "@react-native-picker/picker";
 
 import {
     SafeAreaView,
-    ScrollView,
     StatusBar,
     StyleSheet,
     Text,
@@ -10,82 +11,87 @@ import {
     View,
     Image,
     TextInput,
-    Alert
+    ScrollView,
+    Alert,
+    TouchableOpacity,
     } from 'react-native';
 
+import { GlobalState } from "../GlobalState";    
 import {Button} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {launchImageLibrary} from 'react-native-image-picker';
-import { APIVattu } from '../api/API';
+import CheckBox from '@react-native-community/checkbox';
+import { APIThemNhanVien } from '../api/API';
+import { APIUpload,APIDestroy,APIVattu } from "../api/API";
 import Header from '../components/Header';
 
-export default function AddPriceMaterial({navigation}){
+const initialMaterial = {
+    tenvt:"",
+    donvi:"",
+    soluong:0,
+    gianhap:"",
+    giaxuat:"",
+    trangthai:"Đang kinh doanh",
+    images: {
+        public_id: "",
+        url: "https://icon-library.com/images/default-user-icon/default-user-icon-3.jpg"
+    }
+  };
 
-    const [tenvt,setTenVT] = useState('');
-    // const [soluong,setSoLuong] = useState('');
-    const [gianhap,setGiaNhap] = useState('');
-    const [giaxuat,setGiaXuat] = useState('');
-    const [donvi,setDonVi] = useState('');
-    const [imageShow, setImageShow] = useState('');
-    const [imageData, setImageData] = useState('');
+
+export default function AddPriceMaterial({navigation}){
+    const state = useContext(GlobalState);
+    const [material, setMaterial] = useState(initialMaterial);
+    const [images, setImages] = useState(false);
+    const [token] = state.token;
+
+    // const param = useParams();
+
+    const [materials] = state.materialAPI.materials;
+    const [searchTerm,setSearchTerm] = useState("");
+    const [onEdit, setOnEdit] = useState(false);
+    const [callback, setCallback] = state.materialAPI.callback;
+
+
+    // const [tenvt,setTenVT] = useState('');
+    // // const [soluong,setSoLuong] = useState('');
+    // const [gianhap,setGiaNhap] = useState('');
+    // const [giaxuat,setGiaXuat] = useState('');
+    // const [donvi,setDonVi] = useState('');
+    // const [imageShow, setImageShow] = useState('');
+    // const [imageData, setImageData] = useState('');
 
     const ThemVatTu = async ()=>{
-        const token = await AsyncStorage.getItem("token");
-        // console.log('TOKEN',token);
-       fetch(`${APIVattu}`,{
-         method:"POST",
-         headers: {
-        'Content-Type': 'application/json',
-          Authorization :'Bearer '+token
-        },
-        body:JSON.stringify({
-          "tenvt":tenvt,
-          "soluong":0,
-          "gianhap":gianhap,
-          "giaxuat":giaxuat,
-          "donvi":donvi,
-          "images":imageData
-        })
-       })
-       .then(res=>res.json())
-       .then(async (data)=>{
-              try {
-                if(data.success)
-                {
-                  Alert.alert(
-                      'Thông báo',
-                      data.message,
-                      [
-                        { text: "OK", onPress: () => {
-                          navigation.replace("ListMaterial");
-      
-                        } }
-                      ],
-                      );
-                }
-                else if(!data.success)
-                {
-                  Alert.alert(
-                      'Thông báo',
-                      data.message,
-                      [
-                        { text: "OK", onPress: () => {
-                         console.log(data.message);
-                        } }
-                      ],
-                      );
-                }
-              } catch (e) {
-                Alert.alert('Thông báo',data.message);
-              }
-       })
+           axios.post(
+            `${APIVattu}`,
+            { ...material },
+            {
+              headers: { Authorization: token },
+            }
+          ).then((res) => {
+
+            Alert.alert(
+                    'Thông báo',
+                    res.data.message,
+                [
+                { text: "OK", onPress: () => {
+                    setCallback(!callback);
+                    navigation.replace("ListMaterial");
+                } }
+                ],
+                );     
+
+         
+          }).catch(error => {
+            Alert.alert('Thông báo',error.response.data.message);
+          })
     }
 
 
 
 
         
-        const openGallery = async () => {
+    const openGallery = async () => {
         const options = {
         storageOptions: {
         path: 'images',
@@ -104,38 +110,59 @@ export default function AddPriceMaterial({navigation}){
         console.log('User tapped custom button: ', response.customButton);
         } else {
         
-        const uri = response.assets[0].uri ;
+        // console.log('data response.assets : ',response.assets[0]);    
+
+        const uri = response.assets[0].uri;
         const type = response.assets[0].type;
+        const size = response.assets[0].fileSize;
         const name = response.assets[0].fileName;
-        const source = {uri,type,name};
-        // console.log('source',source);
+        const source = {uri,type,size,name};
+        console.log('source',source);
             handleUpload(source);
         }
         });
         };
 
-        const handleUpload = (photo) => {
-            const data = new FormData()
-            data.append('file',photo);
-            data.append('upload_preset','material');
-            data.append("cloud_name","ntsit1999")
-            
-            fetch("https://api.cloudinary.com/v1_1/ntsit1999/image/upload", {
-                method: "POST",
-                body: data,
-                headers:{
-                    'Accept' : 'application/json',
-                    'Content-Type':'multipart/form-data'
-                }
-            }).then(res => res.json())
-            .then(data => {
-                // setimageUriGallary(photo.uri);
-                setImageShow(photo.uri);
-                setImageData(data.secure_url)
-                console.log('Cloud : ',data.secure_url);
-            }).catch(err => {
-                Alert.alert("Lỗi trong khi upload")
-            })
+        const handleUpload = async (file) => {
+            const token = await AsyncStorage.getItem("token");
+            console.log('token : ',token);
+            console.log('file data : ',file);
+
+            try {
+                // if (!isAdmin) return alert("Bạn không phải là Admin");
+                // const file = e.target.files[0];
+          
+                if (!file) return alert("File không tồn tài");
+          
+                if (file.size > 1024 * 1024)
+                  return alert("Size quá lớn");//1mb
+          
+                if (file.type !== "image/jpeg" && file.type !== "image/png")
+                  return alert("Định dạng file không đúng");
+          
+                let formData = new FormData();
+                formData.append("file", file);
+                console.log('data file : ',file)
+                // setLoading(true);
+                console.log('-------------- test --------------');
+
+                const res = await axios.post(`${APIUpload}`, formData, {
+                  headers: {
+                    "content-type": "multipart/form-data",
+                    Authorization: token,
+                  },
+                });
+                // setLoading(false);
+                console.log('dữ liệu ảnh : ',res.data);
+                console.log('dữ liệu ảnh url : ',res.data.url);
+
+                // setImageShow(res.data.url);
+                // setImageData(res.data)
+
+                setMaterial({...material,images : res.data})
+              } catch (err) {
+                alert(err.response.data.message);
+              }
         }
 
     return(
@@ -149,8 +176,8 @@ export default function AddPriceMaterial({navigation}){
                         <Text>Tên vật tư   </Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Tên vật tư"
-                             value={tenvt}
-                             onChangeText={(text) =>  setTenVT(text)}
+                             value={material.tenvt}
+                             onChangeText={(text) =>  setMaterial({...material,tenvt: text})}
                         />
                     </View>
 
@@ -168,9 +195,11 @@ export default function AddPriceMaterial({navigation}){
                         <Text>Giá nhập   </Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Giá nhập"
-                             value={gianhap}
+                             value={material.gianhap}
                              keyboardType = 'numeric'
-                             onChangeText={(text) =>  setGiaNhap(text)}
+                            //  onChangeText={(text) =>  setGiaNhap(text)}
+                             onChangeText={(text) =>  setMaterial({...material,gianhap: text})}
+
                         />
                     </View>
 
@@ -178,9 +207,11 @@ export default function AddPriceMaterial({navigation}){
                         <Text>Giá xuất   </Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Giá xuất"
-                             value={giaxuat}
+                             value={material.giaxuat}
                              keyboardType = 'numeric'
-                             onChangeText={(text) =>  setGiaXuat(text)}
+                            //  onChangeText={(text) =>  setGiaXuat(text)}
+                             onChangeText={(text) =>  setMaterial({...material,giaxuat: text})}
+
                         />
                     </View>
 
@@ -188,8 +219,10 @@ export default function AddPriceMaterial({navigation}){
                         <Text>Đơn vị tính</Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Đơn vị tính"
-                             value={donvi}
-                             onChangeText={(text) =>  setDonVi(text)}
+                             value={material.donvi}
+                            //  onChangeText={(text) =>  setDonVi(text)}
+                             onChangeText={(text) =>  setMaterial({...material,donvi: text})}
+
                         />
                     </View>
 
@@ -207,7 +240,7 @@ export default function AddPriceMaterial({navigation}){
 
                     <View style={{width:300, height:240,display:'flex',justifyContent:'center',textAlign:'center',alignItems:'center',marginLeft:'auto',marginRight:'auto',marginTop:40,marginBottom:40, borderWidth:1, borderStyle:'solid',borderColor:'#333'}}>
                                 <Image
-                                    source={{uri:imageShow}}
+                                    source={{uri:material.images.url}}
                                         style={{
                                             width:300, 
                                             height:240,
