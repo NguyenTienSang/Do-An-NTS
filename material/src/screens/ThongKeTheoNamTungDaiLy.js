@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import axios from "axios";
+import React, { useContext, useState, useEffect } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -14,11 +15,16 @@ import {
   Button
   } from 'react-native';
 
+import {GlobalState} from "../GlobalState"  
 import Header from '../components/Header';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { APIVattu } from '../api/API';
+import { APIVattu ,APITKLNN} from '../api/API';
+
+const SCREEN_WIDTH = Dimensions.get('window').width; 
 
 export default function ThongKeTheoNamTungDaiLy({navigation,route}){
+    const state = useContext(GlobalState);
+    const [token] = state.token;
     const [year,setYear] = useState(0);
     var [madl,setMaDL] = useState('');
     var [tendaily,setTenDL] = useState('');
@@ -26,7 +32,8 @@ export default function ThongKeTheoNamTungDaiLy({navigation,route}){
     const [datavattu,setDataVatTu] = useState([]);
     const [datactpn,setDataCTPN] = useState([]);
     const [datactpx,setDataCTPX] = useState([]);
-    const [sothang,setSoThang] = useState([]); 
+    // const [sothang,setSoThang] = useState([]); 
+    const [dataStatistic,setDataStatistic] = useState("");
     const slnhap = [];
     const slxuat = [];
     const currentyear = new Date().getFullYear();
@@ -39,88 +46,52 @@ export default function ThongKeTheoNamTungDaiLy({navigation,route}){
 
     if(route.params !== undefined)
     {
-        madl = route.params.daily.id;
+        madl = route.params.daily._id;
         tendaily = route.params.daily.tendl
     }
 
-    useEffect(()=>{
-        for(var i =0; i< 12; i++)
-        {
-            sothang.push(i);
-        }
-        setSoThang(sothang);
-      },[])
+    // useEffect(()=>{
+    //     for(var i =0; i< 12; i++)
+    //     {
+    //         sothang.push(i);
+    //     }
+    //     setSoThang(sothang);
+    //   },[])
+
+    useEffect(() => {
+        console.log('dataStatistic : ',dataStatistic)
+        console.log('load lại');
+    },[dataStatistic])
    
     const ThongKeDoanhThu = async ()=>{
-        console.log('Thống kê doanh thu');
-        const token = await AsyncStorage.getItem("token");
-        await fetch(`${APIVattu}`,{
-            headers:new Headers({
-              Authorization:"Bearer "+token
-            })
-            }).then(res=>res.json())
-            .then(vt=>{
-                datavattu.push(vt.vattu);
-                setDataVatTu(vt.vattu);
-                // console.log('Thông tin vật tư : ',datavattu[0]);    
-                // datavattu[0].map(itemvattu => {
-                //     console.log(itemvattu._id);
-                //     })
-            }
-            )
+        // console.log('route.params.daily._id : ',route.params.daily._id)
+        // console.log('year : ',year)
+        // console.log('token : ',token)
+        // const madailyfilter = route.params.daily._id;
+        // const yearstatistic = year;
 
 
-//Thống kê vật tư phiếu nhập
-        await fetch('http://192.168.1.6:3000/api/ctphieunhap',{
-                headers:new Headers({
-                  Authorization:"Bearer "+token
-                })
-                }).then(res=>res.json())
-                .then(ctpn=>{
-                    // console.log('pn : ',ctpn.ctphieunhap[0].mapn);
-                    // console.log('vt : ',ctpn.ctphieunhap[0].mavt);
-                    // console.log('pn : ',ctpn.ctphieunhap);
-                    // console.log('ctpn : ',ctpn.ctphieunhap[0].mapn.manv.madl);
-                    console.log('madl : ',madl);
-                    for(var i=0; i< ctpn.ctphieunhap.length; i++)
-                    {
-                        console.log('daily : ',ctpn.ctphieunhap[i].mapn.manv.madaily);
-                        // console.log('ctphieunhap : '+i+' : ',ctpn.ctphieunhap[i].mavt)
-                        if(ctpn.ctphieunhap[i].mapn.manv.madaily == madl)
-                        {
-                            console.log('push pn');
-                            datactpn.push(ctpn.ctphieunhap[i]);   
-                        }
-                    }
-                    console.log('datactpn : ',datactpn);
-                    setDataCTPN(datactpn);
-                }
-                )    
-//Thống kê vật tư phiếu xuất
-        await fetch('http://192.168.1.6:3000/api/ctphieuxuat',{
-                    headers:new Headers({
-                      Authorization:"Bearer "+token
-                    })
-                    }).then(res=>res.json())
-                    .then(ctpx=>{
-                        // datactpx.push(ctpx.ctphieuxuat);
-                        for(var i=0; i< ctpx.ctphieuxuat.length; i++)
-                        {
-                            if(ctpx.ctphieuxuat[i].mapx.manv.madaily == madl)
-                            {
-                                console.log('push px');
-                                datactpx.push(ctpx.ctphieuxuat[i]);   
-                            }
-                        }
-                        console.log('datactpx : ',datactpx);
-                        setDataCTPX(datactpx);
-                    }
-                    )           
+
+        await axios.post(
+            `${APITKLNN}`,
+            {
+                madailyfilter: route.params.daily._id,yearstatistic : parseInt(year)
+            },
+            { headers: { Authorization: token } }
+          ).then((res) => {
+            setDataStatistic(res.data);
+            console.log('res.data : ',res.data)
+            // res.data?.map(item => {
+            //         console.log('item.thang : ',item.thang)
+            // })
+
+          }).catch(error => {
+            //   console.log('error.response : ',error.response.data.message)
+            // Alert.alert('Thông báo ',error);
+            Alert.alert('Thông báo ','Thất bại');
+          })
                      
-        if(year != 0)
-        {
-            setLoading(loading+1);
-        }
+       
     }
 
 
@@ -189,102 +160,57 @@ export default function ThongKeTheoNamTungDaiLy({navigation,route}){
                                         }
                                 />
                     </View>
-                {
-                   loading > 0
-                   ? 
-                   <View>
-                       {
-                         
-                            datavattu.map((itemvattu)=>(
-                                <View key={itemvattu.mavt} style={{marginBottom:20}}>
-                                    <View style={{display:'flex',justifyContent:'space-around',alignItems:'center',flexDirection:'row',height:40,borderTopWidth:1,borderBottomWidth:1,borderStyle:'solid',borderColor:'#333',paddingLeft:5,paddingRight:5}}>
-                                       <Text>Tên VT: {itemvattu.tenvt}</Text>
-                                        <Text>SL tồn: {itemvattu.soluong}  {itemvattu.donvi}</Text>
-                                      
-                                    </View>
-                                    <View style={{display:'flex',justifyContent:'space-around',alignItems:'center',flexDirection:'row',height:40,borderBottomWidth:1,borderStyle:'solid',borderColor:'#333',paddingLeft:5,paddingRight:5}}>
-                                        <Text style={{display:'flex',flex:1,justifyContent:'center',alignItems:'center',textAlign:'center',height:40,paddingTop:10}}>Giá nhập: {Format(itemvattu.gianhap)}</Text>
-                                        <Text style={{display:'flex',flex:1,justifyContent:'center',alignItems:'center',textAlign:'center',borderLeftWidth:1,height:40,paddingTop:10}}>Giá xuất: {Format(itemvattu.giaxuat)}</Text>
-                                    
-                                    </View>
-                                    <View style={{display:'flex',justifyContent:'space-around',alignItems:'center',flexDirection:'row',height:40,borderBottomWidth:1,borderStyle:'solid',borderColor:'#333',paddingLeft:5,paddingRight:5}}>
-                                        <Text style={{flex:0.7}}></Text>
-                                        <Text style={{display:'flex',flex:1.1,justifyContent:'center',alignItems:'center',textAlign:'center',borderLeftWidth:1,height:40,paddingTop:10}}>Số lượng nhập</Text>
-                                        <Text style={{display:'flex',flex:1.1,justifyContent:'center',alignItems:'center',textAlign:'center',borderLeftWidth:1,height:40,paddingTop:10}}>Số lượng xuất</Text>
-                                        <Text style={{display:'flex',flex:1.1,justifyContent:'center',alignItems:'center',textAlign:'center',borderLeftWidth:1,height:40,paddingTop:10}}>Doanh thu</Text>
-                                    </View>
-                                   
-                                    {
-                                        sothang.map((itemsothang) =>{
-                                            slnhap[itemsothang] = 0;
-                                            slxuat[itemsothang] = 0;
-                                        })
-                                    }
-                                     {/* Tính số lượng nhập */}
-                                
-                                    {
-                                        //  console.log('ctpn : ',ctpn.ctphieunhap[0].mapn.manv.madl);
-                                        datactpn.map(itemctpn => {
-                                            if((itemvattu._id == itemctpn.mavt._id) && (year == parseInt((itemctpn.mapn.ngay).slice(0,4))))
-                                            {
-                                                thang = parseInt((itemctpn.mapn.ngay).slice(5,7));
-                                                slnhap[thang-1] = slnhap[thang-1] + itemctpn.soluong; 
-                                                console.log('Số lượng nhập tháng '+thang+' : ',slnhap[thang-1]);  
-                                            }
-                                        })
-                                    } 
-                                      {/* Tính số lượng xuất */}
-                                    {
-                                         datactpx.map(itemctpx => {
-                                            if((itemvattu._id == itemctpx.mavt._id) && (year == parseInt((itemctpx.mapx.ngay).slice(0,4))))
-                                            {
-                                                thang = parseInt((itemctpx.mapx.ngay).slice(5,7));
-                                                slxuat[thang-1] = slxuat[thang-1] + itemctpx.soluong;   
-                                            }
-                                        })    
-                                    }
-                                    {
-                                         sothang.map(itemsothang =>
-                                             (
-                                            <View style={{display:'flex',justifyContent:'space-around',alignItems:'center',flexDirection:'row',height:40,borderBottomWidth:1,borderStyle:'solid',borderColor:'#333',paddingLeft:5,paddingRight:5}}>
-                                                <Text style={{flex:0.7}}>Tháng {itemsothang + 1}</Text>
-                                                <Text style={{display:'flex',flex:1.1,justifyContent:'center',alignItems:'center',textAlign:'center',borderLeftWidth:1,height:40,paddingTop:10}}>{slnhap[itemsothang]}</Text>
-                                                <Text style={{display:'flex',flex:1.1,justifyContent:'center',alignItems:'center',textAlign:'center',borderLeftWidth:1,height:40,paddingTop:10}}>{slxuat[itemsothang]}</Text>
-                                                <Text style={{display:'flex',flex:1.1,justifyContent:'center',alignItems:'center',textAlign:'center',borderLeftWidth:1,height:40,paddingTop:10}}>{Format((slxuat[itemsothang]*itemvattu.giaxuat)-(slnhap[itemsothang]*itemvattu.gianhap))}</Text>
+
+                    <View>
+                        {
+                            dataStatistic? 
+                            <View style={{display:'flex',justifyContent:'space-around',alignItems:'center',width:400}}>
+                                {
+                                  
+                                    dataStatistic.map((item,index) => (
+                                            <View key={index} style={{display:'flex',flexDirection:'column',justifyContent:'space-around'}}>
+                                                <View style={[styles.itemstatistic,{backgroundColor:'#1b94ff'}]}>
+                                                    <Text  style={{color:'#fff'}}>Tháng : {item.thang}</Text>
+                                                </View>
+                                                <View style={styles.itemstatistic}>
+                                                    <Text>Số phiếu nhập : {item.sophieunhap}</Text>
+                                                   <Text>Tổng tiền nhập : {Format(item.chiphinhap)}</Text>
+                                                </View>
+                                                <View style={styles.itemstatistic}>
+                                                   <Text>Số phiếu xuất : {item.sophieuxuat}</Text>
+                                                    <Text>Tổng tiền xuất : {Format(item.chiphixuat)}</Text>
+                                                </View>
+                                                <View style={styles.itemstatistic}>
+                                                    <Text>Doanh thu tháng {item.thang} : {Format(item.chiphixuat - item.chiphinhap)}</Text>
+                                                </View>
                                             </View>
-                                         ))
-                                    }
-                                    {
-                                        <View style={{display:'flex',justifyContent:'space-around',alignItems:'center',flexDirection:'row',height:40,borderBottomWidth:1,borderStyle:'solid',borderColor:'#333',paddingLeft:5,paddingRight:5}}>
-                                            <Text style={{flex:0.7}}>Tổng doanh thu vật tư: {Format(onLoadTotal(itemvattu))}</Text>
-                                        </View>
-                                    }
-                                </View>
-                            ))
-                       }
-                       {
-                            <View style={{display:'flex',justifyContent:'center',alignItems:'center',textAlign:'center',marginBottom:20}}>
-                                <Text>Doanh thu cả năm : {Format(totalcost)}</Text>
-                            </View>
-                       }
-                        </View>
-                        : <View style={{display:'flex',justifyContent:'center',marginTop:20,marginLeft:'auto',marginRight:'auto'}}>
-                            <Text style={{fontSize:20,fontWeight:'600'}}>Nhập năm, chọn đại lý và thực hiện thống kê</Text>
-                        </View>
-                }
+                                            
+                                    )
+                                    )
+                                }
+                                {
+                                    <View style={[styles.itemstatistic,{backgroundColor:'#1b94ff'}]}>
+                                        <Text style={{color:'#fff'}}>Doanh thu cả năm : {Format(onLoadTotal())}</Text>
+                                    </View>
+                                }
+                                 </View>
+                            : <View><Text>Không có dữ liệu</Text></View>
+                        }
+                    </View>
+                   
             </ScrollView>
         </View>
     )
  
 
-    function onLoadTotal(itemvattu)
+    function onLoadTotal()
     {
         var total = 0;
-        sothang.map(itemsothang =>
+        dataStatistic.map(item =>
             {
-               total+= (slxuat[itemsothang]*itemvattu.giaxuat)-(slnhap[itemsothang]*itemvattu.gianhap);
+               total+= item.chiphixuat - item.chiphinhap;
             })
-            totalcost += total;   
+           
         return total;
     }
 
@@ -338,5 +264,15 @@ buttonOption:{
         marginRight:'auto',
         marginLeft:'auto'
     },
- 
+ itemstatistic: {
+     display:'flex',
+     justifyContent:'space-around',
+     alignItems:'center',
+     height:30,
+     flexDirection:'row',
+     borderTopWidth: 1,
+     borderStyle:'solid',
+     borderColor: '#000',
+     width:SCREEN_WIDTH
+ }
 })

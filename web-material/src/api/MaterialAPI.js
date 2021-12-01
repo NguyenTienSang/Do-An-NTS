@@ -7,7 +7,7 @@ function MaterialAPI() {
 
     const getMaterials = async () => {
       const res = await axios.get('/api/vattu');
-      console.log('res.data : ',res.data)
+      // console.log('res.data : ',res.data)
       setMaterials(res.data);
       // console.log('test callback1111111111111111111')
     };

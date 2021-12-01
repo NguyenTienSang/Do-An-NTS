@@ -22,7 +22,7 @@ const initialEmployee = {
   role:"",
   sodienthoai:"",
   cmnd:"",
-  tinhtrang:"",
+  tinhtrang:"Đang làm",
 };
 
 function Employees() {
@@ -32,6 +32,7 @@ function Employees() {
   const [images, setImages] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isAdmin] = state.userAPI.isAdmin;
+  // const [inforuser] = state.userAPI.inforuser;
   const [token] = state.token;
 
   const history = useHistory();
@@ -135,7 +136,7 @@ function Employees() {
   const AddEmployee = () => {
     setOnEdit(false);
     setEmployee(initialEmployee);
-    document.getElementById("modal_container").classList.add("modal_active");
+    document.getElementById("modal_container__employee").classList.add("modal_active");
   }
 
   const EditEmployee = (data_employee_edit) => {
@@ -143,11 +144,11 @@ function Employees() {
     setOnEdit(true);
     setEmployee(data_employee_edit);
     setImages(data_employee_edit.images);
-    document.getElementById("modal_container").classList.add("modal_active");
+    document.getElementById("modal_container__employee").classList.add("modal_active");
   }
 
   const CloseModalEmployee = () => {
-    document.getElementById("modal_container").classList.remove("modal_active");
+    document.getElementById("modal_container__employee").classList.remove("modal_active");
   }
 
   const AddToListEmployee = async (e) => {
@@ -167,7 +168,7 @@ function Employees() {
                      }
                    );
                    alert(res.data.message);
-                   document.getElementById("modal_container").classList.remove("modal_active");
+                   document.getElementById("modal_container__employee").classList.remove("modal_active");
                    setCallback(!callback);
                   //  history.push("/vattu");
            } catch (err) {
@@ -186,7 +187,7 @@ function Employees() {
                      }
                    );
                    alert(res.data.message);
-                   document.getElementById("modal_container").classList.remove("modal_active");
+                   document.getElementById("modal_container__employee").classList.remove("modal_active");
                    setCallback(!callback);
            } catch (err) {
                alert(err.response.data.message);
@@ -230,7 +231,7 @@ function Employees() {
     <div className="layout-second">
     <NavBar/>
       <div className="employees">
-      <div className="row search-employee">
+      {/* <div className="row search-employee">
           <label>Tìm nhân viên</label>
                 <input
                   type="text"
@@ -244,9 +245,24 @@ function Employees() {
                     // document.getElementById("list-material").style.display = "block";
                   }}
                 />
-        </div>
+        </div> */}
         <div className="header-title">
-              <div className="title-tab">
+        <div className="row search-employee">
+          {/* <label>Tìm nhân viên</label> */}
+                <input
+                  type="text"
+                  name="tenpn"
+                  placeholder="Nhập tên nhân viên"
+                  id="inputsearch"
+                  required
+                  autocomplete="off"
+                  onChange={(event)=> {
+                    setSearchTerm(event.target.value);
+                    // document.getElementById("list-material").style.display = "block";
+                  }}
+                />
+        </div>
+            <div className="title-tab">
                 <h2 style={{display:'flex',alignItems:'center'}}><BsFillPersonLinesFill style={{marginRight:'5px'}}/>Nhân Viên</h2>
               </div>
            {
@@ -320,9 +336,9 @@ function Employees() {
     </div>
     </div>
 
-    <div className="modal_container" id="modal_container">
-          <div className="modal">
-            <h2>{onEdit ? "Cập Nhật Thông Tin Nhân Viên" : "Thêm Nhân Viên"}</h2>
+    <div className="modal_container__employee" id="modal_container__employee">
+          <div className="modal__employee">
+            <h2 className="title_add__employee">{onEdit ? "Cập Nhật Thông Tin Nhân Viên" : "Thêm Nhân Viên"}</h2>
             <div className="row">
               <label htmlFor="title">Họ tên</label>
               <input
@@ -339,6 +355,7 @@ function Employees() {
           <div className="row">
           <label htmlFor="stores">Đại lý</label>
           <select
+          className="select-daily-nhanvien"
             name="madaily"
             value={employee.daily}
             onChange={handleChangeInput}
@@ -396,6 +413,7 @@ function Employees() {
             <div className="row">
             <label htmlFor="role">Quyền</label>
             <select
+             className="select-daily-nhanvien"
               name="role"
               value={employee.role}
               onChange={handleChangeInput}
@@ -412,7 +430,7 @@ function Employees() {
               <input
                 // type="number"
                 name="sodienthoai"
-                placeholder="Nhập số điện thoại1"
+                placeholder="Nhập số điện thoại"
                 id="sodienthoai"
                 required
                 value={employee.sodienthoai}
@@ -431,6 +449,7 @@ function Employees() {
                 id="cmnd"
                 required
                 value={employee.cmnd}
+                maxlength="9"
                 onChange={handleChangeInput}
               />
             </div>
@@ -438,11 +457,12 @@ function Employees() {
           <div className="row">
             <label htmlFor="tinhtrang">Tình trạng</label>
             <select
+             className="select-daily-nhanvien"
               name="tinhtrang"
               value={employee.tinhtrang}
               onChange={handleChangeInput}
+              disabled="disabled"
             >
-              <option value="" disabled selected hidden>Vui lòng chọn tình trạng</option>
               <option value="Đang làm" >Đang làm</option>
               <option value="Chuyển công tác" >Chuyển công tác</option>
               <option value="Nghỉ việc">Nghỉ việc</option>
@@ -450,7 +470,7 @@ function Employees() {
             </select>
           </div>
 
-            <div className="upload">
+            <div className="upload-img-employee">
               <h1>Hình ảnh</h1>
               <input type="file" name="file" id="file_up" onChange={handleUpload} />
            

@@ -223,7 +223,7 @@ function Materials() {
         
         <NavBar/>
         <div className="materials">
-        <div className="row search-material">
+        {/* <div className="row search-material">
           <label>Tìm vật tư</label>
                 <input
                   type="text"
@@ -237,8 +237,22 @@ function Materials() {
                     // document.getElementById("list-material").style.display = "block";
                   }}
                 />
-        </div>
+        </div> */}
             <div className="header-title">
+            <div className="row search-material">
+                <input
+                  type="text"
+                  name="tenpn"
+                  placeholder="Nhập tên vật tư"
+                  id="inputsearch"
+                  required
+                  autocomplete="off"
+                  onChange={(event)=> {
+                    setSearchTerm(event.target.value);
+                    // document.getElementById("list-material").style.display = "block";
+                  }}
+                />
+        </div>
               <div className="title-tab">
                 <h2 style={{display:'flex',alignItems:'center'}}><GiExplosiveMaterials style={{marginRight:'5px'}}/>Vật Tư</h2>
               </div>
@@ -291,9 +305,9 @@ function Materials() {
       </div>
     </div>
     
-    <div className="modal_container" id="modal_container">
-          <div className="modal">
-            <h2>{onEdit ? "Cập Nhật Thông Tin Vật Tư" : "Thêm Vật Tư"}</h2>
+    <div className="modal_container__material" id="modal_container">
+          <div className="modal__material">
+            <h2 className="title_add__material">{onEdit ? "Cập Nhật Thông Tin Vật Tư" : "Thêm Vật Tư"}</h2>
             <div className="row">
               <label htmlFor="title">Tên vật tư</label>
               <input
@@ -365,6 +379,7 @@ function Materials() {
             <label>Trạng thái</label>
             {
               onEdit ? <select
+              className="select-material"
               name="trangthai"
               value={material.trangthai}
               onChange={handleChangeInput}
@@ -376,6 +391,7 @@ function Materials() {
             </select>
             : 
             <select
+            className="select-material"
             name="trangthai"
             value={material.trangthai}
             onChange={handleChangeInput}
@@ -422,7 +438,7 @@ function Materials() {
 
 
             <div className="option-button">
-                <button id="add" onClick={AddToListMaterial}>Thêm</button>
+                <button id="add" onClick={AddToListMaterial}>{onEdit ? 'Cập nhật' : 'Thêm'}</button>
                 <button id="close"   onClick={CloseModalMaterial}>Hủy</button>
             </div>
 

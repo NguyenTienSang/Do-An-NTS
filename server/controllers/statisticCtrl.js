@@ -477,20 +477,131 @@ const statisticCtrl = {
     statisticProfitYear: async (req,res) => {
 
         //Lấy ra danh sách phiếu nhập theo tháng
-        var phieunhap;
-        const nam = 2021
-        // for(var i=1; i<=12; i++)
-        // {
-            //  phieunhap = await PhieuNhap.find({ "$expr": { "$eq": [{ "$month": "$ngay" },i]  } })
-            //  phieunhap = await PhieuNhap.find({ $expr: { $and} })
+        
+        const {madailyfilter,yearstatistic} = req.body;
+        
+        // console.log('test')
+        console.log('madailyfilter : ',madailyfilter);
+        console.log('yearstatistic : ',yearstatistic);
+        console.log('typeof(yearstatistic) 1 : ',typeof(yearstatistic));
+        // const test = parseInt(yearstatistic);
+        // console.log('typeof(yearstatistic) 2 : ',typeof(test));
+        // console.log('test : ',test);
 
-// phieunhap = await PhieuNhap.find({ "$expr": { $and: [{ $eq": [{ "$month": "$ngay" },i] }, { $eq": [{ "$year: "$ngay" },2021] }] } })
-phieunhap = await PhieuNhap.find({ $expr: { $and: [{ $eq: [{ $month: "$ngay" },12] }, { $eq: [{ $year: "$ngay" },2020] }] } })
 
+        if(!madailyfilter)
+        {
+            return res.status(400)
+            .json({message:"Vui lòng chọn đại lý"})
+        }
 
-        // }
+        if(!yearstatistic)
+        {
+            return res.status(400)
+            .json({message:"Vui lòng chọn năm"})
+        }
+
+      
+        var statisticProfitYear = [];
+        var element = {
+            thang: "",
+            sophieunhap: 0,
+            sophieuxuat: 0,
+            chiphinhap: 0,
+            chiphixuat: 0,
+        }
+
+        // phieunhap = await PhieuNhap.find({ $expr: { $and: [{ $eq: [{ $month: "$ngay" },11] }, { $eq: [{ $year: "$ngay" },nam] }] } }).select({ctpn : 1, ngay: 1, _id: 0})
+        // phieunhap = await PhieuNhap.find({ $expr: { $and: [{ $eq: [{ $month: "$ngay" },11] }, { $eq: [{ $year: "$ngay" },nam] }] } }).select({ctpn : 1, ngay: 1, _id: 0})
        
-        return res.json(phieunhap)
+        const phieunhap = await PhieuNhap.find({ $expr: { $eq: [{ $year: "$ngay" },yearstatistic] } }).select({ctpn : 1, ngay: 1, _id: 0}).populate('manv').populate({path :'manv',populate: {path: 'madaily'}});
+        const phieuxuat = await PhieuXuat.find({ $expr: { $eq: [{ $year: "$ngay" },yearstatistic] } }).select({ctpx : 1, ngay: 1, _id: 0}).populate('manv').populate({path :'manv',populate: {path: 'madaily'}});
+        // const phieuxuat = await PhieuXuat.find({ $expr: { $and: [{ $eq: [{ $month: "$ngay" },11] }, { $eq: [{ $year: "$ngay" },nam] }] } }).select({ctpx : 1, ngay: 1, _id: 0});
+
+        //Nếu tất cả đại lý
+        if(madailyfilter === "allstores")
+        {
+            for(var i=1; i<=12; i++)
+            {
+                element.thang = i;
+                element.sophieunhap = element.sophieuxuat = element.chiphinhap = element.chiphixuat = 0;
+                //Phiếu nhập
+            
+                phieunhap.map(pn => {
+                    // console.log('pn.ngay : ',(pn.ngay).slice(5,7))
+    
+                    // console.log('pn.ngay : ',(JSON.stringify(pn.ngay)).slice(6,8))
+                    
+                    if(parseInt((JSON.stringify(pn.ngay)).slice(6,8)) === i)
+                    {
+                        // console.log('pn.manv.madaily : ',pn.manv.madaily._id);
+                        // console.log('madailyfilter : ',madailyfilter);
+                        element.sophieunhap++;
+                        pn.ctpn.map(ctpn => {
+                            element.chiphinhap += parseInt(ctpn.gianhap * ctpn.soluong);
+                        })
+                    }
+                })
+    
+                //Phiếu xuất
+                phieuxuat.map(px => {
+                    if(parseInt((JSON.stringify(px.ngay)).slice(6,8)) === i)
+                    {
+                        element.sophieuxuat++;
+                        px.ctpx.map(ctpx => {
+                            element.chiphixuat += parseInt(ctpx.giaxuat * ctpx.soluong);
+                        })
+                    }
+                })
+                // console.log('element : ',element)
+                statisticProfitYear.push({...element});
+    
+            }
+        }
+        //Chọn đại lý
+        else {
+            for(var i=1; i<=12; i++)
+            {
+                element.thang = i;
+                element.sophieunhap = element.sophieuxuat = element.chiphinhap = element.chiphixuat = 0;
+                //Phiếu nhập
+            
+                phieunhap.map(pn => {
+                    // console.log('pn.ngay : ',(pn.ngay).slice(5,7))
+    
+                    // console.log('pn.ngay : ',(JSON.stringify(pn.ngay)).slice(6,8))
+                    
+                    if(parseInt((JSON.stringify(pn.ngay)).slice(6,8)) === i && (pn.manv.madaily._id).toString() === madailyfilter)
+                    {
+                        // console.log('pn.manv.madaily : ',pn.manv.madaily._id);
+                        // console.log('madailyfilter : ',madailyfilter);
+                        element.sophieunhap++;
+                        pn.ctpn.map(ctpn => {
+                            element.chiphinhap += parseInt(ctpn.gianhap * ctpn.soluong);
+                        })
+                    }
+                })
+    
+                //Phiếu xuất
+                phieuxuat.map(px => {
+                    if(parseInt((JSON.stringify(px.ngay)).slice(6,8)) === i && (px.manv.madaily._id).toString() === madailyfilter)
+                    {
+                        element.sophieuxuat++;
+                        px.ctpx.map(ctpx => {
+                            element.chiphixuat += parseInt(ctpx.giaxuat * ctpx.soluong);
+                        })
+                    }
+                })
+                // console.log('element : ',element)
+                statisticProfitYear.push({...element});
+    
+            }
+        }
+
+
+        
+       console.log('statisticProfitYear : ',statisticProfitYear);
+        return res.json(statisticProfitYear)
         /*
             Hướng cũ:
             - Tạo ra mảng gồm 12 tháng
@@ -504,7 +615,59 @@ phieunhap = await PhieuNhap.find({ $expr: { $and: [{ $eq: [{ $month: "$ngay" },1
         */
             
         /*
+
+
+
+
+
+
+
             Hướng mới
+
+            for()
+
+
+
+
+
+
+
+
+
+
+
+            Bản Desktop
+            Tháng 1 Số lượng nhập    Số lượng xuất   Tổng chi phí nhập   Tổng chi phí xuất   Tổng lợi nhuận
+            Tháng 2 Số lượng nhập    Số lượng xuất   Tổng chi phí nhập   Tổng chi phí xuất   Tổng lợi nhuận
+            Tháng 3 Số lượng nhập    Số lượng xuất   Tổng chi phí nhập   Tổng chi phí xuất   Tổng lợi nhuận
+                                                                            Tổng lơi nhuận năm : 
+            Bản mobile
+            cột tháng 1-> 12
+            Tháng 1
+            Số lượng nhập Tổng chi phí nhập
+            Số lượng xuất Tổng chi phí xuất
+            Tổng lợi nhuận tháng
+
+            Tháng 2
+            Số lượng nhập Tổng chi phí nhập
+            Số lượng xuất Tổng chi phí xuất
+            Tổng lợi nhuận tháng
+            ..
+            ....
+            ......
+            Tổng lợi nhuận năm
+            
+            
+            
+
+
+
+
+
+
+
+
+
             - Gán vào mảng object
             - 
             vattu{
@@ -579,7 +742,169 @@ phieunhap = await PhieuNhap.find({ $expr: { $and: [{ $eq: [{ $month: "$ngay" },1
             
         // }
        
+    },
+
+    statisticProfitStage: async (req,res) => {
+
+        //Lấy ra danh sách phiếu nhập theo tháng
+        
+        const {madailyfilter,startyearstatistic,endyearstatistic} = req.body;
+
+
+        if(!madailyfilter)
+        {
+            return res.status(400)
+            .json({message:"Vui lòng chọn đại lý"})
+        }
+
+        if(!startyearstatistic)
+        {
+            return res.status(400)
+            .json({message:"Vui lòng chọn năm bắt đầu"})
+        }
+
+        if(!endyearstatistic)
+        {
+            return res.status(400)
+            .json({message:"Vui lòng chọn năm bắt đầu"})
+        }
+
+        
+        var statisticProfitYear = [];
+        var element = {
+            nam: 0,
+            sophieunhap: 0,
+            sophieuxuat: 0,
+            chiphinhap: 0,
+            chiphixuat: 0,
+        }
+
+        console.log('năm bắt đầu : ',startyearstatistic);
+        console.log('năm két thúc: ',endyearstatistic);
+        console.log('madailyfilter: ',madailyfilter);
+    //    madailyfilter
+        const phieunhap = await PhieuNhap.find({ $expr: {$and: [{ $gte: [{ $year: "$ngay" },startyearstatistic] } , { $lte: [{ $year: "$ngay" },endyearstatistic] }]} }).select({ctpn : 1, ngay: 1, _id: 0}).populate('manv').populate({path :'manv',populate: {path: 'madaily'}});
+        const phieuxuat = await PhieuXuat.find({ $expr: {$and: [{ $gte: [{ $year: "$ngay" },startyearstatistic] } , { $lte: [{ $year: "$ngay" },endyearstatistic] }]} }).select({ctpx : 1, ngay: 1, _id: 0}).populate('manv').populate({path :'manv',populate: {path: 'madaily'}});
+
+        
+
+
+        // const phieunhap = await PhieuNhap.find({ $expr: { $eq: [{ $year: "$ngay" },yearstatistic] } }).select({ctpn : 1, ngay: 1, _id: 0}).populate('manv').populate({path :'manv',populate: {path: 'madaily'}});
+        // const phieuxuat = await PhieuXuat.find({ $expr: [{ $eq: [{ $year: "$ngay" },yearstatistic] }] }).select({ctpx : 1, ngay: 1, _id: 0}).populate('manv').populate({path :'manv',populate: {path: 'madaily'}});
+
+
+
+        for(var i=startyearstatistic; i<=endyearstatistic; i++)
+        {
+            element.nam = i;
+            element.sophieunhap = element.sophieuxuat = element.chiphinhap = element.chiphixuat = 0;
+            
+            //Phiếu nhập
+            phieunhap.map(pn => {
+                // console.log('pn.ngay : ',(pn.ngay).slice(5,7))
+
+                console.log('pn.ngay : ',(JSON.stringify(pn.ngay)).slice(1,5))
+                
+                if(parseInt((JSON.stringify(pn.ngay)).slice(1,5)) === i  && (pn.manv.madaily._id).toString() === madailyfilter)
+                {
+                    // console.log('pn.manv.madaily : ',pn.manv.madaily._id);
+                    // console.log('madailyfilter : ',madailyfilter);
+                    element.sophieunhap++;
+                    pn.ctpn.map(ctpn => {
+                        element.chiphinhap += parseInt(ctpn.gianhap * ctpn.soluong);
+                    })
+                }
+            })
+
+
+            //Phiếu xuất
+            phieuxuat.map(px => {
+                if(parseInt((JSON.stringify(px.ngay)).slice(1,5)) === i  && (px.manv.madaily._id).toString() === madailyfilter)
+                {
+                    element.sophieuxuat++;
+                    px.ctpx.map(ctpx => {
+                        element.chiphixuat += parseInt(ctpx.giaxuat * ctpx.soluong);
+                    })
+                }
+            })
+            // console.log('element : ',element)
+            statisticProfitYear.push({...element});
+
+        }
+
+        
+
+     
+
+
+        
+       console.log('statisticProfitYear : ',statisticProfitYear);
+        return res.json(statisticProfitYear)
+       
+            
+        /*
+
+
+            Bản Desktop
+            Tháng 1 Số lượng nhập    Số lượng xuất   Tổng chi phí nhập   Tổng chi phí xuất   Tổng lợi nhuận
+            Tháng 2 Số lượng nhập    Số lượng xuất   Tổng chi phí nhập   Tổng chi phí xuất   Tổng lợi nhuận
+            Tháng 3 Số lượng nhập    Số lượng xuất   Tổng chi phí nhập   Tổng chi phí xuất   Tổng lợi nhuận
+                                                                            Tổng lơi nhuận năm : 
+            Bản mobile
+            cột tháng 1-> 12
+            Tháng 1
+            Số lượng nhập Tổng chi phí nhập
+            Số lượng xuất Tổng chi phí xuất
+            Tổng lợi nhuận tháng
+
+            Tháng 2
+            Số lượng nhập Tổng chi phí nhập
+            Số lượng xuất Tổng chi phí xuất
+            Tổng lợi nhuận tháng
+            ..
+            ....
+            ......
+            Tổng lợi nhuận năm
+            
+            
+            
+
+
+
+
+
+
+
+
+
+           
+
+            Tổng doanh thu đại lý hiện trên đầu
+            - Trong mỗi bảng là một vật tư -> Cuối bảng là tổng doanh thu vật tư 12 tháng
+            - Tạo mảng tháng, số lượng nhập, số lượng xuất gồm 12 phần tử
+            - Lấy ra danh sách vật tư chỉ có trong đại lý
+
+            Lọc phiếu nhập -> lọc map ct phiếu nhập
+           
+            -> Tạo ra mảng vật tư filter
+             find danh sách mảng vật tư filter
+            -> Nếu mà undefined (không có) -> Thêm vật tư đó vào trong mảng
+            tăng số lượng nhập lên
+            Biến doanh thu = - (số lượng nhập * giá nhập)   
+            
+            Lọc phiếu xuất -> Ọc map
+
+        */
+
+
+        // try {
+        //     const {year,madailyfilter} = req.body;
+        // } catch (error) {
+            
+        // }
+       
     }
+
 }
 
 module.exports = statisticCtrl;

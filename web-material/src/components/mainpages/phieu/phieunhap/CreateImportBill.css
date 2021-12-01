@@ -30,12 +30,15 @@
 
 .create-importbill .search-material {
     display: flex;
+    justify-content: center;
     width: 100%;
 }
 
 .create-importbill input {
-    width: 80%;
+    max-width: 300px;
+    width: 100%;
     height: 30px;
+    border-radius: 8px;
 }
 
 .create-importbill .list-material {

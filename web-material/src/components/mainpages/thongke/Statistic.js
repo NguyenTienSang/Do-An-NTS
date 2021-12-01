@@ -32,6 +32,26 @@ function Statistic() {
                             
                       </li>
                 </ul>
+
+                <ul>
+                    <li className="statistic-item">
+                            <Link to={'/thongkeloinhuannam'}><p>Thống kê <br/> lợi nhuận <br/> theo năm</p> </Link>
+                      </li>
+
+                      <li className="statistic-item">
+                      <Link to={'/thongkeloinhuangiaidoan'}><p>Thống kê <br/> lợi nhuận <br/> theo giai đoạn</p></Link>
+                      </li>
+                </ul>
+
+                <ul>
+                    <li className="statistic-item">
+                            <Link to={'/thongkeloinhuannam'}><p>Top Vật Tư Doanh Thu Cao</p> </Link>
+                      </li>
+
+                      <li className="statistic-item">
+                      <Link to={'/thongkeloinhuangiaidoan'}><p>Thống kê <br/> lợi nhuận <br/> theo giai đoạn</p></Link>
+                      </li>
+                </ul>
                  
                 
               </div>

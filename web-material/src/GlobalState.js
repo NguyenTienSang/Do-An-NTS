@@ -7,7 +7,7 @@ import StoresAPI from "./api/StoreAPI";
 import WareHouseAPI from "./api/WareHouseAPI";
 import ImportBillAPI from "./api/ImportBillAPI"
 import ExportBillAPI from "./api/ExportBillAPI"
-import StatisticAPI from "./api/StatisticAPI"
+// import StatisticAPI from "./api/StatisticAPI"
 
 import axios from "axios";
 
@@ -22,9 +22,9 @@ export const DataProvider = ({ children }) => {
     if (firstLogin) {
       const refreshToken = async () => {
         const res = await axios.get("/api/auth/refresh_token");
-
+        console.log('res.data.accesstoken : ',res.data.accesstoken);
         setToken(res.data.accesstoken);
-          
+        
         setTimeout(() => {
           refreshToken();
         }, 10 * 60 * 1000);
@@ -41,7 +41,7 @@ export const DataProvider = ({ children }) => {
     warehouseAPI: WareHouseAPI(),
     importbillAPI: ImportBillAPI(),
     exportbillAPI: ExportBillAPI(),
-    statisticAPI: StatisticAPI(),
+    // statisticAPI: StatisticAPI(),
     userAPI: UserAPI(token)
   };
 

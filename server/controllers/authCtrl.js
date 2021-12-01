@@ -190,6 +190,7 @@ const authCtrl = {
   getEmployee: async (req, res) => {
     try {
       const nhanvien = await NhanVien.findById(req.nhanvien.id).populate('madaily').select("-password");
+      // const nhanvien = await NhanVien.findById(req.nhanvien.id).select("-password");
       
       if (!nhanvien) return res.status(400).json({ msg: "Nhân viên không tồn tại !!!" });
 

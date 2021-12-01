@@ -6,13 +6,15 @@ function StatisticAPI() {
   const [callback, setCallback] = useState(false);
 
     const statisticMaterial = async () => {
-      const res = await axios.post('/api/thongke',{
+      const res = await axios.post('http://192.168.1.4:5000/api/api/thongke',{
           
       });
       setStatisticMaterial(res.data);
     };
 
- 
+    const statisticEmployeeImportBill = async () => {
+          
+    }
   
  useEffect(() => {
     statisticMaterial()

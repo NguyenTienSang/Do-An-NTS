@@ -10,9 +10,9 @@
     margin: 20px;
 }
 
-.employees .search-employee {
+/* .employees .search-employee {
     margin-bottom: 10px;
-}
+} */
 
 .employees .search-employee input {
     width: 200px;
@@ -41,7 +41,7 @@
     font-size: 18px;
 }
 
-.modal_container {
+.modal_container__employee {
     position: fixed;
     width: 100%;
     height: 100%;
@@ -62,50 +62,79 @@
     opacity: 1;
 }
 
-.modal {
+.title_add__employee {
+    color: rgb(26, 148, 255);
+    font-size: 36px;
+}
+
+.modal__employee {
     background-color: #fff;
-    max-width: 640px;
+    max-width: 700px;
     width: 100%;
-    height: 90%;
+    height: 900px;
+    margin-top: 260px;
+    margin-bottom: 40px;
     display: flex;
     align-items: center;
     flex-direction: column;
     border-radius: 8px;
-    padding: 15px;
+    padding: 20px;
 }
 
-.modal .row {
+.modal__employee .row {
     display: flex;
-    justify-content: space-between;
+    /* flex-direction: flex; */
+    justify-content: flex-start;
     margin: 5px 0px;
     width: 100%;
 }
 
-.modal .row label,
+.modal__employee .row .select-daily-nhanvien {
+    height: 40px;
+    width: 200px;
+    padding-left: 20px;
+
+    /* border: 1px solid #000; */
+    border-radius: 8px;
+}
+
+.modal__employee .row .select-daily-nhanvien:focus {
+    outline: none;
+}
+
+.modal__employee .row label {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    width: 170px;
+}
+
+.modal__employee .row label,
 input {
     margin: 0px;
 }
 
-.modal input {
-    width: 80%;
-    height: 30px;
+.modal__employee input {
+    max-width: 450px;
+    width: 100%;
+    height: 40px;
     border: 1px solid #999;
     border-radius: 5px;
     padding: 0px 10px;
 }
 
 /* Input upload materials */
-.upload {
+.upload-img-employee {
     display: flex;
     justify-content: flex-start;
     position: relative;
     max-width: 600px;
     width: 100%;
     height: auto;
-    margin: 0;
+    margin-top: 35px;
 }
 
-.upload h1 {
+.upload-img-employee h1 {
     display: flex;
     align-items: center;
     margin: 0px;
@@ -171,14 +200,14 @@ input {
     color: crimson;
 }
 
-.modal .option-button {
+.modal__employee .option-button {
     display: flex;
     justify-content: space-around;
     width: 100%;
     margin: 0px;
 }
 
-.modal .option-button button {
+.modal__employee .option-button button {
     max-width: 140px;
     width: 100%;
     height: 40px;

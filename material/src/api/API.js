@@ -19,3 +19,10 @@ export const APICTPX = "http://192.168.1.4:5000/api/ctphieuxuat";
 //Upload & xóa ảnh
 export const APIUpload = "http://192.168.1.4:5000/api/upload";
 export const APIDestroy = "http://192.168.1.4:5000/api/destroy";
+
+
+//Thống kê
+// statisticProfitYear
+export const APITKLNN = "http://192.168.1.4:5000/api/thongke/loinhuannam";
+// statisticProfitYear
+export const APITKLNGD = "http://192.168.1.4:5000/api/thongke/loinhuangiaidoan";

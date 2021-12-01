@@ -24,7 +24,7 @@ const Login = () => {
             // const res = await axios.get('/api/employee');
             console.log('User : ',user);
             console.log('User 2 : ',{...user})
-            await axios.post("/api/auth/login", { ...user });
+            const res = await axios.post("/api/auth/login", { ...user });
             localStorage.setItem('firstLogin', true);
             window.location.href = "/trangchu";
        

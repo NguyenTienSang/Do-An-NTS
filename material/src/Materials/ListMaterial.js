@@ -97,10 +97,10 @@ export default function ListMaterial({navigation}){
                     ],
                     );
               }).catch(error => {
-                Alert.alert('Thông báo  Thất Bại 1',error.response.data.message);
+                Alert.alert('Thông báo',error.response.data.message);
               })
           }).catch(error => {
-            Alert.alert('Thông báo Thất Bại 2',error.response.data.message);
+            Alert.alert('Thông báo',error.response.data.message);
           })
       }
 

@@ -29,6 +29,7 @@ function Stores() {
   const param = useParams();
 
   const [stores] = state.storeAPI.stores;
+  const [searchTerm,setSearchTerm] = useState("");
   const [onEdit, setOnEdit] = useState(false);
   const [callback, setCallback] = state.storeAPI.callback;
  
@@ -210,6 +211,22 @@ function Stores() {
       <NavBar/>
       <div className="stores">
       <div className="header-title">
+
+
+      <div className="row search-store">
+                <input
+                  type="text"
+                  name="tenpn"
+                  placeholder="Nhập tên đại lý"
+                  id="inputsearch"
+                  required
+                  autocomplete="off"
+                  onChange={(event)=> {
+                    setSearchTerm(event.target.value);
+                    // document.getElementById("list-material").style.display = "block";
+                  }}
+                />
+        </div>
               <div className="title-tab">
                 <h2 style={{display:'flex',alignItems:'center'}}><GiExplosiveMaterials style={{marginRight:'5px'}}/>Đại Lý</h2>
               </div>
@@ -228,7 +245,16 @@ function Stores() {
             <p style={{flex:0.6}}>Xóa</p>
           </div>
           {
-          stores.map((store,index) => {
+          stores?.filter(store=>{
+            if(searchTerm === "") 
+            {
+                return store;
+            }
+            else if(store.tendl.toLowerCase().includes(searchTerm.toLowerCase()))
+            {
+                return store;
+            }
+        }).map((store,index) => {
               return(
                 <StoreItem
                   key={store._id}

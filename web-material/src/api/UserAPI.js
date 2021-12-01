@@ -7,6 +7,7 @@ function UserAPI(token) {
     const [inforuser, setInforUser] = useState([]);
 
     useEffect(() =>{
+        console.log()
         if(token) {
             const getUser = async () => {
                 try{
@@ -15,6 +16,7 @@ function UserAPI(token) {
                     })
                     setIsLogged(true);
                     setInforUser(res.data);
+                    console.log('Data nhân viên nè : ',res.data);
                     localStorage.setItem('inforuser',JSON.stringify(res.data));
                     res.data.role === 'admin' ? setIsAdmin(true) : setIsAdmin(false);
                 } catch(err) {

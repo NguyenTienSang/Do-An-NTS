@@ -138,7 +138,7 @@ export default function DanhSachDaiLy({navigation,route}){
                                                     }
                                                     else if(route.params.page == 'ThongKeTheoGiaiDoanTungDaiLy')
                                                     {
-                                                        navigation.navigate('ThongKeTheoGiaiDoanTungDaiLy',{id: item._id,tendl: item.tendl})
+                                                        navigation.navigate('ThongKeTheoGiaiDoanTungDaiLy',{daily: item})
                                                     }
                                                     }}
                                                     />

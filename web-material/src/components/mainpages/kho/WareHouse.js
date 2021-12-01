@@ -27,7 +27,7 @@ function WareHouses() {
   const [token] = state.token;
 
   const param = useParams();
-
+  const [searchTerm,setSearchTerm] = useState("");
   const [stores] = state.storeAPI.stores;
   const [onEdit, setOnEdit] = useState(false);
   const [warehouses] = state.warehouseAPI.warehouses;
@@ -223,6 +223,21 @@ function WareHouses() {
         <div className="warehouses">
 
         <div className="header-title">
+
+        <div className="row search-warehouse">
+                <input
+                  type="text"
+                  name="tenpn"
+                  placeholder="Nhập tên kho"
+                  id="inputsearch"
+                  required
+                  autocomplete="off"
+                  onChange={(event)=> {
+                    setSearchTerm(event.target.value);
+                    // document.getElementById("list-material").style.display = "block";
+                  }}
+                />
+        </div>
               <div className="title-tab">
                 <h2 style={{display:'flex',alignItems:'center'}}><GiExplosiveMaterials style={{marginRight:'5px'}}/>Kho</h2>
               </div>
@@ -250,7 +265,16 @@ function WareHouses() {
               }
               <p style={{flex:0.6}}>Xem kho</p>
             </div>
-            {warehouses?.map((warehouse,index) => {
+            {warehouses?.filter(warehouse=>{
+            if(searchTerm === "") 
+            {
+                return warehouse;
+            }
+            else if(warehouse.tenkho.toLowerCase().includes(searchTerm.toLowerCase()))
+            {
+                return warehouse;
+            }
+        }).map((warehouse,index) => {
                  if(isAdmin)
                  {
                   return( 
