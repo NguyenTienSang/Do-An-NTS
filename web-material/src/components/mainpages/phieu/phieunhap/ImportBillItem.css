@@ -35,6 +35,12 @@
     font-weight: 300;
 }
 
+.importbill_item .importbill_item_element p {
+    max-width: 160px;
+    width: 100%;
+    word-wrap: break-word;
+}
+
 .header_list p:last-child,
 .importbill_item .importbill_item_element:last-child {
     border-right: none;

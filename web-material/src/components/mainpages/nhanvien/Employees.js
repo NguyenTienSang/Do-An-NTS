@@ -317,6 +317,7 @@ function Employees() {
               }
               else {
                 if(employee.madaily._id.toString() === inforuser.madaily._id.toString())
+                // if(employee.madaily._id.toString() === inforuser.madaily)
                 {
                   return( 
                     <EmployeeItem

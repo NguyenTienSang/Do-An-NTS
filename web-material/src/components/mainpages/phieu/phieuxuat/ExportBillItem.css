@@ -35,6 +35,12 @@
     font-weight: 300;
 }
 
+.exportbill_item .exportbill_item_element p {
+    max-width: 160px;
+    width: 100%;
+    word-wrap: break-word;
+}
+
 .header_list p:last-child,
 .exportbill_item .exportbill_item_element:last-child {
     border-right: none;

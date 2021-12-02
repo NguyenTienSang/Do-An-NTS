@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema
 const PhieuNhapSchema = new Schema({
-    tenpn:{
-        type: String,
-        unique: true,
-        required: true,
-    },
+    // tenpn:{
+    //     type: String,
+    //     unique: true,
+    //     required: true,
+    // },
     ngay:{
         type: Date,
         required: true,
@@ -34,8 +34,6 @@ const PhieuNhapSchema = new Schema({
             }
         }
     ]
-},{
-    timestamps: true
 })
 
 module.exports = mongoose.model('phieunhap',PhieuNhapSchema);

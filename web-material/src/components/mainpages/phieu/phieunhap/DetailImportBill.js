@@ -17,7 +17,7 @@ function DetailImportBill(importbill) {
 
   return (
     <div className="detail-importbill">
-    <div className="title-detail"><p>Chi Tiết Phiếu Nhập {importbill.importbill.tenpn}</p></div>
+    <div className="title-detail"><p>Chi Tiết Phiếu Nhập {importbill.importbill._id}</p></div>
     <div className="header-detail-importbill">
       <p  style={{flex:0.5}}>STT</p>
       <p>Tên VT</p>

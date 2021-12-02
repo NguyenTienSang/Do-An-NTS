@@ -14,13 +14,15 @@ const importbillCtrl = {
     },
     createImportBill: async (req, res) => {
   
-        const {tenpn,ngay,manv,makho,ctpn} = req.body;
-        console.log('tenpn1 : ',tenpn);
-        if(!tenpn)
-        {
-            return res.status(400)
-            .json({success: false,message:"Tên phiếu nhập không được trống"})
-        }
+        const {ngay,manv,makho,ctpn} = req.body;
+
+        console.log('req.body : ',req.body)
+        // console.log('tenpn1 : ',tenpn);
+        // if(!tenpn)
+        // {
+        //     return res.status(400)
+        //     .json({success: false,message:"Tên phiếu nhập không được trống"})
+        // }
         if(!ngay)
         {
             return res.status(400)
@@ -43,20 +45,20 @@ const importbillCtrl = {
             .json({success: false,message:"Phiếu nhập chưa có vật tư"})
         }
     
-        console.log('tenpn : ',tenpn);
+        // console.log('tenpn : ',tenpn);
         console.log('ngay : ',ngay);
         console.log('manv : ',manv);
         console.log('kho : ',makho);
         try {
-            const phieunhap = await PhieuNhap.findOne({ tenpn })
+            // const phieunhap = await PhieuNhap.findOne({ tenpn })
             
-            if (phieunhap)
-            {
-                return res
-                .status(400)
-                .json({ success: false, message: 'Tên phiếu nhập đã tồn tại' })
-            }
-            const newPhieuNhap = new PhieuNhap({tenpn,ngay,manv,makho,ctpn})
+            // if (phieunhap)
+            // {
+            //     return res
+            //     .status(400)
+            //     .json({ success: false, message: 'Tên phiếu nhập đã tồn tại' })
+            // }
+            const newPhieuNhap = new PhieuNhap({ngay,manv,makho,ctpn})
             await newPhieuNhap.save();
             
             const vattu = await VatTu.find();

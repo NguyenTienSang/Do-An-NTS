@@ -25,6 +25,8 @@ const Login = () => {
             console.log('User : ',user);
             console.log('User 2 : ',{...user})
             const res = await axios.post("/api/auth/login", { ...user });
+            console.log('res : ',res.data.user);
+            localStorage.setItem('inforuser',JSON.stringify(res.data.user));
             localStorage.setItem('firstLogin', true);
             window.location.href = "/trangchu";
        

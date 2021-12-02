@@ -128,7 +128,7 @@ const authCtrl = {
       if (!password) return res.status(400).json({ msg: "Password không được trống" });
 
       //Kiểm tra tài khoản username
-      const user = await NhanVien.findOne({ username });
+      const user = await NhanVien.findOne({ username }).populate('madaily');
       if (!user) return res.status(400).json({ msg: "Username không tồn tại " });
 
       //Kiểm tra mật khẩu
@@ -141,13 +141,18 @@ const authCtrl = {
       const accesstoken = createAccessToken({ id: user._id });
       const refreshtoken = createRefreshToken({ id: user._id });
 
-     
+
+     console.log('accesstoken : ',accesstoken) 
+     console.log('refreshtoken : ',refreshtoken) 
+
       res.cookie('refreshtoken', refreshtoken, {
         httpOnly: true,
-        path: '/api/auth/refresh_token'
+        path: '/api/auth/refresh_token',
+        maxAge: 7 * 24 * 60 * 60 * 1000 //7 day
     })
-    console.log('user : ',user);
+    // console.log('user : ',user);
       // console.log('Đã lưu cookie',req.cookies.refreshtoken);
+
       res.json({accesstoken,user})
       // console.log(accesstoken);
     } catch (err) {

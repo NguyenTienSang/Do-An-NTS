@@ -21,7 +21,7 @@ function ExportBillItem({exportbill,stt}) {
         <p>{stt+1}</p>
         </div>
         <div className="exportbill_item_element">
-        <p>{exportbill.tenpx}</p>
+        <p>{exportbill._id}</p>
         </div>
         <div className="exportbill_item_element">
         <p>{(exportbill.ngay).slice(8,10)}-{(exportbill.ngay).slice(5,7)}-{(exportbill.ngay).slice(0,4)}</p>

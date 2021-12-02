@@ -1,0 +1,59 @@
+.modal_container__notification {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: visible;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s;
+    overflow: scroll;
+}
+
+.modal_active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.title_add__notification {
+    color: rgb(26, 148, 255);
+    font-size: 36px;
+}
+
+.modal__notification {
+    background-color: #fff;
+    max-width: 330px;
+    width: 100%;
+    height: 180px;
+    margin-top: 0px;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.modal__notification .option-button {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin: 0px;
+}
+
+.modal__notification .option-button button {
+    max-width: 140px;
+    width: 100%;
+    height: 40px;
+    border: 1px solid #999;
+    border-radius: 8px;
+    background-color: rgb(26, 148, 255);
+    color: #fff;
+    margin: 0px;
+    position: relative;
+    bottom: -50px;
+}

@@ -11,6 +11,7 @@ import {BiBookAdd} from 'react-icons/bi';
 
 function ExporttBill() {
   const state = useContext(GlobalState);
+  const [searchTerm,setSearchTerm] = useState("");
   const [exportbills] = state.exportbillAPI.exportbills;
 
  
@@ -26,8 +27,23 @@ function ExporttBill() {
     <NavBar/>
         <div className="exportbills">
         <div className="header-title">
+        <div className="row search-exportbill">
+          {/* <label>Tìm nhân viên</label> */}
+                <input
+                  type="text"
+                  name="id"
+                  placeholder="Nhập ID phiếu xuất"
+                  id="inputsearch"
+                  required
+                  autocomplete="off"
+                  onChange={(event)=> {
+                    setSearchTerm(event.target.value);
+                    // document.getElementById("list-material").style.display = "block";
+                  }}
+                />
+        </div>
               <div className="title-tab">
-                <h2 style={{display:'flex',alignItems:'center'}}><GiExplosiveMaterials style={{marginRight:'5px'}}/>Danh Sách Phiếu Nhập</h2>
+                <h2 style={{display:'flex',alignItems:'center'}}><GiExplosiveMaterials style={{marginRight:'5px'}}/>Danh Sách Phiếu Xuất</h2>
               </div>
               
               <button className='add-item'><Link to={'/lapphieuxuat'} style={{color:'#fff'}}> <BiBookAdd  style={{marginRight:'5px',marginTop:'5px'}}/>Lập Phiếu Xuất</Link></button>
@@ -35,7 +51,7 @@ function ExporttBill() {
             </div>
             <div className="header_list">
               <p style={{flex:0.5}}>STT</p>
-              <p>Tên phiếu</p>
+              <p>ID</p>
               <p>Ngày lập</p>
               <p>Nhân viên</p>
               <p>Đại lý</p>
@@ -43,7 +59,16 @@ function ExporttBill() {
               <p>Tổng Tiền</p>
               <p style={{flex:0.6}}>Chi tiết</p>
             </div>
-            {exportbills.map((exportbill,index) => {
+            {exportbills.filter(exportbill=>{
+              if(searchTerm === "") 
+              {
+                  return exportbill;
+              }
+              else if(exportbill._id.toLowerCase().includes(searchTerm.toLowerCase()))
+              {
+                  return exportbill;
+              }
+          }).map((exportbill,index) => {
               {
                 console.log('phiếu nhập1 : ',exportbill);
               }

@@ -36,12 +36,20 @@ function CreateImportBill() {
   const [searchTerm,setSearchTerm] = useState("");
   const [onSearch, setOnSearch] = useState(false);
   const [importbill, setImportBill] = useState({
-    tenpn: "",
+    // tenpn: "",
     ngay: "",
     manv: "",
     makho: "",
     ctpn: []
   });
+
+  const [openalert,setOpenAlert] = useState(false);
+
+  const [message,setMessage] = useState("");
+
+  useEffect(()=> {
+
+  },[openalert])
 
   useEffect(async() => {
     console.log('load lại dữ liệu materialsfilter');
@@ -58,7 +66,7 @@ function CreateImportBill() {
 
   useEffect(() => {
     setImportBill({
-      tenpn:'PN' + (importbills.length+1),
+      // tenpn:'PN' + (importbills.length+1),
       ngay: moment(new Date()).format('MM-DD-yyy'),
       manv:JSON.parse(localStorage.getItem('inforuser'))._id,
       makho:"",
@@ -120,13 +128,13 @@ function CreateImportBill() {
  
  
   return (
-    <div className="layout">
+    <>
+ <div className="layout">
     <div className="layout-first"><Header/></div> 
     <div className="layout-second">
     <NavBar/>
       <div className="create-importbill">
         <div className="row search-material">
-          <label>Tìm vật tư</label>
                 <input
                   type="text"
                   name="tenpn"
@@ -177,7 +185,7 @@ function CreateImportBill() {
       <div className="form-bill">
       <p className="header-title">Nhập Thông Tin Phiếu Nhập</p>
 
-      <div className="row">
+      {/* <div className="row">
               <label htmlFor="title">Tên phiếu nhập</label>
               <input
                 type="text"
@@ -188,7 +196,7 @@ function CreateImportBill() {
                 value={importbill.tenpn}
                 onChange={handleChangeInput}
               />
-      </div>
+      </div> */}
 
 
     <div className="row">
@@ -305,7 +313,9 @@ function CreateImportBill() {
             {
               if(detailimportbill.length==0)
               {
-                  alert('Phiếu chưa có vật tư, vui lòng thêm  vật tư vào phiếu')
+                setMessage('Phiếu chưa có vật tư, vui lòng thêm  vật tư vào phiếu')
+                setOpenAlert(true);
+                  // alert('Phiếu chưa có vật tư, vui lòng thêm  vật tư vào phiếu')
               }
               else
               {
@@ -325,10 +335,15 @@ function CreateImportBill() {
                              }
                            );
                            console.log('importbill nè : ',importbill)
-                           alert(res.data.message);
+                          
+                          //  alert(res.data.message);
+                          setMessage(res.data.message)
+                          setOpenAlert(true);
                            setCallback(!callback);
                    } catch (err) {
-                       alert(err.response.data.message);
+                      //  alert(err.response.data.message);
+                       setMessage(err.response.data.message)
+                       setOpenAlert(true);
                    }
               }
             }}>Lập Phiếu</button>
@@ -338,6 +353,27 @@ function CreateImportBill() {
       </div>
       </div>
     </div>
+
+    {
+      openalert ?  
+      <div className="modal_container__notification modal_active" id="modal_container__notification">
+      <div className="modal__notification">
+        <p className="title-notification">Thông báo</p>
+        <p>{message}</p>
+        <div className="option-button">
+            <button id="add" onClick={() =>{
+               document.getElementById("modal_container__notification").classList.remove("modal_active");
+               setOpenAlert(false);
+            }} >OK</button>
+            {/* <button id="close"  >Hủy</button> */}
+        </div>
+      </div>
+      </div>
+      : <></>
+    }
+   
+    </>
+   
   )
 }
 

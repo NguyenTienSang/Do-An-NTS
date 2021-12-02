@@ -23,7 +23,7 @@ function ImportBillItem({importbill,stt}) {
                   <p>{stt+1}</p>
                   </div>
                   <div className="importbill_item_element">
-                  <p>{importbill.tenpn}</p>
+                  <p>{importbill._id}</p>
                   </div>
                   <div className="importbill_item_element">
                   <p>{(importbill.ngay).slice(8,10)}-{(importbill.ngay).slice(5,7)}-{(importbill.ngay).slice(0,4)}</p>

@@ -7,7 +7,7 @@ function UserAPI(token) {
     const [inforuser, setInforUser] = useState([]);
 
     useEffect(() =>{
-        console.log()
+        console.log('token test : ',token);
         if(token) {
             const getUser = async () => {
                 try{
@@ -16,11 +16,12 @@ function UserAPI(token) {
                     })
                     setIsLogged(true);
                     setInforUser(res.data);
+
                     console.log('Data nhân viên nè : ',res.data);
-                    localStorage.setItem('inforuser',JSON.stringify(res.data));
+                    // localStorage.setItem('inforuser',JSON.stringify(res.data));
                     res.data.role === 'admin' ? setIsAdmin(true) : setIsAdmin(false);
                 } catch(err) {
-                    alert(err.response.data.msg);
+                    // alert(err.response.data.msg);
                 }
             }
 
