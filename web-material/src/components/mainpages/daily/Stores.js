@@ -33,6 +33,9 @@ function Stores() {
   const [onEdit, setOnEdit] = useState(false);
   const [callback, setCallback] = state.storeAPI.callback;
  
+  const [openalert,setOpenAlert] = useState(false);
+
+  const [message,setMessage] = useState("");
 
   useEffect(() => {
     if (param.id) {
@@ -79,7 +82,10 @@ function Stores() {
       console.log('dữ liệu ảnh url : ',res.data.url);
       setImages(res.data);
     } catch (err) {
-      alert(err.response.data.message);
+      // alert(err.response.data.message);
+
+      setMessage(err.response.data.message)
+      setOpenAlert(true);
     }
   };
 
@@ -97,7 +103,10 @@ function Stores() {
       setLoading(false);
       setImages(false);
     } catch (err) {
-      alert(err.response.data.message);
+      // alert(err.response.data.message);
+
+      setMessage(err.response.data.message)
+      setOpenAlert(true);
     }
   };
 
@@ -146,11 +155,18 @@ function Stores() {
                        headers: { Authorization: token },
                      }
                    );
-                   alert(res.data.message);
+                  //  alert(res.data.message);
+
+                   setMessage(res.data.message);
+                   setOpenAlert(true);
+
                    document.getElementById("modal_container").classList.remove("modal_active");
                    setCallback(!callback);
            } catch (err) {
-               alert(err.response.data.message);
+              //  alert(err.response.data.message);
+
+               setMessage(err.response.data.message)
+               setOpenAlert(true);
            }
         }
         //Cập nhật thông tin vật tư
@@ -164,11 +180,19 @@ function Stores() {
                        headers: { Authorization: token },
                      }
                    );
-                   alert(res.data.message);
+                  //  alert(res.data.message);
+
+                   setMessage(res.data.message)
+                   setOpenAlert(true);
+
                    document.getElementById("modal_container").classList.remove("modal_active");
                    setCallback(!callback);
            } catch (err) {
-               alert(err.response.data.message);
+              //  alert(err.response.data.message);
+
+              setMessage(err.response.data.message)
+              setOpenAlert(true);
+
            }
         }  
   }
@@ -195,11 +219,20 @@ function Stores() {
              );
             //  alert(res.data.message);
              await destroyImg;
-            alert(deletestore.data.message);
+            // alert(deletestore.data.message);
+
+
+            setMessage(deletestore.data.message)
+            setOpenAlert(true);
+
              setCallback(!callback);
              setLoading(false);
      } catch (err) {
-         alert(err.response.data.message);
+        //  alert(err.response.data.message);
+
+         setMessage(err.response.data.message)
+         setOpenAlert(true);
+
      }
   }
 
@@ -303,13 +336,14 @@ function Stores() {
             <div className="row">
               <label htmlFor="sodienthoai">Số điện thoại</label>
               <input
-                type="number"
+                // type="number"
                 name="sodienthoai"
                 placeholder="Nhập số điện thoại"
                 autoComplete="off"
                 id="sodienthoai"
                 required
                 value={store.sodienthoai}
+                maxlength="10"
                 onChange={handleChangeInput}
               />
             </div>
@@ -340,6 +374,25 @@ function Stores() {
 
           </div>
   </div>
+
+  {
+      openalert ?  
+      <div className="modal_container__notification modal_active" id="modal_container__notification">
+      <div className="modal__notification">
+        <p className="title-notification">Thông báo</p>
+        <p>{message}</p>
+        <div className="option-button">
+            <button id="add" onClick={() =>{
+               document.getElementById("modal_container__notification").classList.remove("modal_active");
+               setOpenAlert(false);
+            }} >OK</button>
+            {/* <button id="close"  >Hủy</button> */}
+        </div>
+      </div>
+      </div>
+      : <></>
+    }
+
   </>
   )
 }

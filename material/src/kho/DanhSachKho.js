@@ -108,7 +108,7 @@ export default function DanhSachKho({navigation,route}){
                             return item;
                         }
                     })?.map((item)=>(
-                        <View>
+                        <View key={item._id}>
                                 <View style={{display:'flex',flexDirection:'column',borderWidth:1,borderColor:'#1b94ff',borderRadius:5,marginLeft:3,marginRight:3,marginBottom:20,paddingTop:7,paddingBottom:7}}>
                                     <View style={styles.thongDaiLy}>
                                         <Image 

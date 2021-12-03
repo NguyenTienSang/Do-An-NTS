@@ -47,6 +47,12 @@ function CreateImportBill() {
 
   const [message,setMessage] = useState("");
 
+
+
+  const Format = (number) => {
+    return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + " VND"
+}
+
   useEffect(()=> {
 
   },[openalert])
@@ -77,7 +83,7 @@ function CreateImportBill() {
 
   const newwarehouses =  warehouses.filter((warehouse,index) => (user.madaily._id === warehouse.madaily._id) ? warehouse : undefined)
   
-  const AddToImportBill = (material) => {
+  const AddToImportBill = (material,soluong,typing) => {
     if(!onSearch)
     {
       document.getElementById("list-material").style.display = "none";
@@ -87,7 +93,7 @@ function CreateImportBill() {
         if(exist) {
             setDetailImportBill(
               detailimportbill.map((x) => 
-                x._id === material._id ? {...exist, quantity: exist.quantity + 1 } : x
+                x._id === material._id ? {...exist, quantity: typing ?   soluong : exist.quantity + soluong} : x
               )
           )
         }
@@ -170,13 +176,13 @@ function CreateImportBill() {
             <div className="item-material" onClick={() =>
             {
               setOnSearch(false)
-              AddToImportBill(material)
+              AddToImportBill(material,1)
             }}>
             
               <p>{material.tenvt}</p>
               <p><img width="80" height="40" src={material.images.url} alt=""></img></p>
               <p>{material.soluong} {material.donvi}</p>
-              <p>{material.gianhap} VND</p>
+              <p>{Format(material.gianhap)}</p>
             </div>
           ))
         }            
@@ -198,8 +204,8 @@ function CreateImportBill() {
               />
       </div> */}
 
-
-    <div className="row">
+<div className="item-first">
+<div className="row">
     <label htmlFor="title">Ngày lập</label>
 
           {/* <input type='date' name="ngay"
@@ -239,6 +245,7 @@ function CreateImportBill() {
         <label htmlFor="newwarehouses">Kho</label>
         <select
           name="makho"
+          className="select-warehouse"
           value={importbill.makho}
           onChange={handleChangeInput}>
            <option value="" disabled selected hidden>Vui lòng chọn kho</option>
@@ -250,13 +257,21 @@ function CreateImportBill() {
         </select>
     </div>
 
-    <div className="row thongtinnv">
-        <label className="id">ID: {user._id}</label>
-        <label htmlFor="newwarehouses">Họ tên: {user.hoten}
-        {
-            console.log('Nhân Viên : ',user.hoten)
-        }</label>
+</div>
+
+<div className="item-first">
+    <div className="row">
+        <label className="id">ID Nhân Viên : </label>
+        {user._id}
     </div>
+
+    <div className="row">
+        <label htmlFor="newwarehouses">Họ tên : 
+      </label>
+      {user.hoten}
+    </div>
+    </div>
+
       {
          <div className="list-item-bill">
          <h3>Danh sách vật tư</h3>
@@ -267,6 +282,7 @@ function CreateImportBill() {
            <p>Đơn Giá</p>
            <p>Số Lượng</p>
            <p>Tổng Tiền</p>
+           <p></p>
          </div>
           {
             detailimportbill.map((item,index) => {
@@ -277,19 +293,55 @@ function CreateImportBill() {
              <img width="160" height="100" src={item.images.url} alt=""></img>
             
             <div>
-            {item.gianhap}VND
+            {Format(item.gianhap)}
             </div>
        
             <button onClick={() => RemoveToImportBill(item)} className="remove">
               -
-            </button>{' '}
-             <div>{item.quantity}</div>
-             <button onClick={() => AddToImportBill(item)} className="add">
+            </button>
+             {/* <div>{item.quantity}</div> */}
+             <input
+                type="text"
+                required
+                autocomplete="off"
+                maxlength="3"
+                // min="1" max="1000"
+                // value={exportbill.tenpx}
+                onChange={(event) => {
+                  // setImportBill()
+                  // setImportBill()
+                  if(event.target.value.length >0 && event.target.value.length<4)
+                  {
+                    console.log('event.target.value : ',parseInt((event.target.value)))
+                    // console.log('typeof(event.target.value) : ',typeof(event.target.value))
+                    AddToImportBill(item,parseInt(event.target.value),true)
+                  }
+                  else if(event.target.value.length === 0)
+                  { AddToImportBill(item,0,true)
+
+                  }
+                }}
+                value={item.quantity}
+
+                className="input-quantity"
+                // onKeyDown="if(this.value.length==2 && event.keyCode!=8) return false;"
+
+             />
+             <button onClick={() => 
+             {
+               if(item.quantity < 1000)
+               {
+                AddToImportBill(item,1,false)
+               }
+             
+             }
+             
+              } className="add">
               +
             </button>
        
             <div>
-            {item.gianhap *  item.quantity} VND
+            {Format(item.gianhap *  item.quantity)}
             </div>
 
             <div>

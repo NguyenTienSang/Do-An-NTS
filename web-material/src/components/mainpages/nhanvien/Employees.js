@@ -44,6 +44,10 @@ function Employees() {
   const [onEdit, setOnEdit] = useState(false);
   const [callback, setCallback] = state.employeeAPI.callback;
   
+  const [openalert,setOpenAlert] = useState(false);
+
+  const [message,setMessage] = useState("");
+
   const inforuser = JSON.parse(localStorage.getItem('inforuser'));
 
   
@@ -95,7 +99,10 @@ function Employees() {
       console.log('dữ liệu ảnh url : ',res.data.url);
       setImages(res.data);
     } catch (err) {
-      alert(err.response.data.message);
+      // alert(err.response.data.message);
+
+      setMessage(err.response.data.message)
+      setOpenAlert(true);
     }
   };
 
@@ -113,7 +120,9 @@ function Employees() {
       setLoading(false);
       setImages(false);
     } catch (err) {
-      alert(err.response.data.message);
+      // alert(err.response.data.message);
+      setMessage(err.response.data.message)
+      setOpenAlert(true);
     }
   };
 
@@ -167,12 +176,21 @@ function Employees() {
                        headers: { Authorization: token },
                      }
                    );
-                   alert(res.data.message);
+
+
+                  //  alert(res.data.message);
+
+                   setMessage(res.data.message)
+                   setOpenAlert(true);
+
                    document.getElementById("modal_container__employee").classList.remove("modal_active");
                    setCallback(!callback);
                   //  history.push("/vattu");
            } catch (err) {
-               alert(err.response.data.message);
+              //  alert(err.response.data.message);
+
+               setMessage(err.response.data.message)
+               setOpenAlert(true);
            }
         }
         //Cập nhật thông tin nhân viên
@@ -186,11 +204,18 @@ function Employees() {
                        headers: { Authorization: token },
                      }
                    );
-                   alert(res.data.message);
+                  //  alert(res.data.message);
+
+                   setMessage(res.data.message)
+                   setOpenAlert(true);
+
                    document.getElementById("modal_container__employee").classList.remove("modal_active");
                    setCallback(!callback);
            } catch (err) {
-               alert(err.response.data.message);
+              //  alert(err.response.data.message);
+
+               setMessage(err.response.data.message)
+               setOpenAlert(true);
            }
         }  
   }
@@ -216,11 +241,18 @@ function Employees() {
              );
             //  alert(res.data.message);
              await destroyImg;
-            alert(deleteemployee.data.message);
+            // alert(deleteemployee.data.message);
+
+            setMessage(deleteemployee.data.message)
+            setOpenAlert(true);
+
+
              setCallback(!callback);
              setLoading(false);
      } catch (err) {
-         alert(err.response.data.message);
+        //  alert(err.response.data.message);
+         setMessage(err.response.data.message)
+         setOpenAlert(true);
      }
   }
 
@@ -496,6 +528,26 @@ function Employees() {
 
           </div>
     </div>
+
+    {
+      openalert ?  
+      <div className="modal_container__notification modal_active" id="modal_container__notification">
+      <div className="modal__notification">
+        <p className="title-notification">Thông báo</p>
+        <p>{message}</p>
+        <div className="option-button">
+            <button id="add" onClick={() =>{
+               document.getElementById("modal_container__notification").classList.remove("modal_active");
+               setOpenAlert(false);
+            }} >OK</button>
+            {/* <button id="close"  >Hủy</button> */}
+        </div>
+      </div>
+      </div>
+      : <></>
+    }
+   
+   
     </>
   )
 }

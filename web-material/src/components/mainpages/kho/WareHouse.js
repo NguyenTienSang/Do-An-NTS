@@ -14,7 +14,7 @@ const initialWareHouse = {
 tenkho:"",
 madaily:"",
 diachi:"",
-sodienthoai:0
+sodienthoai:""
 };
 
 function WareHouses() {
@@ -32,6 +32,10 @@ function WareHouses() {
   const [onEdit, setOnEdit] = useState(false);
   const [warehouses] = state.warehouseAPI.warehouses;
   const [callback, setCallback] = state.warehouseAPI.callback;
+
+  const [openalert,setOpenAlert] = useState(false);
+
+  const [message,setMessage] = useState("");
   
   const inforuser = JSON.parse(localStorage.getItem('inforuser'));
 
@@ -81,7 +85,10 @@ function WareHouses() {
       console.log('dữ liệu ảnh url : ',res.data.url);
       setImages(res.data);
     } catch (err) {
-      alert(err.response.data.message);
+      // alert(err.response.data.message);
+
+      setMessage(err.response.data.message)
+      setOpenAlert(true);
     }
   };
 
@@ -100,7 +107,11 @@ function WareHouses() {
       setLoading(false);
       setImages(false);
     } catch (err) {
-      alert(err.response.data.message);
+      // alert(err.response.data.message);
+
+      setMessage(err.response.data.message)
+      setOpenAlert(true);
+
     }
   };
 
@@ -156,12 +167,21 @@ function WareHouses() {
                        headers: { Authorization: token },
                      }
                    );
-                   alert(res.data.message);
+                  //  alert(res.data.message);
+
+                   setMessage(res.data.message)
+                   setOpenAlert(true);
+
+
                    document.getElementById("modal_container").classList.remove("modal_active");
                    setCallback(!callback);
                   //  history.push("/vattu");
            } catch (err) {
-               alert(err.response.data.message);
+              //  alert(err.response.data.message);
+
+               setMessage(err.response.data.message)
+               setOpenAlert(true);
+
            }
         }
         //Cập nhật thông tin đại lý
@@ -175,11 +195,19 @@ function WareHouses() {
                        headers: { Authorization: token },
                      }
                    );
-                   alert(res.data.message);
+                  //  alert(res.data.message);
+
+                   setMessage(res.data.message)
+                   setOpenAlert(true);
+
                    document.getElementById("modal_container").classList.remove("modal_active");
                    setCallback(!callback);
            } catch (err) {
-               alert(err.response.data.message);
+              //  alert(err.response.data.message);
+
+               setMessage(err.response.data.message)
+               setOpenAlert(true);
+
            }
         }  
   }
@@ -205,11 +233,19 @@ function WareHouses() {
              );
             //  alert(res.data.message);
              await destroyImg;
-            alert(deletewarehouse.data.message);
+            // alert(deletewarehouse.data.message);
+
+            setMessage(deletewarehouse.data.message)
+            setOpenAlert(true);
+
              setCallback(!callback);
              setLoading(false);
      } catch (err) {
-         alert(err.response.data.message);
+        //  alert(err.response.data.message);
+
+        setMessage(err.response.data.message)
+        setOpenAlert(true);
+
      }
   }
 
@@ -357,12 +393,13 @@ function WareHouses() {
             <div className="row">
               <label htmlFor="sodienthoai">Số điện thoại</label>
               <input
-                type="number"
+                // type="number"
                 name="sodienthoai"
                 placeholder="Nhập số điện thoại"
                 id="sodienthoai"
                 required
                 value={warehouse.sodienthoai}
+                maxlength="10"
                 onChange={handleChangeInput}
               />
             </div>
@@ -393,6 +430,25 @@ function WareHouses() {
 
           </div>
   </div>
+
+  {
+      openalert ?  
+      <div className="modal_container__notification modal_active" id="modal_container__notification">
+      <div className="modal__notification">
+        <p className="title-notification">Thông báo</p>
+        <p>{message}</p>
+        <div className="option-button">
+            <button id="add" onClick={() =>{
+               document.getElementById("modal_container__notification").classList.remove("modal_active");
+               setOpenAlert(false);
+            }} >OK</button>
+            {/* <button id="close"  >Hủy</button> */}
+        </div>
+      </div>
+      </div>
+      : <></>
+    }
+
     </>
   )
 }

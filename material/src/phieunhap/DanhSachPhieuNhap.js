@@ -70,7 +70,7 @@ export default function DanhSachPhieuNhap({navigation}){
           <View style={styles.TextInput2}>
                   <TextInput
                       style={{width: '80%'}}
-                      placeholder="Nhập tên phiếu nhập"
+                      placeholder="Nhập id phiếu nhập"
                       onChangeText={(text) =>  setSearch(text)}
 
                       onFocus={() => {
@@ -108,7 +108,7 @@ export default function DanhSachPhieuNhap({navigation}){
                           {
                               return phieunhap;
                           }
-                          else if(phieunhap.tenpn.toLowerCase().includes(search.toLowerCase()))
+                          else if(phieunhap._id.toLowerCase().includes(search.toLowerCase()))
                           {
                               return phieunhap;
                           }

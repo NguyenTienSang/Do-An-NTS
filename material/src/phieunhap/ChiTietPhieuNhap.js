@@ -41,7 +41,7 @@ function ChiTietPhieuNhap(phieunhap) {
      
      {
       phieunhap.phieunhap.ctpn.map((item,stt) => 
-  <View>
+  <View key={stt}>
         {
       <View style={{display:'flex',justifyContent:'space-around',flexDirection:'row',alignItems:'center',borderLeftWidth:1,borderRightWidth:1,borderBottomWidth:1,borderStyle:'solid',borderColor:'#1b94ff',paddingTop:5,paddingBottom:5,paddingLeft:5,paddingRight:5}}>
        

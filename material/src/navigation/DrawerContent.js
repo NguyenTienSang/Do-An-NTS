@@ -1,4 +1,5 @@
-import React, {useEffect,useState} from 'react';
+import axios from "axios";
+import React, { useContext, useState, useEffect  } from "react";
 import { View, StyleSheet} from 'react-native';
 import {Icon, Button} from 'react-native-elements';
 import {
@@ -19,40 +20,38 @@ import {
 // import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from './../global/styles';
-import { APIGetUser } from '../api/API';
+// import { APIGetUser } from '../api/API';
+
+import { GlobalState } from '../GlobalState';
 
 export function DrawerContent({navigation,props}) {
 
-    const [isDarkTheme, setIsDarkTheme] = React.useState(false);
+    const state = useContext(GlobalState);
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState();
     // const [manv,setMaNV] = useState('');
-   
+    const [inforuser] = state.userAPI.inforuser;
+    console.log('inforuser : ',inforuser)
 
-    const Infor = async ()=>{
-        const token = await AsyncStorage.getItem("token");
-        const Username = await AsyncStorage.getItem("username");
-      await fetch(`${APIGetUser}/${Username}`,{
-      headers:new Headers({
-        Authorization:"Bearer "+token
-      })
-      }).then(res=>res.json())
-      .then(nv=>{
-        data.push(nv.nhanvien[0]);
-        AsyncStorage.setItem('nhanvien',JSON.stringify(nv.nhanvien[0]));
-        setData(data);
-      }
-      )
-     }
+    // const Infor = async ()=>{
+    //     const token = await AsyncStorage.getItem("token");
+    //     const Username = await AsyncStorage.getItem("username");
+    //   await fetch(`${APIGetUser}/${Username}`,{
+    //   headers:new Headers({
+    //     Authorization:"Bearer "+token
+    //   })
+    //   }).then(res=>res.json())
+    //   .then(nv=>{
+    //     data.push(nv.nhanvien[0]);
+    //     AsyncStorage.setItem('nhanvien',JSON.stringify(nv.nhanvien[0]));
+    //     setData(data);
+    //   }
+    //   )
+    //  }
 
      useEffect(async ()=>{
-        await Infor()
-        if(data.length == 0)
-        {
-           console.log('loading');
-            setLoading("")
-        } 
-      },[loading])
+      
+      },[inforuser])
     
 
       console.log('Dữ liệu : ',data);
@@ -67,8 +66,7 @@ export function DrawerContent({navigation,props}) {
      }
    
     
-        if(data.length > 0)
-        {
+       
             return (
                 <View style={{flex:1}}>
                     <DrawerContentScrollView {...props}>
@@ -78,7 +76,7 @@ export function DrawerContent({navigation,props}) {
                                        <View style={{marginLeft:50}}>
                                        <Avatar.Image
                                            source={{
-                                               uri: data[0].images
+                                               uri: inforuser.images.url
                                            }}
                                            size={90}
                                        />
@@ -89,7 +87,7 @@ export function DrawerContent({navigation,props}) {
                                                iconStyle={{color: 'black',marginRight:10}}
                                                type="font-awesome"
                                                />
-                                                <Text style={{fontSize:18}}>{data[0].username}</Text>   
+                                                <Text style={{fontSize:18}}>{inforuser.username}</Text>   
                                        </View>
         
                                        <View style={{display:'flex',alignItems:'center',flexDirection:'row',marginTop:20}}>
@@ -98,7 +96,7 @@ export function DrawerContent({navigation,props}) {
                                                iconStyle={{color: 'black',marginRight:10}}
                                                type="entypo"
                                                />
-                                                <Text style={{fontSize:18}}>{data[0].hoten}</Text>   
+                                                <Text style={{fontSize:18}}>{inforuser.hoten}</Text>   
                                        </View>
         
                                        <View style={{display:'flex',alignItems:'center',flexDirection:'row',marginTop:20}}>
@@ -107,7 +105,7 @@ export function DrawerContent({navigation,props}) {
                                                iconStyle={{color: 'black',marginRight:10}}
                                                type="material"
                                                />
-                                                <Text style={{fontSize:18}}>{data[0].madaily.tendl}</Text>   
+                                                <Text style={{fontSize:18}}>{inforuser.madaily.tendl}</Text>   
                                        </View>
         
                                        <View style={{display:'flex',alignItems:'center',flexDirection:'row',marginTop:25}}>
@@ -116,7 +114,7 @@ export function DrawerContent({navigation,props}) {
                                                iconStyle={{color: 'black',marginRight:10}}
                                                type="entypo"
                                                />
-                                                <Text style={{fontSize:18}}>{data[0].diachi}</Text>   
+                                                <Text style={{fontSize:18}}>{inforuser.diachi}</Text>   
                                        </View>
         
                                     
@@ -127,7 +125,7 @@ export function DrawerContent({navigation,props}) {
                                                iconStyle={{color: 'black',marginRight:10}}
                                                type="material-community"
                                                />
-                                                <Text style={{fontSize:18}}>{data[0].role}</Text>   
+                                                <Text style={{fontSize:18}}>{inforuser.role}</Text>   
                                        </View>
                                        <View style={{display:'flex',alignItems:'center',flexDirection:'row',marginTop:25}}>
                                                 <Icon
@@ -137,7 +135,7 @@ export function DrawerContent({navigation,props}) {
                                                />
 
                                                 <Text style={{fontSize:18}} onPress={()=> {
-                                                    navigation.navigate("DoiMatKhau",{nhanvien: data[0]})
+                                                    navigation.navigate("DoiMatKhau",{nhanvien: inforuser})
                                                 }}>Đổi mật khẩu</Text>
                                                {/* <Button
                                                 title="Đổi mật khẩu"
@@ -187,19 +185,7 @@ export function DrawerContent({navigation,props}) {
                     </Drawer.Section>
                 </View>
             )
-        }
-        else if(data.length == 0)
-        {
-          return (
-            <View style={{flex:1}}>
-            <DrawerContentScrollView {...props}>
-                <View style={styles.drawerContent}>
-                   <Text>Đang Load dữ liệu</Text>
-                </View>
-            </DrawerContentScrollView>
-        </View>
-          )    
-        }    
+         
    
 }
 

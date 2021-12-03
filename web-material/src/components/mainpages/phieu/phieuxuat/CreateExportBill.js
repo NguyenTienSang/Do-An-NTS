@@ -38,11 +38,19 @@ function CreateExportBill() {
   const [makhofilter,setMaKhoFilter] = useState("allwarehouses");
   
   const [exportbill, setExportBill] = useState({
-    tenpx: "",
+    // tenpx: "",
     ngay: "",
     manv: "",
     makho: ""
   });
+
+  const [openalert,setOpenAlert] = useState(false);
+
+  const [message,setMessage] = useState("");
+
+  const Format = (number) => {
+    return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + " VND"
+}
 
 
   useEffect(async() => {
@@ -62,7 +70,7 @@ function CreateExportBill() {
 
   useEffect(() => {
     setExportBill({
-      tenpx:'PX' + (exportbills.length+1),
+      // tenpx:'PX' + (exportbills.length+1),
       ngay: moment(new Date()).format('MM-DD-yyy'),
       manv:JSON.parse(localStorage.getItem('inforuser'))._id,
       makho:"",
@@ -73,7 +81,7 @@ function CreateExportBill() {
 
   const newwarehouses =  warehouses.filter((warehouse,index) => (user.madaily._id === warehouse.madaily._id) ? warehouse : undefined)
   
-  const AddToExportBill = (material) => {
+  const AddToExportBill = (material,soluong,typing) => {
     if(!onSearch)
     {
       document.getElementById("list-material").style.display = "none";
@@ -83,7 +91,7 @@ function CreateExportBill() {
         if(exist) {
             setDetailExportBill(
               detailexportbill.map((x) => 
-                x._id === material._id ? {...exist, quantity: exist.quantity + 1 } : x
+                x._id === material._id ? {...exist, quantity: typing ?   soluong : exist.quantity + soluong} : x
               )
           )
         }
@@ -124,13 +132,13 @@ function CreateExportBill() {
  
  
   return (
+    <>
     <div className="layout">
     <div className="layout-first"><Header/></div> 
     <div className="layout-second">
     <NavBar/>
       <div className="create-exportbill">
         <div className="row search-material">
-          <label>Tìm vật tư</label>
                 <input
                   type="text"
                   name="tenpn"
@@ -172,7 +180,7 @@ function CreateExportBill() {
               <p>{material.tenvt}</p>
               <p><img width="80" height="40" src={material.images.url} alt=""></img></p>
               <p>{material.soluong} {material.donvi}</p>
-              <p>{material.giaxuat} VND</p>
+              <p>{Format(material.giaxuat)}</p>
             </div>
           ))
         }            
@@ -181,7 +189,7 @@ function CreateExportBill() {
       <div className="form-bill">
       <p className="header-title">Nhập Thông Tin Phiếu Xuất</p>
 
-      <div className="row">
+      {/* <div className="row">
               <label htmlFor="title">Tên phiếu xuất</label>
               <input
                 type="text"
@@ -192,8 +200,8 @@ function CreateExportBill() {
                 value={exportbill.tenpx}
                 onChange={handleChangeInput}
               />
-      </div>
-
+      </div> */}
+<div className="item-first">
 
     <div className="row">
     <label htmlFor="title">Ngày lập</label>
@@ -217,15 +225,14 @@ function CreateExportBill() {
             setCurrentDate(date)
             console.log('date : ',typeof(date))
 
-            // const datetest = moment(date).format('DD-MM-yyy');
-            // console.log('datetest : ',datetest)
+            
             setExportBill({ ...exportbill, ngay : moment(date).format('MM-DD-YYYY')});
           }
            
         }
         value={currentDate}
        
-        customInput={<ExampleCustomInput />}
+       
       />
 
 
@@ -236,6 +243,7 @@ function CreateExportBill() {
         <label htmlFor="newwarehouses">Kho</label>
         <select
           name="makho"
+          className="select-warehouse"
           value={exportbill.makho}
           onChange={handleChangeInput}>
            <option value="" disabled selected hidden>Vui lòng chọn kho</option>
@@ -246,13 +254,20 @@ function CreateExportBill() {
           ))}
         </select>
     </div>
+    </div>
 
-    <div className="row thongtinnv">
-        <label className="id">ID: {user._id}</label>
-        <label htmlFor="newwarehouses">Họ tên: {user.hoten}
-        {
-            console.log('Nhân Viên : ',user.hoten)
-        }</label>
+
+    <div className="item-first">
+    <div className="row">
+        <label className="id">ID Nhân Viên : </label>
+        {user._id}
+    </div>
+
+    <div className="row">
+        <label htmlFor="newwarehouses">Họ tên : 
+      </label>
+      {user.hoten}
+    </div>
     </div>
       {
          <div className="list-item-bill">
@@ -274,19 +289,54 @@ function CreateExportBill() {
              <img width="160" height="100" src={item.images.url} alt=""></img>
             
             <div>
-            {item.giaxuat}VND
+            {Format(item.giaxuat)}
             </div>
        
             <button onClick={() => RemoveToExportBill(item)} className="remove">
               -
-            </button>{' '}
-             <div>{item.quantity}</div>
-             <button onClick={() => AddToExportBill(item)} className="add">
+            </button>
+            <input
+                type="text"
+                required
+                autocomplete="off"
+                maxlength="3"
+                // min="1" max="1000"
+                // value={exportbill.tenpx}
+                onChange={(event) => {
+                  // setImportBill()
+                  // setImportBill()
+                  if(event.target.value.length >0 && event.target.value.length<4)
+                  {
+                    console.log('event.target.value : ',parseInt((event.target.value)))
+                    // console.log('typeof(event.target.value) : ',typeof(event.target.value))
+                    AddToExportBill(item,parseInt(event.target.value),true)
+                  }
+                  else if(event.target.value.length === 0)
+                  { AddToExportBill(item,0,true)
+
+                  }
+                }}
+                value={item.quantity}
+
+                className="input-quantity"
+                // onKeyDown="if(this.value.length==2 && event.keyCode!=8) return false;"
+
+             />
+             <button onClick={() => 
+             {
+               if(item.quantity < 1000)
+               {
+                AddToExportBill(item,1,false)
+               }
+             
+             }
+             
+              } className="add">
               +
             </button>
        
             <div>
-            {item.giaxuat *  item.quantity} VND
+            {Format(item.giaxuat *  item.quantity)}
             </div>
 
             <div>
@@ -312,7 +362,10 @@ function CreateExportBill() {
             //    console.log('mã kho : ',exportbill.makho)
               if(detailexportbill.length==0)
               {
-                  alert('Phiếu chưa có vật tư, vui lòng thêm  vật tư vào phiếu')
+                  // alert('Phiếu chưa có vật tư, vui lòng thêm  vật tư vào phiếu')
+
+                  setMessage("Phiếu chưa có vật tư, vui lòng thêm  vật tư vào phiếu")
+                  setOpenAlert(true);
               }
               else
               {
@@ -354,10 +407,18 @@ function CreateExportBill() {
                                }
                              );
                              console.log('exportbill nè2 : ',exportbill)
-                             alert(res.data.message);
+                            //  alert(res.data.message);
+                             setMessage(res.data.message)
+                             setOpenAlert(true);
+
+
+
                              setCallback(!callback);
                      } catch (err) {
-                         alert(err.response.data.message);
+                        //  alert(err.response.data.message);
+                        setMessage(err.response.data.message)
+                        setOpenAlert(true);
+
                      }
                 }  
                 else{
@@ -374,6 +435,26 @@ function CreateExportBill() {
       </div>
       </div>
     </div>
+
+    {
+      openalert ?  
+      <div className="modal_container__notification modal_active" id="modal_container__notification">
+      <div className="modal__notification">
+        <p className="title-notification">Thông báo</p>
+        <p>{message}</p>
+        <div className="option-button">
+            <button id="add" onClick={() =>{
+               document.getElementById("modal_container__notification").classList.remove("modal_active");
+               setOpenAlert(false);
+            }} >OK</button>
+            {/* <button id="close"  >Hủy</button> */}
+        </div>
+      </div>
+      </div>
+      : <></>
+    }       
+
+    </>
   )
 }
 

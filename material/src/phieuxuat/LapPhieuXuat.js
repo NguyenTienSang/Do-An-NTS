@@ -44,7 +44,7 @@ export default function LapPhieuXuat({navigation,route}){
   const [datehdn,setDateHDN] = useState(new Date());
   const [onSearch, setOnSearch] = useState(false);
   const [exportbill, setExportBill] = useState({
-    tenpx: "",
+    // tenpx: "",
     ngay: moment(),
     manv: inforuser._id,
     makho: ""
@@ -113,7 +113,7 @@ export default function LapPhieuXuat({navigation,route}){
 
     useEffect(() => {
       setExportBill({
-        tenpx:'PX' + (exportbills.length+1),
+        // tenpx:'PX' + (exportbills.length+1),
         ngay: moment(new Date()).format('MM-DD-yyy'),
         manv: inforuser._id,
         makho:"",
@@ -136,21 +136,21 @@ export default function LapPhieuXuat({navigation,route}){
 
 
    return (
-      <View>             
+      <View style={{flex:1}}>             
         <Header title="Trở về" type="arrow-left"navigation={navigation} />     
       <ScrollView style={{ paddingLeft:7,paddingRight:7}}>
         <View>
            <Text style={{marginLeft:'auto',marginRight:'auto',marginTop:20,marginBottom:20,fontSize:20,fontWeight:'500'}}>Nhập Thông Tin Phiếu Xuất</Text>
        </View>
-        <View style={{display:'flex',flexDirection:'row',alignItems:'center',marginBottom:10}}>
+        {/* <View style={{display:'flex',flexDirection:'row',alignItems:'center',marginBottom:10}}>
           <Text>Tên phiếu xuất   </Text>
           <TextInput style={styles.textInput} 
                 value={exportbill.tenpx}
                 editable = {false}
           />
-       </View>
+       </View> */}
        <View style={{display:'flex',flexDirection:'row',alignItems:'center',marginBottom:10}}>
-       <Text>Ngày lập      </Text>
+       <Text style={styles.label}>Ngày lập</Text>
          {
            show &&
            (
@@ -165,14 +165,14 @@ export default function LapPhieuXuat({navigation,route}){
          }
          
        
-          <Text>{date.format('DD/MM/YYYY')}</Text>
+         <TextInput  editable = {false}   style={[styles.textInput,{width:100,textAlign:'center',marginRight:20}]}>{date.format('DD/MM/YYYY')}</TextInput>
           <Button buttonStyle={styles.buttonAction} title="Chọn ngày" onPress={()=> setShow(true)}/>
        </View>
 
 
 
        <View style={{display:'flex',flexDirection:'row',alignItems:'center',marginBottom:10}}>
-         <Text>Mã nhân viên     </Text>
+       <Text style={styles.label}>ID nhân viên</Text>
          <TextInput style={styles.textInput} 
                 // placeholder="Mã nhân viên"
                 value={exportbill.manv}
@@ -180,10 +180,11 @@ export default function LapPhieuXuat({navigation,route}){
           />
        </View>
 
+
        <View style={styles.rowInput}>
                         <Text>Mã kho            </Text>
                         <TextInput style={styles.textInput} 
-                             placeholder="Mã kho"
+                             placeholder="Vui lòng chọn kho"
                              value={route.params !== undefined ? route.params.kho.tenkho : ''}
                              editable={false}
                             //  onChangeText={(text) =>  setMaDL(text)}
@@ -213,7 +214,7 @@ export default function LapPhieuXuat({navigation,route}){
             
               datacart?.map((item,i)=>{
                 return (
-                 <View style={{borderTopWidth:1,borderStyle:'solid',borderColor:'#999',paddingTop:7,paddingBottom:7}}>
+                 <View key={i} style={{borderTopWidth:1,borderStyle:'solid',borderColor:'#999',paddingTop:7,paddingBottom:7}}>
                  <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',paddingLeft:10,paddingRight:10}}>
                        <Text>{item.material.tenvt}</Text>
                        <Text>{Format(item.material.giaxuat)}</Text>
@@ -389,6 +390,7 @@ rowInput: {
       borderWidth:1,
       borderStyle:'solid',
       borderColor:'#999',
+      borderRadius:8,
       width:270,
       height:40
   },
@@ -405,5 +407,8 @@ buttonAction: {
     borderRadius: 5,
     backgroundColor: '#1b94ff',
 },
- 
+label: {
+  width:100,
+  paddingLeft:7,
+}
 })

@@ -46,7 +46,7 @@ export default function LapPhieuNhap({navigation,route}){
   const [datehdn,setDateHDN] = useState(new Date());
   const [onSearch, setOnSearch] = useState(false);
   const [importbill, setImportBill] = useState({
-    tenpn: "",
+    // tenpn: "",
     ngay: moment(),
     manv: inforuser._id,
     makho: ""
@@ -116,7 +116,7 @@ export default function LapPhieuNhap({navigation,route}){
 
   useEffect(() => {
     setImportBill({
-      tenpn:'PN' + (importbills.length+1),
+      // tenpn:'PN' + (importbills.length+1),
       ngay: moment(new Date()).format('MM-DD-yyy'),
       manv: inforuser._id,
       makho:"",
@@ -128,13 +128,13 @@ export default function LapPhieuNhap({navigation,route}){
 
 
 
-  useEffect(async () => {
+  // useEffect(async () => {
 
-    // importbills
+  //   // importbills
 
-    setImportBill({...importbill,tenpn : 'PN' + (importbills.length+1)})
+  //   setImportBill({...importbill,tenpn : 'PN' + (importbills.length+1)})
 
-  },[])
+  // },[])
 
 
 
@@ -145,15 +145,15 @@ export default function LapPhieuNhap({navigation,route}){
         <View>
            <Text style={{marginLeft:'auto',marginRight:'auto',marginTop:20,marginBottom:20,fontSize:20,fontWeight:'500'}}>Nhập Thông Tin Phiếu Nhập</Text>
        </View>
-        <View style={{display:'flex',flexDirection:'row',alignItems:'center',marginBottom:10}}>
+        {/* <View style={{display:'flex',flexDirection:'row',alignItems:'center',marginBottom:10}}>
           <Text>Tên phiếu nhập   </Text>
           <TextInput style={styles.textInput} 
                 value={importbill.tenpn}
                 editable = {false}
           />
-       </View>
-       <View style={{display:'flex',flexDirection:'row',alignItems:'center',marginBottom:10}}>
-         <Text>Ngày lập      </Text>
+       </View> */}
+       <View style={{display:'flex',justifyContent:'flex-start',flexDirection:'row',alignItems:'center',marginBottom:10}}>
+         <Text style={styles.label}>Ngày lập</Text>
          {
            show &&
            (
@@ -168,12 +168,12 @@ export default function LapPhieuNhap({navigation,route}){
          }
          
        
-          <Text>{date.format('DD/MM/YYYY')}</Text>
+          <TextInput  editable = {false}   style={[styles.textInput,{width:100,textAlign:'center',marginRight:20}]}>{date.format('DD/MM/YYYY')}</TextInput>
           <Button buttonStyle={styles.buttonAction} title="Chọn ngày" onPress={()=> setShow(true)}/>
        </View>
 
        <View style={{display:'flex',flexDirection:'row',alignItems:'center',marginBottom:10}}>
-         <Text>Mã nhân viên      </Text>
+         <Text style={styles.label}>ID nhân viên</Text>
          <TextInput style={styles.textInput} 
                 // placeholder="Mã nhân viên"
                 value={importbill.manv}
@@ -182,7 +182,7 @@ export default function LapPhieuNhap({navigation,route}){
        </View>
 
                     <View style={styles.rowInput}>
-                        <Text>Kho              </Text>
+                        <Text style={styles.label}>Kho</Text>
                         <TextInput style={styles.textInput} 
                              placeholder="Vui lòng chọn kho"
                              value={route.params !== undefined ? route.params.kho.tenkho : ''}
@@ -214,7 +214,7 @@ export default function LapPhieuNhap({navigation,route}){
             
               datacart?.map((item,i)=>{
                 return (
-                 <View style={{borderTopWidth:1,borderStyle:'solid',borderColor:'#999',paddingTop:7,paddingBottom:7}}>
+                 <View key={i} style={{borderTopWidth:1,borderStyle:'solid',borderColor:'#999',paddingTop:7,paddingBottom:7}}>
                  <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',paddingLeft:10,paddingRight:10}}>
                       <Text>{item.material.tenvt}</Text>
                        <Text>{Format(item.material.gianhap)}</Text>
@@ -276,7 +276,7 @@ export default function LapPhieuNhap({navigation,route}){
       <View style={styles.groupButtonAction}>
                     <Button  disabled={datacart === null ||  datacart.length == 0 ? true : false} buttonStyle={styles.buttonAction} title="Lập Hóa Đơn"
                             onPress={async () => {
-                              console.log('Tên phiếu : ',importbill.tenpn);
+                              // console.log('Tên phiếu : ',importbill.tenpn);
                               console.log('Ngày lập : ',JSON.stringify(importbill.ngay).slice(0,11));
                               console.log('Mã nhân viên : ',importbill.manv);
                               console.log('Mã kho : ',importbill.makho);
@@ -387,6 +387,7 @@ const styles = StyleSheet.create({
       borderWidth:1,
       borderStyle:'solid',
       borderColor:'#999',
+      borderRadius:8,
       width:270,
       height:40
   },
@@ -403,5 +404,8 @@ buttonAction: {
     borderRadius: 5,
     backgroundColor: '#1b94ff',
 },
- 
+label: {
+  width:100,
+  paddingLeft:7,
+}
 })
