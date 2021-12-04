@@ -17,6 +17,9 @@ function ImportBill() {
   {
     console.log('importbills.length !== 0 :',importbills);
   }
+
+ 
+
   return (
     <div className="layout">
     <div className="layout-first"><Header/></div>
@@ -29,7 +32,7 @@ function ImportBill() {
                 <input
                   type="text"
                   name="id"
-                  placeholder="Nhập ID phiếu nhập"
+                  placeholder="Nhập từ khóa tìm kiếm"
                   id="inputsearch"
                   required
                   autocomplete="off"
@@ -64,7 +67,13 @@ function ImportBill() {
               {
                   return importbill;
               }
-              else if(importbill._id.toLowerCase().includes(searchTerm.toLowerCase()))
+              else if(
+                importbill._id.toLowerCase().includes(searchTerm.toLowerCase())
+                || importbill.manv.hoten.toLowerCase().includes(searchTerm.toLowerCase())
+                || importbill.manv.madaily.tendl.toLowerCase().includes(searchTerm.toLowerCase())
+                || importbill.makho.tenkho.toLowerCase().includes(searchTerm.toLowerCase())
+
+                )
               {
                   return importbill;
               }

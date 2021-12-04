@@ -35,7 +35,7 @@ function DetailImportBill(importbill) {
         <div className="item-detail">
             <div className="item-detail-element"  style={{flex:0.5}}>{stt+1}</div>
             <div className="item-detail-element">{item.mavt.tenvt}</div>
-            <div className="item-detail-element"><img width="80" height="40" src={item.mavt.images.url} alt=""></img></div>
+            <div className="item-detail-element" style={{width:"160px"}}><img src={item.mavt.images.url} alt=""></img></div>
           <div className="item-detail-element">{Format(item.gianhap)}</div>
           <div className="item-detail-element">{item.soluong}</div>
           <div className="item-detail-element">{Format(item.gianhap * item.soluong)}</div>

@@ -97,7 +97,7 @@ const importbillCtrl = {
         try {
           const pn = await PhieuNhap.findById(req.params.id);
           if (!pn)
-            return res.status(400).json({ msg: "Phiếu nhập không tồn tại" });
+            return res.status(400).json({ message: "Phiếu nhập không tồn tại" });
     
           await PhieuNhap.findOneAndUpdate(
             { _id: req.params.id },
@@ -105,9 +105,9 @@ const importbillCtrl = {
                 ctpn: req.body.ctpn,
             }
           );
-          return res.json({ msg: "Đã thêm vào phiếu nhập" });
+          return res.json({ message: "Đã thêm vào phiếu nhập" });
         } catch (err) {
-          return res.status(500).json({ msg: err.message });
+          return res.status(500).json({ message: err.message });
         }
       },
   };

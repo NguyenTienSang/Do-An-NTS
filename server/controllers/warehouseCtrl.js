@@ -9,7 +9,7 @@ const warehouseCtrl = {
             const kho = await Kho.find().populate('madaily');
             res.json(kho)
         } catch (err) {
-          return res.status(500).json({ msg: err.message });
+          return res.status(500).json({ message: err.message });
         }
       },
 

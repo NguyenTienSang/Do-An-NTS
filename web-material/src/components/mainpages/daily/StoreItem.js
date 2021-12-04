@@ -9,29 +9,30 @@ function StoreItem({store,stt,EditStore,DeleteStore}) {
 
     return (
       <div className="store_item">
-          <div style={{flex:0.5}} className="store_item_element">
-          <h2>{stt+1}</h2>
+          <div style={{width:"70px"}} className="store_item_element">
+          <p>{stt+1}</p>
           </div>
-        <div className="store_item_element">
-        <h2>{store.tendl}</h2>
+          <div style={{width:"160px"}} className="store_item_element id_store">
+        <p>{store._id}</p>
         </div>
-        <div className="store_item_element">
+        <div style={{flex:1}} className="store_item_element">
+        <p>{store.tendl}</p>
+        </div>
+        <div style={{flex:1}} className="store_item_element">
           <img src={store.images.url} alt="" />
         </div>
          
-        <div className="store_item_element">
+        <div style={{flex:1}} className="store_item_element">
          {store.diachi}
         </div>
        
-        <div className="store_item_element">
+        <div style={{flex:1}} className="store_item_element">
           {store.sodienthoai}
         </div>
-        <div style={{flex:0.6}} className="store_item_element">
-          <button style={{fontSize:30}} onClick={() => EditStore(store)}><FaRegEdit/></button>
+        <div style={{flex:1}} className="store_item_element">
+          <button style={{fontSize:30}} onClick={() => EditStore(store)}><FaRegEdit style={{color: "rgb(15, 184, 0)"}}/></button>
+          <button onClick={() => DeleteStore(store._id,store.images.public_id)} style={{fontSize:30}}><RiDeleteBin6Line style={{color: "red"}}/></button>
         </div>
-        <div style={{flex:0.6}} className="store_item_element">
-          <button onClick={() => DeleteStore(store._id,store.images.public_id)} style={{fontSize:30}}><RiDeleteBin6Line/></button>
-         </div>
       </div>
     )
 }

@@ -17,7 +17,7 @@ router.post("/upload",(req, res) => {
     console.log(req.files);
     
     if (!req.files || Object.keys(req.files).length === 0)
-      return res.status(400).json({ msg: "Không có file được upload" });
+      return res.status(400).json({ message: "Không có file được upload" });
 
     const file = req.files.file;
 
@@ -26,12 +26,12 @@ router.post("/upload",(req, res) => {
     if (file.size > 1024 * 1024) {//Kích thước file
       //1024 * 1024 = 1mb
       removeTmp(file.tempFilePath);
-      return res.status(400).json({ msg: "Size too large" });
+      return res.status(400).json({ message: "Size too large" });
     }
 
     if (file.mimetype !== "image/jpeg" && file.mimetype !== "image/png") {//Dạng file ảnh
       removeTmp(file.tempFilePath);
-      return res.status(400).json({ msg: "Định dạng file không đúng" });
+      return res.status(400).json({ message: "Định dạng file không đúng" });
     }
 
     //Upload ảnh lên cloudinary
@@ -48,7 +48,7 @@ router.post("/upload",(req, res) => {
 
     // res.json('test upload')
   } catch (err) {
-    return res.status(500).json({ msg: err.message });
+    return res.status(500).json({ message: err.message });
   }
 });
 // auth, authAdmin,
@@ -57,15 +57,15 @@ router.post("/destroy", (req, res) => {
   try {
     const { public_id } = req.body;
     console.log('public_id : ',req.body);
-    if (!public_id) return res.status(400).json({ msg: "Bạn chưa chọn ảnh" });
+    if (!public_id) return res.status(400).json({ message: "Bạn chưa chọn ảnh" });
 
     cloudinary.v2.uploader.destroy(public_id, async (err, result) => {
       if (err) throw err;
 
-      res.json({ msg: "Đã xóa ảnh" });
+      res.json({ message: "Đã xóa ảnh" });
     });
   } catch (err) {
-    return res.status(500).json({ msg: err.message });
+    return res.status(500).json({ message: err.message });
   }
 });
 

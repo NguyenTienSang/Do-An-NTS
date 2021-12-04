@@ -61,7 +61,7 @@ export default function BangGiaNhap({navigation,route}){
 
       useEffect(async() => {
         console.log('load lại dữ liệu materialsfilter');
-        const res = await axios.post('http://192.168.1.4:5000/api/thongke/timkiemvattuphieunhap',
+        const res = await axios.post('http://192.168.1.5:5000/api/thongke/timkiemvattuphieunhap',
               //  [JSON.parse(localStorage.getItem('inforuser')).madaily._id,exportbill.makho]
               {makhofilter: route.params.makho}
         );

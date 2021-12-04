@@ -35,7 +35,7 @@ const authCtrl = {
       // if (password.length < 6) {
       //   return res
       //     .status(400)
-      //     .json({ msg: "Mật khẩu không được ngắn hơn 6 kí tự" });
+      //     .json({ message: "Mật khẩu không được ngắn hơn 6 kí tự" });
       // }
       if(!role)
       {
@@ -115,7 +115,7 @@ const authCtrl = {
       res.json({message: 'Đã thêm thành công',accesstoken})
 
       } catch (err) {
-        return res.status(500).json({ msg: err.message });
+        return res.status(500).json({ message: err.message });
       }
   },
 
@@ -123,18 +123,18 @@ const authCtrl = {
     try {
       const { username, password } = req.body;
       console.log('req.body : ', req.body);
-      if (!username) return res.status(400).json({ msg: "Username không được trống" });
+      if (!username) return res.status(400).json({ message: "Username không được trống" });
 
-      if (!password) return res.status(400).json({ msg: "Password không được trống" });
+      if (!password) return res.status(400).json({ message: "Password không được trống" });
 
       //Kiểm tra tài khoản username
       const user = await NhanVien.findOne({ username }).populate('madaily');
-      if (!user) return res.status(400).json({ msg: "Username không tồn tại " });
+      if (!user) return res.status(400).json({ message: "Username không tồn tại " });
 
       //Kiểm tra mật khẩu
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch)
-        return res.status(400).json({ msg: "Sai mật khẩu" });
+        return res.status(400).json({ message: "Sai mật khẩu" });
 
       //If login success, create access token and refresh token
       //Then create jsonwebtoken to authentication
@@ -156,15 +156,74 @@ const authCtrl = {
       res.json({accesstoken,user})
       // console.log(accesstoken);
     } catch (err) {
-      return res.status(500).json({ msg: err.message });
+      return res.status(500).json({ message: err.message });
     }
   },
+
+  changepassword: async (req, res) => {
+      try {
+        const { username, oldpassword, newpassword, renewpassword } = req.body;
+
+        if(newpassword !== renewpassword)
+        {
+          return res.status(400).json({ message: "Mật khẩu và mật khẩu xác nhận không khớp" });
+        }
+
+        const user = await NhanVien.findOne({ username });
+
+        if (!user) return res.status(400).json({ message: "Username không tồn tại "});
+        //Kiểm tra mật khẩu cũ
+        const isMatchOld = await bcrypt.compare(oldpassword, user.password);
+        if (!isMatchOld)
+        {
+          return res.status(400).json({ message: "Mật khẩu cũ không đúng" });
+        }
+
+        console.log('isMatchOld : ',isMatchOld)
+
+        //Kiểm tra mật khẩu mới không được trùng mật khẩu cũ
+        const isMatchOldNew = await bcrypt.compare(newpassword, user.password);
+
+        console.log('isMatchOldNew : ',isMatchOldNew)
+
+        if (isMatchOldNew)
+        {
+          return res.status(400).json({ message: "Mật khẩu mới phải khác mật khẩu cũ" });
+        }
+
+        //---------------------------
+
+     
+
+        const hashedPassword = await bcrypt.hash(newpassword, 10);
+
+        // let updatedNhanVien = user;
+        user.password = hashedPassword;
+        // {hoten,madaily,diachi,username,password : hashedPassword,role,sodienthoai,cmnd,tinhtrang,images}
+        
+       let updatedNhanVien= await NhanVien.findOneAndUpdate({_id:user._id},user, {new:true});
+   
+        // //Lưu vào mongodb
+
+        // // User not authorised to update vattu
+        if(!updatedNhanVien)
+        return res.status(401).json({ message:'Cập nhật thất bại'})
+
+        res.json({success: true, message: "Cập nhật thành công",nhanvien: updatedNhanVien})
+
+        //-----------------------------------
+      } catch (error) {
+        return res.status(500).json({ message: error.message });
+      }
+  },
+
+
   logout: async (req, res) => {
   try {
     res.clearCookie("refreshtoken", { path: '/api/auth/refresh_token' });
-    return res.json({ msg: "Đăng xuất thành công" });
+    return res.json({ message: "Đăng xuất thành công" });
   } catch (err) {
-    return res.status(500).json({ msg: err.message });
+    return res.status(500).json({ message: err.message });
   }
 },
   refreshToken: (req, res) =>{
@@ -175,11 +234,11 @@ const authCtrl = {
       console.log('rf_token : ',rf_token);
 
       if (!rf_token)
-        return res.status(400).json({ msg: "Vui lòng đăng nhập hoặc đăng ký" });
+        return res.status(400).json({ message: "Vui lòng đăng nhập hoặc đăng ký" });
 
       jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, nhanvien) => {
         if (err)
-          return res.status(400).json({ msg: "Vui lòng đăng nhập hoặc đăng ký" });
+          return res.status(400).json({ message: "Vui lòng đăng nhập hoặc đăng ký" });
 
         const accesstoken = createAccessToken({ id: nhanvien.id });
 
@@ -187,7 +246,7 @@ const authCtrl = {
         // res.json({nhanvien, accesstoken });
       });
     } catch (err) {
-      return res.status(500).json({ msg: err.message });
+      return res.status(500).json({ message: err.message });
     }
 
   },
@@ -197,11 +256,11 @@ const authCtrl = {
       const nhanvien = await NhanVien.findById(req.nhanvien.id).populate('madaily').select("-password");
       // const nhanvien = await NhanVien.findById(req.nhanvien.id).select("-password");
       
-      if (!nhanvien) return res.status(400).json({ msg: "Nhân viên không tồn tại !!!" });
+      if (!nhanvien) return res.status(400).json({ message: "Nhân viên không tồn tại !!!" });
 
       res.json(nhanvien);
     } catch (err) {
-      return res.status(500).json({ msg: err.message });
+      return res.status(500).json({ message: err.message });
     }
   }
 

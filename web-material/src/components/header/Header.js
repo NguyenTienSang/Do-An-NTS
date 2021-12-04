@@ -5,7 +5,7 @@ import { BsBellFill } from 'react-icons/bs';
 import axios from 'axios';
 import { useEffect } from 'react';
 import {IoMdArrowDropdown} from 'react-icons/io';
-
+import ChangePassword from '../mainpages/auth/ChangePassword';
 
 
 function Header() {
@@ -29,9 +29,9 @@ function Header() {
     // setIsAdmin(false);
   }
 
-  // console.log('inforuser : ',inforuser.hoten)
-  // console.log('inforuser.images : ',inforuser.images.url)
+  
     return (
+      <>
         <header>
 
         <div className="logo">
@@ -59,7 +59,12 @@ function Header() {
                                 <Link to="/login" onClick={logoutUser}>Thông tin của tôi</Link>
                             </li>
                             <li className="header__navbar-user-item header__navbar-user-item--separate">
-                                <Link to="/" onClick={logoutUser}>Đổi mật khẩu</Link>
+                                <div
+                                onClick={() => {
+                               
+                                  document.getElementById("modal_container__changepassword").classList.add("modal_active");
+                                }} 
+                                >Đổi mật khẩu</div>
                             </li>
                             <li className="header__navbar-user-item header__navbar-user-item--separate">
                                 <Link to="/login" onClick={logoutUser}>Đăng Xuất</Link>
@@ -68,6 +73,11 @@ function Header() {
                   </div>
           </div>
         </header>
+      
+      {/* Thay đổi mật khẩu */}
+      <ChangePassword/>
+  
+        </>
       );
 }
 

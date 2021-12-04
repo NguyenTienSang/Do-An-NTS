@@ -7,6 +7,8 @@ import HomePage from "./homepage/HomePage";
 import Employees from "./nhanvien/Employees";
 // import AddEmployee from "./nhanvien/AddEmployee";
 
+import ChangePassword from "./auth/ChangePassword";
+
 import Materials from "./vattu/Materials";
 // import AddMaterial from "./vattu/AddMaterial";
 import AddMaterial from "./vattu/AddMaterial";
@@ -47,6 +49,8 @@ function Pages() {
 
 
             <Route path="/nhanvien" exact component={Employees}/>
+            <Route path="/doimatkhau" exact component={ChangePassword}/>
+
             {/* <Route path="/add_employee" exact component={AddEmployee}/> */}
             <Route path="/detail_employee/:_id" exact component={DetailEmployee} />
             <Route path="/add_material" exact component={AddMaterial} />

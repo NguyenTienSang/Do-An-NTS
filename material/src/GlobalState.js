@@ -24,7 +24,7 @@ export const DataProvider = ({ children }) => {
 
     if (firstLogin) {
       const refreshToken = async () => {
-        const res = await axios.get("http://192.168.1.4:5000/api/auth/refresh_token");
+        const res = await axios.get("http://192.168.1.5:5000/api/auth/refresh_token");
 
         setToken(res.data.accesstoken);
           

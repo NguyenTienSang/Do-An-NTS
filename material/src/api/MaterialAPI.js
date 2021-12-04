@@ -6,7 +6,7 @@ function MaterialAPI() {
   const [callback, setCallback] = useState(false);
 
     const getMaterials = async () => {
-      const res = await axios.get('http://192.168.1.4:5000/api/vattu');
+      const res = await axios.get('http://192.168.1.5:5000/api/vattu');
     
       setMaterials(res.data);
       // console.log('test callback1111111111111111111')

@@ -30,22 +30,35 @@ function DetailEmployee() {
                     <div className="layout-second">
                     <NavBar/>
                         <div className="infor-detail">
-                        <p>Họ tên: {detailEmployee.hoten}</p>
-                        <p>Đại lý: {detailEmployee.madaily.tendl}</p>
-                      
-                        <img src={detailEmployee.images.url} alt="" /> 
-                        <p>Quyền: {detailEmployee.role}</p>
-                        <p>SĐT: {detailEmployee.sodienthoai}</p>
-                        <p>Địa chỉ: {detailEmployee.diachi}</p>
-                        <p>Tình trạng: {detailEmployee.tinhtrang}</p>
+                            <img src={detailEmployee.images.url} alt="" /> 
+                            <p style={{display:'flex',justifyContent:"center",fontSize:"25px"}}>{detailEmployee.hoten}</p>
+                            {/* <div className="row"> 
+                              
+                            </div> */}
+                            <div className="row">
+                                <p>ID: {detailEmployee._id}</p>
+                                <p>Đại lý: {detailEmployee.madaily.tendl}</p>
+                            </div>
+
+                            <div className="row" >
+                            <p>Quyền: {detailEmployee.role}</p>
+                            <p>SĐT: {detailEmployee.sodienthoai}</p>
+                            </div>
+
+                            <div className="row" >
+                            <p>Địa chỉ: {detailEmployee.diachi}</p>
+                            <p>CMND: {detailEmployee.cmnd}</p>
+                            </div>
+                        
+                            <div className="row" >
+                            <p>Tình trạng: {detailEmployee.tinhtrang}</p>
+                            </div>
+                            
+                         
+                          
                         </div>
                       
-                        <div className="button-function" style={{display:"flex",flexDirection:"column"}}>
-                            <button>Xóa</button>
-                            <button>Cập nhật</button>
-                            <button>Thống kê hóa đơn</button>
-                            <button>Năng suất công việc</button>
-                        </div>
+                        
                     </div>
                 </div>
             </div>

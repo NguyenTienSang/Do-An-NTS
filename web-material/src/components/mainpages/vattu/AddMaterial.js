@@ -77,7 +77,7 @@ function AddMaterial(props) {
       // setLoading(false);
       setImages(res.data);
     } catch (err) {
-      alert(err.response.data.msg);
+      alert(err.response.data.message);
     }
   };
 
@@ -95,7 +95,7 @@ function AddMaterial(props) {
       // setLoading(false);
       setImages(false);
     } catch (err) {
-      alert(err.response.data.msg);
+      alert(err.response.data.message);
     }
   };
 
@@ -134,7 +134,7 @@ function AddMaterial(props) {
       setCallback(!callback);
       // history.push("/");
     } catch (err) {
-      alert(err.response.data.msg);
+      alert(err.response.data.message);
     }
   };
 

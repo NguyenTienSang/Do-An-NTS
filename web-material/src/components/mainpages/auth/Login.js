@@ -31,7 +31,7 @@ const Login = () => {
             window.location.href = "/trangchu";
        
         } catch (error) {
-            alert(error.response.data.msg);
+            alert(error.response.data.message);
         }
       };
 

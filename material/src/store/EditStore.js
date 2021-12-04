@@ -55,7 +55,7 @@ export default function EditStore({navigation,route}){
         console.log('Bắt đầu sửa : ',token);
         console.log('Dữ liệu store : ',store);
         axios.put(
-            `http://192.168.1.4:5000/api/daily/${store._id}`,
+            `http://192.168.1.5:5000/api/daily/${store._id}`,
             { ...store},
             {
                 headers: { Authorization: token },
@@ -117,7 +117,7 @@ export default function EditStore({navigation,route}){
 
 
             axios.post(
-                "http://192.168.1.4:5000/api/destroy",
+                "http://192.168.1.5:5000/api/destroy",
                 {
                     public_id,
                 },
@@ -142,7 +142,7 @@ export default function EditStore({navigation,route}){
                     // setLoading(true);
                     console.log('-------------- test --------------');
     
-                    const res = await axios.post("http://192.168.1.4:5000/api/upload", formData, {
+                    const res = await axios.post("http://192.168.1.5:5000/api/upload", formData, {
                       headers: {
                         "content-type": "multipart/form-data",
                         Authorization: token,

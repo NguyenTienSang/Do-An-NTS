@@ -1,7 +1,8 @@
-const VatTu = require('../models/VatTu');
+const NhanVien = require('../models/NhanVien');
 const PhieuNhap = require('../models/PhieuNhap');
 const PhieuXuat = require('../models/PhieuXuat');
-const NhanVien = require('../models/NhanVien');
+const DaiLy = require('../models/DaiLy')
+const Kho = require('../models/Kho')
 
 const statisticCtrl = {
 
@@ -453,7 +454,7 @@ const statisticCtrl = {
                 res.json(phieuxuat);
             }
         } catch (error) {
-            return res.status(500).json({ msg: error.message });
+            return res.status(500).json({ message: error.message });
         }
     },
     /* */
@@ -602,145 +603,7 @@ const statisticCtrl = {
         
        console.log('statisticProfitYear : ',statisticProfitYear);
         return res.json(statisticProfitYear)
-        /*
-            Hướng cũ:
-            - Tạo ra mảng gồm 12 tháng
-            - Lấy ra toàn bộ danh sách vật tư
-            - Lấy ra chi tiết phiếu nhập
-            - Lấy ra chi tiết phiếu xuất
-            - Tính số lượng nhập của từng vật tư trong 12 tháng
-            - Tính số lượng xuất của từng vật tư trong 12 tháng
-            - Tính doanh thu = (số lượng xuất * giá xuất - số lượng nhập * giá nhập)
-
-        */
-            
-        /*
-
-
-
-
-
-
-
-            Hướng mới
-
-            for()
-
-
-
-
-
-
-
-
-
-
-
-            Bản Desktop
-            Tháng 1 Số lượng nhập    Số lượng xuất   Tổng chi phí nhập   Tổng chi phí xuất   Tổng lợi nhuận
-            Tháng 2 Số lượng nhập    Số lượng xuất   Tổng chi phí nhập   Tổng chi phí xuất   Tổng lợi nhuận
-            Tháng 3 Số lượng nhập    Số lượng xuất   Tổng chi phí nhập   Tổng chi phí xuất   Tổng lợi nhuận
-                                                                            Tổng lơi nhuận năm : 
-            Bản mobile
-            cột tháng 1-> 12
-            Tháng 1
-            Số lượng nhập Tổng chi phí nhập
-            Số lượng xuất Tổng chi phí xuất
-            Tổng lợi nhuận tháng
-
-            Tháng 2
-            Số lượng nhập Tổng chi phí nhập
-            Số lượng xuất Tổng chi phí xuất
-            Tổng lợi nhuận tháng
-            ..
-            ....
-            ......
-            Tổng lợi nhuận năm
-            
-            
-            
-
-
-
-
-
-
-
-
-
-            - Gán vào mảng object
-            - 
-            vattu{
-
-                - Id vật tư
-                - Tên vật tư
-                - Số lượng tồn
-                - Giá nhập
-                - Giá xuất
-                12 tháng
-               - so luong nhap
-               - so luong xuat
-               - Doanh Thu
-               -> Tổng doanh thu vật tư trong 12 tháng
-               -> Tổng doanh thu đại lý trong 12 tháng
-
-                Nếu mà lấy dưới database thì trả về json
-
-
-
-
-            }
-
-            - Dùng mongo find ra phiếu nhập tháng 1- 12    
-            - Dùng mongo find ra phiếu xuất tháng 1- 12   
-
-            for(int i=1; i <= 12; i++)
-            {
-                PN.find($and: [{ngay: {&ne: }}])
-            }
-
-            Object Tháng {
-
-            }
-
-
-            In ra vật tư tháng 1
-            Gốm
-          Object  {
-            + _id
-            + Tên vt
-            + Giá nhập
-            + Giá xuất
-            + Số lượng nhập
-            + Số lượng xuất
-            + Doanh thu -> Suy ra từ (số lượng xuất * giá xuất - số lượng nhập * giá nhập)
-            }
-          
-
-
-            Tổng doanh thu đại lý hiện trên đầu
-            - Trong mỗi bảng là một vật tư -> Cuối bảng là tổng doanh thu vật tư 12 tháng
-            - Tạo mảng tháng, số lượng nhập, số lượng xuất gồm 12 phần tử
-            - Lấy ra danh sách vật tư chỉ có trong đại lý
-
-            Lọc phiếu nhập -> lọc map ct phiếu nhập
-           
-            -> Tạo ra mảng vật tư filter
-             find danh sách mảng vật tư filter
-            -> Nếu mà undefined (không có) -> Thêm vật tư đó vào trong mảng
-            tăng số lượng nhập lên
-            Biến doanh thu = - (số lượng nhập * giá nhập)   
-            
-            Lọc phiếu xuất -> Ọc map
-
-        */
-
-
-        // try {
-        //     const {year,madailyfilter} = req.body;
-        // } catch (error) {
-            
-        // }
+        
        
     },
 
@@ -903,7 +766,58 @@ const statisticCtrl = {
             
         // }
        
+    },
+
+    statisticHomePage: async (req,res) => {
+      
+        try{
+            
+         const date = new Date();
+          
+            var statisticProfit = [];
+            var statisticProfit = {
+                sophieunhap: 0,
+                sophieuxuat: 0,
+                chiphinhap: 0,
+                chiphixuat: 0,
+            }
+    
+            const phieunhap = await PhieuNhap.find({ $expr: { $and: [{ $eq: [{ $month: "$ngay" },date.getMonth()+1] }, { $eq: [{ $year: "$ngay" },date.getFullYear()] }] } }).select({ctpn : 1, ngay: 1, _id: 0})
+            const phieuxuat = await PhieuXuat.find({ $expr: { $and: [{ $eq: [{ $month: "$ngay" },date.getMonth()+1] }, { $eq: [{ $year: "$ngay" },date.getFullYear()] }] } }).select({ctpx : 1, ngay: 1, _id: 0})
+
+            //Phiếu nhập
+             phieunhap.forEach(pn => {
+                
+                    statisticProfit.sophieunhap++;
+                    pn.ctpn.forEach(ctpn => {
+                        statisticProfit.chiphinhap += parseInt(ctpn.gianhap * ctpn.soluong);
+                    })
+            })
+
+            //Phiếu xuất
+            phieuxuat.forEach(px => {
+                    statisticProfit.sophieuxuat++;
+                    px.ctpx.forEach(ctpx => {
+                        statisticProfit.chiphixuat += parseInt(ctpx.giaxuat * ctpx.soluong);
+                    })
+            })
+           
+
+
+
+          
+            const countdaily = await DaiLy.countDocuments('_id')
+            const countkho = await Kho.countDocuments('_id')
+            const countnhanvien = await NhanVien.countDocuments('_id')
+
+
+            res.json({statisticProfit,countdaily,countkho,countnhanvien})
+         
+        } catch(error) {
+            return res.status(500).json({ message: error.message });
+        }
     }
+
 
 }
 

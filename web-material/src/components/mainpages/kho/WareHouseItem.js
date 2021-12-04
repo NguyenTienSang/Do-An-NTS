@@ -3,7 +3,7 @@ import { GlobalState } from "../../../GlobalState";
 import {RiDeleteBin6Line} from 'react-icons/ri';
 import {FaUserEdit} from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import {GrView} from 'react-icons/gr';
+import {AiOutlineEye} from 'react-icons/ai';
 
 function WareHouseItem({warehouse,stt,EditWareHouse,DeleteWareHouse}) {
 
@@ -12,43 +12,47 @@ function WareHouseItem({warehouse,stt,EditWareHouse,DeleteWareHouse}) {
 
     return (
         <div className="warehouse_item">
-        <div style={{flex:0.5}} className="warehouse_item_element">
-        <h2>{stt+1}</h2>
+        <div style={{width:"70px"}} className="warehouse_item_element">
+        <p>{stt+1}</p>
         </div>
-        <div className="warehouse_item_element">
-        <h2>{warehouse.tenkho}</h2>
+        <div style={{width:"160px"}} className="warehouse_item_element  id_warehouse">
+        <p>{warehouse._id}</p>
         </div>
-        <div className="warehouse_item_element">
+        <div style={{flex:1}} className="warehouse_item_element">
+        <p>{warehouse.tenkho}</p>
+        </div>
+        <div  style={{width:"160px"}} className="warehouse_item_element">
           <img src={warehouse.images.url} alt="" />
         </div>
          
-        <div className="warehouse_item_element">
+        <div style={{flex:1}} className="warehouse_item_element">
             {warehouse.madaily.tendl}
         </div>
 
-        <div className="warehouse_item_element">
+        <div style={{flex:1}} className="warehouse_item_element">
             {warehouse.diachi} 
         </div>
-          <div className="warehouse_item_element">
+          <div style={{flex:1}} className="warehouse_item_element">
           {warehouse.sodienthoai}
           </div>
-        
-         {
+
+   
+          <div style={{flex:1}} className="warehouse_item_element">
+          {
            isAdmin ? 
            <>
-            <div style={{flex:0.6}} className="warehouse_item_element">
-              <button style={{fontSize:30}} onClick={() => EditWareHouse(warehouse)}><FaUserEdit/></button>
-            </div>
-            <div style={{flex:0.6}} className="warehouse_item_element">
-              <button onClick={() => DeleteWareHouse(warehouse._id,warehouse.images.public_id)} style={{fontSize:30}}><RiDeleteBin6Line/></button>
-            </div>
-             
+              <button style={{fontSize:36}} onClick={() => EditWareHouse(warehouse)}><FaUserEdit style={{color: "rgb(15, 184, 0)"}}/></button>
+              <button style={{fontSize:36}} onClick={() => DeleteWareHouse(warehouse._id,warehouse.images.public_id)}><RiDeleteBin6Line style={{color: "red"}}/></button>
+            
            </>
            : null
          }
-          <div style={{flex:0.6}} className="warehouse_item_element">
-          <Link to={'/chitietkho'}> <button><GrView/></button></Link>
+          <Link to={'/chitietkho'}><button style={{fontSize:36}}><AiOutlineEye style={{color: "rgb(26, 148, 255)"}}/></button></Link>
+    
           </div>
+        
+        
+          
       </div>
     )
 }

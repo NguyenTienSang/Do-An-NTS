@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {RiDeleteBin6Line} from 'react-icons/ri';
 import {FaUserEdit} from 'react-icons/fa';
-import {GrView} from 'react-icons/gr';
-import {BiHide} from 'react-icons/bi';
+import {AiOutlineEye} from 'react-icons/ai';
+import {BsEyeSlash} from 'react-icons/bs';
 import DetailImportBill from './DetailImportBill';
 
 function ImportBillItem({importbill,stt}) {
@@ -51,7 +51,7 @@ function ImportBillItem({importbill,stt}) {
                     {/* <button onClick={() => ViewDetailImportBill(importbill)}> <GrView/></button> */}
                     <button onClick={() => {
                             setDetailImport(!detailimport)
-                    }}>{detailimport ? <GrView/> : <BiHide/>} </button>
+                    }}>{detailimport ? <AiOutlineEye style={{fontSize:36,color: "rgb(26, 148, 255)"}} /> : <BsEyeSlash style={{fontSize:36,color: "red"}} />} </button>
                     </div>
           </div>
           <div>

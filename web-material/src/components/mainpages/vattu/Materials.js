@@ -274,7 +274,7 @@ function Materials() {
                 <input
                   type="text"
                   name="tenpn"
-                  placeholder="Nhập tên vật tư"
+                  placeholder="Nhập từ khóa tìm kiếm"
                   id="inputsearch"
                   required
                   autocomplete="off"
@@ -295,19 +295,19 @@ function Materials() {
            
               
             </div>
-            <div className="header_list">
-              <p style={{flex:0.5}}>STT</p>
-              <p>Tên vật tư</p>
-              <p>Hình ảnh</p>
-              <p>Số lượng tồn</p>
-              <p>Giá nhập</p>
-              <p>Giá xuất</p>
-              <p style={{flex:0.6}}>Trạng thái</p>
+            <div className="material-header_list">
+              <p style={{width:"70px"}}>STT</p>
+              <p style={{width:"160px"}}>ID</p>
+              <p style={{flex:1}}>Tên vật tư</p>
+              <p style={{width:"160px"}}>Hình ảnh</p>
+              <p style={{flex:1}}>Số lượng tồn</p>
+              <p style={{flex:1}}>Giá nhập</p>
+              <p style={{flex:1}}>Giá xuất</p>
+              <p style={{flex:1}}>Trạng thái</p>
             {
               isAdmin ? 
               <>
-                <p style={{flex:0.6}}>Cập nhật</p>
-                <p style={{flex:0.6}}>Xóa</p>
+                <p style={{flex:1}}>Chức năng</p>
               </> 
               : null
             }
@@ -318,7 +318,11 @@ function Materials() {
               {
                   return material;
               }
-              else if(material.tenvt.toLowerCase().includes(searchTerm.toLowerCase()))
+              else if(
+                material._id.toLowerCase().includes(searchTerm.toLowerCase())
+                || material.tenvt.toLowerCase().includes(searchTerm.toLowerCase())
+                || material.trangthai.toLowerCase().includes(searchTerm.toLowerCase())
+                )
               {
                   return material;
               }

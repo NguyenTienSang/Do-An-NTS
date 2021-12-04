@@ -21,7 +21,7 @@ function UserAPI(token) {
                     // localStorage.setItem('inforuser',JSON.stringify(res.data));
                     res.data.role === 'admin' ? setIsAdmin(true) : setIsAdmin(false);
                 } catch(err) {
-                    // alert(err.response.data.msg);
+                    // alert(err.response.data.message);
                 }
             }
 

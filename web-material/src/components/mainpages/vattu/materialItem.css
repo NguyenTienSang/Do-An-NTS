@@ -8,11 +8,10 @@
     height: 100px;
 }
 
-.material_item h2 {
-    margin: 0;
-    font-weight: 300;
-    font-size: 20px;
-    color: rgb(8, 137, 243);
+.material_item .id_material p {
+    max-width: 160px;
+    width: 100%;
+    word-wrap: break-word;
 }
 
 .material_item img {
@@ -24,7 +23,7 @@
 
 .material_item .material_item_element {
     display: flex;
-    flex: 1;
+    /* flex: 1; */
     justify-content: center;
     align-items: center;
     border-right: 1px solid #999;

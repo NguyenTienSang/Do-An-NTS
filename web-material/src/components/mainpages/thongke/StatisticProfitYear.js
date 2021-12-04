@@ -42,7 +42,7 @@ function StatisticProfitYear() {
     if(madailyfilter !== "")
     {
       console.log('madailyfilter : ',madailyfilter)
-      const res = await axios.post('http://192.168.1.4:5000/api/thongke/loinhuannam',
+      const res = await axios.post('http://192.168.1.5:5000/api/thongke/loinhuannam',
       {madailyfilter,yearstatistic : parseInt(moment(yearstatistic).format('YYYY'))}
       // {madailyfilter,yearstatistic : 2021}
         );

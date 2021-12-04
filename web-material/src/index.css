@@ -39,7 +39,7 @@ h2,
 h3,
 h4,
 p {
-  margin-bottom: 0px !important;
+  margin: 0px !important;
 }
 
 .layout {
@@ -93,3 +93,6 @@ p {
 
 /*--------------------- Statistic ---------------------*/
 @import url("./components/mainpages/thongke/statistic.css");
+
+/*--------------------- ChangePassword ---------------------*/
+@import url("./components/mainpages/auth/ChangePassword.css");

@@ -8,12 +8,19 @@
     height: 100px;
 }
 
-.store_item h2 {
+.store_item .id_store p {
+    max-width: 160px;
+    width: 100%;
+    word-wrap: break-word;
+    padding: 0 5px;
+}
+
+/* .store_item p {
     margin: 0;
     font-weight: 300;
     font-size: 20px;
     color: rgb(8, 137, 243);
-}
+} */
 
 .store_item img {
     max-width: 160px;
@@ -24,7 +31,6 @@
 
 .store_item .store_item_element {
     display: flex;
-    flex: 1;
     justify-content: center;
     align-items: center;
     border-right: 1px solid #999;

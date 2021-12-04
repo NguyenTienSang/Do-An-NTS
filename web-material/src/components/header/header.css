@@ -64,6 +64,8 @@ header .my-item {
 }
 
 .header__navbar-user-menu .header__navbar-user-item {
+    display: flex;
+    align-items: center;
     height: 30px;
     width: 100%;
     padding: 0px 5px;
@@ -71,6 +73,8 @@ header .my-item {
 
 .header__navbar-user-menu .header__navbar-user-item:hover {
     background-color: rgb(26, 148, 255);
+    color: #fff;
+    cursor: pointer;
 }
 
 .header__navbar-user-menu .header__navbar-user-item:hover a {

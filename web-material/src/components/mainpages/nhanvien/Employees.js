@@ -284,7 +284,7 @@ function Employees() {
                 <input
                   type="text"
                   name="tenpn"
-                  placeholder="Nhập tên nhân viên"
+                  placeholder="Nhập từ khóa tìm kiếm"
                   id="inputsearch"
                   required
                   autocomplete="off"
@@ -306,17 +306,18 @@ function Employees() {
         </div>
           <div className="header_list">
             <p style={{flex:0.5}}>STT</p>
+            <p>ID</p>
             <p>Họ tên</p>
             <p>Hình ảnh</p>
             <p>Đại lý</p>
             <p style={{flex:0.5}}>Quyền</p>
-            <p>Tình trạng</p>
+            <p>Trạng thái</p>
             {
               isAdmin ?
               <>
-              <p style={{flex:0.6}}>Cập nhật</p>
-              <p style={{flex:0.6}}>Xóa</p>
-              <p style={{flex:0.6}}>Chi tiết</p>
+              <p style={{flex:1}}>Chức năng</p>
+              {/* <p style={{flex:0.6}}>Xóa</p>
+              <p style={{flex:0.6}}>Chi tiết</p> */}
               </>
               : null
             }
@@ -327,7 +328,14 @@ function Employees() {
               {
                   return employee;
               }
-              else if(employee.hoten.toLowerCase().includes(searchTerm.toLowerCase()))
+              else if(
+                employee._id.toLowerCase().includes(searchTerm.toLowerCase()) 
+              || employee.hoten.toLowerCase().includes(searchTerm.toLowerCase())
+              || employee.madaily.tendl.toLowerCase().includes(searchTerm.toLowerCase())
+              || employee.role.toLowerCase().includes(searchTerm.toLowerCase())
+              || employee.tinhtrang.toLowerCase().includes(searchTerm.toLowerCase())
+
+              )
               {
                   return employee;
               }
@@ -380,6 +388,7 @@ function Employees() {
                 placeholder="Nhập họ tên"
                 id="hoten"
                 required
+                autocomplete="off"
                 value={employee.hoten}
                 onChange={handleChangeInput}
               />
@@ -408,6 +417,7 @@ function Employees() {
               <input
                 type="text"
                 name="diachi"
+                autocomplete="off"
                 placeholder="Nhập địa chỉ"
                 id="diachi"
                 required
@@ -422,6 +432,7 @@ function Employees() {
               <input
                 type="text"
                 name="username"
+                autocomplete="off"
                 placeholder="Nhập username"
                 id="username"
                 required
@@ -435,6 +446,7 @@ function Employees() {
               <input
                 type="password"
                 name="password"
+                autocomplete="off"
                 placeholder="Nhập mật khẩu"
                 id="password"
                 required
@@ -463,6 +475,7 @@ function Employees() {
               <input
                 // type="number"
                 name="sodienthoai"
+                autocomplete="off"
                 placeholder="Nhập số điện thoại"
                 id="sodienthoai"
                 required
@@ -478,6 +491,7 @@ function Employees() {
               <input
                 type="cmnd"
                 name="cmnd"
+                autocomplete="off"
                 placeholder="Nhập cmnd"
                 id="cmnd"
                 required
@@ -488,10 +502,11 @@ function Employees() {
             </div>
 
           <div className="row">
-            <label htmlFor="tinhtrang">Tình trạng</label>
+            <label htmlFor="tinhtrang">Trạng thái</label>
             <select
              className="select-daily-nhanvien"
               name="tinhtrang"
+              autocomplete="off"
               value={employee.tinhtrang}
               onChange={handleChangeInput}
               disabled="disabled"

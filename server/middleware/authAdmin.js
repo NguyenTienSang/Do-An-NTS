@@ -7,11 +7,11 @@ const authAdmin = async(req, res, next) => {
             _id: req.nhanvien.id
         })
         if(nhanvien.role === 'user')
-            return res.status(400).json({msg: "Bạn không thuộc quyền Admin"})
+            return res.status(400).json({message: "Bạn không thuộc quyền Admin"})
 
             next()
     } catch(err) {
-        return res.status(500).json({msg: err.message})
+        return res.status(500).json({message: err.message})
     }
 }
 

@@ -3,11 +3,34 @@
     justify-content: flex-start;
     flex-direction: column;
     max-width: 700px;
-    border: 1px solid #999;
+    width: 100%;
+    height: 650px;
+    border: 2px solid rgb(26, 148, 255);
     border-radius: 5px;
+}
+
+.infor-detail img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
 }
 
 .infor-detail p {
     justify-content: flex-start;
     margin-left: 7px;
+}
+
+.infor-detail .row {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0px 0px 0px;
+    padding: 0px 20px;
+}
+
+.infor-detail .row p {
+    font-size: 20px;
+}
+
+.infor-detail .row p:first-child {
+    width: 300px;
 }

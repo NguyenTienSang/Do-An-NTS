@@ -94,6 +94,7 @@ h2,
     margin-top: 40px;
     color: #fff;
     background: rgb(85, 165, 85);
+    cursor: pointer;
 }
 
 .hr {

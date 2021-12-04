@@ -44,7 +44,7 @@ export default function SignInScreen({props,navigation}) {
       // console.log('data : ',data.data.user);
       navigation.navigate("DrawerNavigator",{role: res.data.user.role})
   } catch (error) {
-      alert(error.response.data.msg);
+      alert(error.response.data.message);
   }
 
     //   await fetch(`${APILogin}`,{

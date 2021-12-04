@@ -250,9 +250,10 @@ function Stores() {
                 <input
                   type="text"
                   name="tenpn"
-                  placeholder="Nhập tên đại lý"
+                  placeholder="Nhập từ khóa tìm kiếm"
                   id="inputsearch"
                   required
+                  autocomplete="off"
                   autocomplete="off"
                   onChange={(event)=> {
                     setSearchTerm(event.target.value);
@@ -268,14 +269,14 @@ function Stores() {
             
             </div>
 
-          <div className="header_list">
-            <p style={{flex:0.5}}>STT</p>
-            <p>Tên đại lý</p>
-            <p>Hình ảnh</p>
-            <p>Địa chỉ</p>
-            <p>SĐT</p>
-            <p style={{flex:0.6}}>Cập nhật</p>
-            <p style={{flex:0.6}}>Xóa</p>
+          <div className="store-header_list">
+            <p style={{width:"70px"}}>STT</p>
+            <p style={{width:"160px"}}>ID</p>
+            <p style={{flex:1}}>Tên đại lý</p>
+            <p style={{flex:1}}>Hình ảnh</p>
+            <p style={{flex:1}}>Địa chỉ</p>
+            <p style={{flex:1}}>SĐT</p>
+            <p style={{flex:1}}>Chức năng</p>
           </div>
           {
           stores?.filter(store=>{
@@ -283,7 +284,12 @@ function Stores() {
             {
                 return store;
             }
-            else if(store.tendl.toLowerCase().includes(searchTerm.toLowerCase()))
+            else if(
+              store._id.toLowerCase().includes(searchTerm.toLowerCase())
+              || store.tendl.toLowerCase().includes(searchTerm.toLowerCase())
+              || store.diachi.toLowerCase().includes(searchTerm.toLowerCase())
+              || store.sodienthoai.toLowerCase().includes(searchTerm.toLowerCase())
+            )
             {
                 return store;
             }

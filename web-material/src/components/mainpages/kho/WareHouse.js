@@ -33,6 +33,8 @@ function WareHouses() {
   const [warehouses] = state.warehouseAPI.warehouses;
   const [callback, setCallback] = state.warehouseAPI.callback;
 
+// console.log('warehouses : ',warehouses)
+
   const [openalert,setOpenAlert] = useState(false);
 
   const [message,setMessage] = useState("");
@@ -153,8 +155,7 @@ function WareHouses() {
 
   const AddToListWareHouse = async (e) => {
     console.log(e);
-        // alert('Thêm thành công : '+employee.tenvt);
-        // console.log('Dữ liệu thêm mới : ',{...employee, images });
+       
       console.log('warehouse : ',warehouse)
         // //Thêm mới
         if(!onEdit)
@@ -257,7 +258,6 @@ function WareHouses() {
     <div className="layout-second">
     <NavBar/>
         <div className="warehouses">
-
         <div className="header-title">
 
         <div className="row search-warehouse">
@@ -284,29 +284,36 @@ function WareHouses() {
             
             </div>
 
-            <div className="header_list">
-              <p style={{flex:0.5}}>STT</p>
-              <p>Tên kho</p>
-              <p>Hình ảnh</p>
-              <p>Đại lý</p>
-              <p>Địa chỉ</p>
-              <p>SĐT</p>
-              {
+            <div className="warehouse-header_list">
+              <p style={{width:"70px"}}>STT</p>
+              <p style={{width:"160px"}}>ID</p>
+              <p style={{flex:1}}>Tên kho</p>
+              <p style={{width:"160px"}}>Hình ảnh</p>
+              <p style={{flex:1}}>Đại lý</p>
+              <p style={{flex:1}}>Địa chỉ</p>
+              <p style={{flex:1}}>SĐT</p>
+              {/* {
                 isAdmin ? 
                 <>
                     <p style={{flex:0.6}}>Cập nhật</p>
-                    <p style={{flex:0.6}}>Xóa</p>
                 </>
                 : null
-              }
-              <p style={{flex:0.6}}>Xem kho</p>
+              } */}
+              <p style={{flex:1}}>Chức Năng</p>
             </div>
             {warehouses?.filter(warehouse=>{
             if(searchTerm === "") 
             {
                 return warehouse;
             }
-            else if(warehouse.tenkho.toLowerCase().includes(searchTerm.toLowerCase()))
+            else if(
+              warehouse._id.toLowerCase().includes(searchTerm.toLowerCase())
+              || warehouse.tenkho.toLowerCase().includes(searchTerm.toLowerCase())
+              || warehouse.madaily.tendl.toLowerCase().includes(searchTerm.toLowerCase())
+              || warehouse.diachi.toLowerCase().includes(searchTerm.toLowerCase())
+              || warehouse.sodienthoai.toLowerCase().includes(searchTerm.toLowerCase())
+              
+            )
             {
                 return warehouse;
             }

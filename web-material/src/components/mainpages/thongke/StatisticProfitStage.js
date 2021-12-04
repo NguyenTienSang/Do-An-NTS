@@ -46,7 +46,7 @@ function StatisticProfitStage() {
       }
       else
       {
-        const res = await axios.post('http://192.168.1.4:5000/api/thongke/loinhuangiaidoan',
+        const res = await axios.post('http://192.168.1.5:5000/api/thongke/loinhuangiaidoan',
         {madailyfilter,startyearstatistic : parseInt(moment(startyearstatistic).format('YYYY')), endyearstatistic : parseInt(moment(endyearstatistic).format('YYYY'))}
         // {madailyfilter,yearstatistic : 2021}
           )

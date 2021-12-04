@@ -13,7 +13,7 @@ const employeeCtrl = {
         //   console.log('nhanvienthuocdaily : ',employees);
           res.json(employees);
         } catch (err) {
-          return res.status(500).json({ msg: err.message });
+          return res.status(500).json({ message: err.message });
         }
       },
      

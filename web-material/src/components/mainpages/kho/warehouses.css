@@ -19,7 +19,35 @@
     border-radius: 8px;
 }
 
-.header_list {
+.header-title {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    height: 50px;
+    background-color: rgb(26, 148, 255);
+    color: #fff;
+    border: 1px solid #999;
+}
+
+.header-title .title-tab h2 {
+    font-size: 25px;
+    font-weight: 400;
+    /* color: #fff; */
+}
+
+.header-title .add-item {
+    display: flex;
+    align-items: center;
+    font-size: 25px;
+    padding: 0px 10px 3px 10px;
+    color: #fff;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    background-color: rgb(38 151 251);
+}
+
+.warehouse-header_list {
     display: flex;
     border: 1px solid #999;
     height: 50px;
@@ -27,10 +55,10 @@
     background-color: rgb(235, 232, 232);
 }
 
-.header_list p {
+.warehouse-header_list p {
     display: flex;
     justify-content: center;
-    flex: 1;
+    /* flex: 1; */
     align-items: center;
     border-right: 1px solid #999;
     height: 100%;

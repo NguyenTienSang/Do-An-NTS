@@ -8,6 +8,9 @@ router.post("/login", authCtrl.login);
 
 router.get("/logout", authCtrl.logout);
 
+router.put("/changepassword", authCtrl.changepassword);
+
+
 router.get("/refresh_token", authCtrl.refreshToken);
 
 router.get("/infor", auth, authCtrl.getEmployee);

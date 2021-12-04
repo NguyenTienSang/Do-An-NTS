@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Link } from 'react-router-dom';
 import {RiDeleteBin6Line} from 'react-icons/ri';
 import {FaUserEdit} from 'react-icons/fa';
-import {GrView} from 'react-icons/gr';
+import {AiOutlineEye} from 'react-icons/ai';
 import { GlobalState } from '../../../GlobalState';
 
 
@@ -13,10 +13,13 @@ function EmployeeItem({employee,stt,EditEmployee,DeleteEmployee}) {
     return (
         <div className="employee_item">
         <div style={{flex:0.5}} className="employee_item_element">
-        <h2>{stt+1}</h2>
+        <p>{stt+1}</p>
+        </div>
+        <div className="employee_item_element id_employee">
+        <p>{employee._id}</p>
         </div>
         <div className="employee_item_element">
-        <h2>{employee.hoten}</h2>
+        <p>{employee.hoten}</p>
         </div>
         <div className="employee_item_element">
           <img src={employee.images.url} alt="" />
@@ -29,19 +32,16 @@ function EmployeeItem({employee,stt,EditEmployee,DeleteEmployee}) {
         <div style={{flex:0.5}} className="employee_item_element">
             {employee.role} 
         </div>
-          <div className="employee_item_element">
+          <div  className="employee_item_element">
           {employee.tinhtrang}
           </div>
           {
             isAdmin ? <>
-              <div style={{flex:0.6}} className="employee_item_element">
-            <button style={{fontSize:30}} style={{fontSize:30}} onClick={() => EditEmployee(employee)}><FaUserEdit/></button>
-          </div>
-          <div style={{flex:0.6}} className="employee_item_element">
-          <button onClick={() => DeleteEmployee(employee._id,employee.images.public_id)}><RiDeleteBin6Line/></button>
-          </div>
-          <div style={{flex:0.6}} className="employee_item_element">
-          <button><Link to={`/detail_employee/${employee._id}`}><GrView/></Link></button>
+            
+          <div style={{flex:1}} className="employee_item_element">
+          <button style={{fontSize:36}} onClick={() => EditEmployee(employee)}><FaUserEdit style={{color: "rgb(15, 184, 0)"}}/></button>
+          <button style={{fontSize:36}} onClick={() => DeleteEmployee(employee._id,employee.images.public_id)}><RiDeleteBin6Line style={{color: "red"}}/></button>
+          <button style={{fontSize:36}}><Link to={`/detail_employee/${employee._id}`}><AiOutlineEye  style={{color: "rgb(26, 148, 255)"}}/></Link></button>
           </div>
             </>
           : null
@@ -51,4 +51,4 @@ function EmployeeItem({employee,stt,EditEmployee,DeleteEmployee}) {
     )
 }
 
-export default EmployeeItem
+export default EmployeeItem;

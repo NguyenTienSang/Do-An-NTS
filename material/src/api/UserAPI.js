@@ -12,7 +12,7 @@ function UserAPI(token) {
         if(token) {
             const getUser = async () => {
                 try{
-                    const res = await axios.get('http://192.168.1.4:5000/api/auth/infor', {
+                    const res = await axios.get('http://192.168.1.5:5000/api/auth/infor', {
                         headers: {Authorization: token}
                     })
                     setIsLogged(true);
@@ -21,7 +21,7 @@ function UserAPI(token) {
 
                     res.data.role === 'admin' ? setIsAdmin(true) : setIsAdmin(false);
                 } catch(err) {
-                    alert(err.response.data.msg);
+                    alert(err.response.data.message);
                 }
             }
 

@@ -8,17 +8,30 @@
     height: 140px;
 }
 
-.employee_item h2 {
+/* .employee_item .option_employee svg {
+    color: rgb(26, 148, 255) !important;
+    
+} */
+
+
+
+.employee_item .id_employee p {
+    max-width: 160px;
+    width: 100%;
+    word-wrap: break-word;
+}
+
+/* .employee_item p {
     margin: 0;
     font-weight: 300;
     font-size: 20px;
     color: rgb(8, 137, 243);
-}
+} */
 
 .employee_item img {
     display: flex;
     align-items: center;
-    max-width: 160px;
+    max-width: 180px;
     width: 100%;
     height: 100%;
     margin: 0;

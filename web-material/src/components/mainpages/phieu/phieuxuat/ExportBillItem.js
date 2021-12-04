@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {RiDeleteBin6Line} from 'react-icons/ri';
 import {FaUserEdit} from 'react-icons/fa';
-import {GrView} from 'react-icons/gr';
+import {AiOutlineEye} from 'react-icons/ai';
+import {BsEyeSlash} from 'react-icons/bs';
 import DetailExportBill from './DetailExportBill';
-import {BiHide} from 'react-icons/bi';
 
 function ExportBillItem({exportbill,stt}) {
 
@@ -50,7 +50,7 @@ function ExportBillItem({exportbill,stt}) {
                     {/* <button onClick={() => ViewDetailImportBill(importbill)}> <GrView/></button> */}
                     <button onClick={() => {
                             setDetailExport(!detailexport)
-                    }}> <GrView/></button>
+                    }}> {detailexport ? <AiOutlineEye style={{fontSize:36,color: "rgb(26, 148, 255)"}} /> : <BsEyeSlash style={{fontSize:36,color: "red"}} />}</button>
             </div>
       </div>
       <div>

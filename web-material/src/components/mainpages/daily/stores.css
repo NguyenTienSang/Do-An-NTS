@@ -47,7 +47,7 @@
     background-color: rgb(38 151 251);
 }
 
-.header_list {
+.store-header_list {
     display: flex;
     border: 1px solid #999;
     height: 50px;
@@ -55,10 +55,10 @@
     background-color: rgb(235, 232, 232);
 }
 
-.header_list p {
+.store-header_list p {
     display: flex;
     justify-content: center;
-    flex: 1;
+    /* flex: 1; */
     align-items: center;
     border-right: 1px solid #999;
     height: 100%;

@@ -284,7 +284,7 @@ export default function LapPhieuNhap({navigation,route}){
 
                               try {
                                 const res = await axios.post(
-                                         "http://192.168.1.4:5000/api/phieunhap",
+                                         "http://192.168.1.5:5000/api/phieunhap",
                                          {...importbill,ctpn: datacart.map(item => ({
                                           mavt : item.material._id, gianhap : item.material.gianhap,soluong : item.quantity
                                         })) },
