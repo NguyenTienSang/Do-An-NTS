@@ -193,7 +193,7 @@ input {
     height: 100%;
     position: absolute;
     top: 0;
-    left: 173px;
+    left: 172px !important;
     background: white;
 }
 

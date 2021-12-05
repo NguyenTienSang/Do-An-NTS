@@ -70,7 +70,7 @@ function Pages() {
             <Route path="/login" exact component={isLogged ?  HomePage : Login} />  
             <Route path="/thongke" exact component={isAdmin ?  Statistic : NotFound}/>
             <Route path="/thongkevattu" exact component={isAdmin ?  StatisticMaterial : NotFound}/>
-            <Route path="/thongkephieunhap" exact component={isAdmin ?  StatisticImportBill : NotFound}/>
+            <Route path="/thongkephieunhanvien" exact component={isAdmin ?  StatisticImportBill : NotFound}/>
             <Route path="/thongkeloinhuannam" exact component={isAdmin ?  StatisticProfitYear : NotFound}/>
             <Route path="/thongkeloinhuangiaidoan" exact component={isAdmin ?  StatisticProfitStage : NotFound}/>
             

@@ -49,12 +49,15 @@ function StatisticMaterial() {
   };
 
   useEffect(async() => {
+
+   
+    console.log('madailyfilter : ',madailyfilter);
+    console.log('makhofilter : ',makhofilter);
+
     const res = await axios.post('/api/thongke/vattu',
            {madailyfilter, makhofilter}
     );
     console.log('Dữ liệu thống kê : ',res)
-    console.log('madailyfilter : ',madailyfilter);
-    console.log('makhofilter : ',makhofilter);
     setMaterialsFilter(res.data);
 },[madailyfilter,makhofilter])
 

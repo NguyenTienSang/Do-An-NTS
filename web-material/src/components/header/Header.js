@@ -67,7 +67,7 @@ function Header() {
                                 >Đổi mật khẩu</div>
                             </li>
                             <li className="header__navbar-user-item header__navbar-user-item--separate">
-                                <Link to="/login" onClick={logoutUser}>Đăng Xuất</Link>
+                                <Link to="/" onClick={logoutUser}>Đăng Xuất</Link>
                             </li>
                         </ul>
                   </div>

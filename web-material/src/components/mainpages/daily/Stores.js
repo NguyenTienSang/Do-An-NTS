@@ -13,7 +13,7 @@ import {BiBookAdd} from 'react-icons/bi';
 const initialStore = {
   tendl:"",
   diachi:"",
-  sodienthoai:0
+  sodienthoai:""
 };
 
 function Stores() {
@@ -308,9 +308,9 @@ function Stores() {
     </div>
   </div>
 
-  <div className="modal_container" id="modal_container">
-          <div className="modal">
-            <h2>{onEdit ? "Cập Nhật Thông Tin Đại Lý" : "Thêm Đại Lý"}</h2>
+  <div className="modal_container__store" id="modal_container">
+          <div className="modal_store">
+            <h2 className="title_add__store">{onEdit ? "Cập Nhật Thông Tin Đại Lý" : "Thêm Đại Lý"}</h2>
             <div className="row">
               <label htmlFor="title">Tên đại lý</label>
               <input

@@ -71,7 +71,7 @@ function HomePage() {
                             
 
                             <Link to="/phieunhap"><labeL>Số phiếu nhập : {dataStatistic?.statisticProfit?.sophieunhap} <GiNotebook/></labeL></Link>
-
+                           
                             </div>
 
                             <div className="item_statistic">

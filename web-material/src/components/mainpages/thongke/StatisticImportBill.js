@@ -14,6 +14,7 @@ import DatePicker from "react-datepicker";
 import {IoMdArrowDropdown} from 'react-icons/io';
 import {AiOutlineFileSearch} from 'react-icons/ai';
 
+
 import "react-datepicker/dist/react-datepicker.css";
 
 
@@ -26,47 +27,43 @@ function StatisticImportBill() {
   const [billsfilter,setBillsFilter] = useState();
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
- 
-  // useEffect (async() => {
-  //   const startDateFilter =  moment(startDate).format('YYYY-MM-DD');
-  //   const endDateFilter =  moment(endDate).format('YYYY-MM-DD');
-  //       const res = await axios.post('/api/thongke/phieunhapnhanvien',
-  //         { manv,startDateFilter,endDateFilter,optionbill}
-  //   );
-  //   setBillsFilter(res.data);
-  // },[])
+  const [openalert,setOpenAlert] = useState(false);
+  const [message,setMessage] = useState("");
 
   const filterbill = async () => {
     
     if(manv === "")
     {
-      alert('Vui lòng nhập mã nhân viên')
+      // alert('Vui lòng nhập mã nhân viên')
+      setMessage("Vui lòng nhập mã nhân viên")
+      setOpenAlert(true);
     }
     else if(startDate.getTime() > endDate.getTime())
     {
-      alert('Thời gian không hợp lệ')
+      // alert('Thời gian không hợp lệ')
+      setMessage("Thời gian không hợp lệ")
+      setOpenAlert(true);
     }
     else {
       const startDateFilter =  moment(startDate).format('YYYY-MM-DD');
       const endDateFilter =  moment(endDate).format('YYYY-MM-DD');
-      console.log('testdate1 : ',startDateFilter)
       const res = await axios.post('/api/thongke/phieunhapnhanvien',
           { manv,startDateFilter,endDateFilter,optionbill}
     );
           setBillsFilter(res.data);
-          console.log('res.data : ',res.data)
     }
   }
 
   return (
+    <>
     <div className="layout">
     <div className="layout-first"><Header/></div>
     <div className="layout-second">
     <NavBar/>
-        <div className="importbills">
+        <div className="statistic_importbills">
       
       <div className="filter-container">
-      <div className="search-importbills">
+      <div className="row search-importbills">
           <label>Mã NV </label>
                 <input
                   type="text"
@@ -126,8 +123,9 @@ function StatisticImportBill() {
       </div>
 
       <select
+             className="select_bill"
             // value={optionbill}
-            defaultValue={"TatCa"}
+            defaultValue={"PhieuNhap"}
             onChange={(event)=> {
               setOptionBill(event.target.value)
             }}
@@ -146,11 +144,10 @@ function StatisticImportBill() {
 
         <div className="header-title">
         <div className="row search-importbills">
-          <label>Tên Phiếu</label>
                 <input
                   type="text"
                   name="tenpn"
-                  placeholder="Nhập tên phiếu"
+                  placeholder="Nhập từ khóa tìm kiếm"
                   id="inputsearch"
                   required
                   autocomplete="off"
@@ -161,14 +158,14 @@ function StatisticImportBill() {
                 />
           </div>
               <div className="title-tab">
-                <h2 style={{display:'flex',alignItems:'center'}}><GiExplosiveMaterials style={{marginRight:'5px'}}/>Danh Sách Phiếu Nhập</h2>
+                <h2 style={{display:'flex',alignItems:'center'}}><GiExplosiveMaterials style={{marginRight:'5px'}}/>Danh Sách Phiếu {optionbill === "PhieuNhap" ? "Nhập" : "Xuất"}</h2>
               </div>
               
 
             </div>
             <div className="header_list">
               <p style={{flex:0.5}}>STT</p>
-              <p>Tên phiếu</p>
+              <p>ID</p>
               <p>Ngày lập</p>
               <p>Nhân viên</p>
               <p>Đại lý</p>
@@ -184,7 +181,12 @@ function StatisticImportBill() {
                   {
                       return importbill;
                   }
-                  else if(importbill.tenpn.toLowerCase().includes(searchTerm.toLowerCase()))
+                  else if(
+                    importbill._id.toLowerCase().includes(searchTerm.toLowerCase())
+                    || importbill.manv.hoten.toLowerCase().includes(searchTerm.toLowerCase())
+                    || importbill.manv.madaily.tendl.toLowerCase().includes(searchTerm.toLowerCase())
+                    || importbill.makho.tenkho.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
                   {
                       return importbill;
                   }
@@ -231,6 +233,28 @@ function StatisticImportBill() {
 
       </div>
     </div>
+
+           
+
+      {
+      openalert ?  
+      <div className="modal_container__notification modal_active" id="modal_container__notification">
+      <div className="modal__notification">
+        <p className="title-notification">Thông báo</p>
+        <p>{message}</p>
+        <div className="option-button">
+            <button id="add" onClick={() =>{
+              //  document.getElementById("modal_container__notification").classList.remove("modal_active");
+               setOpenAlert(false);
+            }} >OK</button>
+            {/* <button id="close"  >Hủy</button> */}
+        </div>
+      </div>
+      </div>
+      : <></>
+    }
+
+    </>
   )
 }
 

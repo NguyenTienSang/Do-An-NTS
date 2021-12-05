@@ -162,18 +162,24 @@ const authCtrl = {
 
   changepassword: async (req, res) => {
       try {
-        const { username, oldpassword, newpassword, renewpassword } = req.body;
+        const {oldpassword, newpassword, renewpassword } = req.body;
 
+        
         if(newpassword !== renewpassword)
         {
           return res.status(400).json({ message: "Mật khẩu và mật khẩu xác nhận không khớp" });
         }
 
-        const user = await NhanVien.findOne({ username });
-
-        if (!user) return res.status(400).json({ message: "Username không tồn tại "});
+        const nhanvien = await NhanVien.findOne({_id:req.params.id});
+       
+        if (!nhanvien) return res.status(400).json({ message: "Nhân viên không tồn tại "});
         //Kiểm tra mật khẩu cũ
-        const isMatchOld = await bcrypt.compare(oldpassword, user.password);
+
+     
+        const isMatchOld = await bcrypt.compare(oldpassword, nhanvien.password);
+
+        
+
         if (!isMatchOld)
         {
           return res.status(400).json({ message: "Mật khẩu cũ không đúng" });
@@ -182,7 +188,7 @@ const authCtrl = {
         console.log('isMatchOld : ',isMatchOld)
 
         //Kiểm tra mật khẩu mới không được trùng mật khẩu cũ
-        const isMatchOldNew = await bcrypt.compare(newpassword, user.password);
+        const isMatchOldNew = await bcrypt.compare(newpassword, nhanvien.password);
 
         console.log('isMatchOldNew : ',isMatchOldNew)
 
@@ -198,19 +204,18 @@ const authCtrl = {
         const hashedPassword = await bcrypt.hash(newpassword, 10);
 
         // let updatedNhanVien = user;
-        user.password = hashedPassword;
+        nhanvien.password = hashedPassword;
         // {hoten,madaily,diachi,username,password : hashedPassword,role,sodienthoai,cmnd,tinhtrang,images}
         
-       let updatedNhanVien= await NhanVien.findOneAndUpdate({_id:user._id},user, {new:true});
+       let updatedNhanVien= await NhanVien.findOneAndUpdate({_id:req.params.id},nhanvien, {new:true});
    
         // //Lưu vào mongodb
 
         // // User not authorised to update vattu
         if(!updatedNhanVien)
-        return res.status(401).json({ message:'Cập nhật thất bại'})
-
-        res.json({success: true, message: "Cập nhật thành công",nhanvien: updatedNhanVien})
-
+        return res.status(401).json({ message:'Đổi mật khẩu thất bại'})
+     
+        return res.json({ message:'Đổi mật khẩu thành công'})
         //-----------------------------------
       } catch (error) {
         return res.status(500).json({ message: error.message });

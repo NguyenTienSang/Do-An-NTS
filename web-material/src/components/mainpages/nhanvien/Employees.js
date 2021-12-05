@@ -98,10 +98,10 @@ function Employees() {
       console.log('dữ liệu ảnh : ',res.data);
       console.log('dữ liệu ảnh url : ',res.data.url);
       setImages(res.data);
-    } catch (err) {
+    } catch (error) {
       // alert(err.response.data.message);
 
-      setMessage(err.response.data.message)
+      setMessage(error.response.data.message)
       setOpenAlert(true);
     }
   };
@@ -399,7 +399,7 @@ function Employees() {
           <select
           className="select-daily-nhanvien"
             name="madaily"
-            value={employee.daily}
+            value={employee.madaily.tendl}
             onChange={handleChangeInput}
           >
             <option value="" disabled selected hidden>Vui lòng chọn đại lý</option>
@@ -426,34 +426,41 @@ function Employees() {
               />
             </div>
 
+            {
+              onEdit ?
+               <></> 
+               : 
+              <>
+                <div className="row">
+                  <label htmlFor="title">Username</label>
+                  <input
+                    type="text"
+                    name="username"
+                    autocomplete="off"
+                    placeholder="Nhập username"
+                    id="username"
+                    required
+                    value={employee.username}
+                    onChange={handleChangeInput}
+                  />
+                </div>
 
-            <div className="row">
-              <label htmlFor="title">Username</label>
-              <input
-                type="text"
-                name="username"
-                autocomplete="off"
-                placeholder="Nhập username"
-                id="username"
-                required
-                value={employee.username}
-                onChange={handleChangeInput}
-              />
-            </div>
-
-            <div className="row">
-              <label htmlFor="soluong">Mật khẩu</label>
-              <input
-                type="password"
-                name="password"
-                autocomplete="off"
-                placeholder="Nhập mật khẩu"
-                id="password"
-                required
-                value={employee.password}
-                onChange={handleChangeInput}
-              />
-            </div>
+                <div className="row">
+                  <label htmlFor="soluong">Mật khẩu</label>
+                  <input
+                    type="password"
+                    name="password"
+                    autocomplete="off"
+                    placeholder="Nhập mật khẩu"
+                    id="password"
+                    required
+                    value={employee.password}
+                    onChange={handleChangeInput}
+                  />
+                </div>
+              </>
+            }
+         
 
             <div className="row">
             <label htmlFor="role">Quyền</label>
@@ -509,7 +516,7 @@ function Employees() {
               autocomplete="off"
               value={employee.tinhtrang}
               onChange={handleChangeInput}
-              disabled="disabled"
+              disabled={onEdit ? false : true}
             >
               <option value="Đang làm" >Đang làm</option>
               <option value="Chuyển công tác" >Chuyển công tác</option>
@@ -552,7 +559,7 @@ function Employees() {
         <p>{message}</p>
         <div className="option-button">
             <button id="add" onClick={() =>{
-               document.getElementById("modal_container__notification").classList.remove("modal_active");
+              //  document.getElementById("modal_container__notification").classList.remove("modal_active");
                setOpenAlert(false);
             }} >OK</button>
             {/* <button id="close"  >Hủy</button> */}

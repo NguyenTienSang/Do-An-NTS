@@ -96,3 +96,6 @@ p {
 
 /*--------------------- ChangePassword ---------------------*/
 @import url("./components/mainpages/auth/ChangePassword.css");
+
+/*--------------------- ChangePassword ---------------------*/
+@import url("./components/common/AlertNotification.css");

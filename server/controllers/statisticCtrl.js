@@ -471,7 +471,112 @@ const statisticCtrl = {
 
     */
 
+    statisticBillEmployees: async (req, res) => { 
 
+        try{
+            const {manv} = req.body;
+            const date = new Date();
+             
+            
+               var statisticProfit = {
+                   sophieunhapday: 0,
+                   sophieuxuatday: 0,
+                   chiphinhapday: 0,
+                   chiphixuatday: 0,
+
+                   sophieunhapmonth: 0,
+                   sophieuxuatmonth: 0,
+                   chiphinhapmonth: 0,
+                   chiphixuatmonth: 0,
+
+                   sophieunhapyear: 0,
+                   sophieuxuatyear: 0,
+                   chiphinhapyear: 0,
+                   chiphixuatyear: 0,
+               }
+
+               console.log('manv : ',manv)
+               console.log('day : ',date.getDate());
+               console.log('month : ',date.getMonth()+1);
+               console.log('year : ',date.getFullYear());
+
+
+            //    const phieunhapday = await PhieuNhap.find({ $expr:  { $and: [ { $eq: [{ $dayOfMonth: "$ngay" },3] }, { $eq: [{ $month: "$ngay" },date.getMonth+1] }, { $eq: [{ $year: "$ngay" },date.getFullYear()] }]   }  }).select({ctpn : 1, ngay: 1, _id: 0})
+
+               const phieunhapday = await PhieuNhap.find({ $and:[ { manv: { $eq: manv } }, { $expr: { $and: [{ $eq: [{ $dayOfMonth: "$ngay" },date.getDate()] },{ $eq: [{ $month: "$ngay" },date.getMonth()+1] }, { $eq: [{ $year: "$ngay" },date.getFullYear()] }] } }  ]}).select({ctpn : 1, ngay: 1, _id: 0})
+               const phieuxuatday = await PhieuXuat.find({ $and:[ { manv: { $eq: manv } }, { $expr: { $and: [{ $eq: [{ $dayOfMonth: "$ngay" },date.getDate()] },{ $eq: [{ $month: "$ngay" },date.getMonth()+1] }, { $eq: [{ $year: "$ngay" },date.getFullYear()] }] } }  ]}).select({ctpx : 1, ngay: 1, _id: 0})
+               
+               const phieunhapmonth = await PhieuNhap.find({ $and:[ { manv: { $eq: manv } }, { $expr: { $and: [{ $eq: [{ $month: "$ngay" },date.getMonth()+1] }, { $eq: [{ $year: "$ngay" },date.getFullYear()] }] } }  ]}).select({ctpn : 1, ngay: 1, _id: 0})
+               const phieuxuatmonth = await PhieuXuat.find({ $and:[ { manv: { $eq: manv } }, { $expr: { $and: [{ $eq: [{ $month: "$ngay" },date.getMonth()+1] }, { $eq: [{ $year: "$ngay" },date.getFullYear()] }] } }  ]}).select({ctpx : 1, ngay: 1, _id: 0})
+               
+               const phieunhapyear = await PhieuNhap.find({$and: [ { manv: { $eq: manv } }, { $expr:   { $eq: [{ $year: "$ngay" },date.getFullYear()] }  } ]}).select({ctpn : 1, ngay: 1, _id: 0})
+               const phieuxuatyear = await PhieuXuat.find({$and: [ { manv: { $eq: manv } }, { $expr:   { $eq: [{ $year: "$ngay" },date.getFullYear()] }  } ]}).select({ctpx : 1, ngay: 1, _id: 0})
+
+
+   
+            // //    //Thống kê ngày
+               //Phiếu nhập
+               phieunhapday.forEach(pn => {
+                   
+                       statisticProfit.sophieunhapday++;
+                       pn.ctpn.forEach(ctpn => {
+                           statisticProfit.chiphinhapday += parseInt(ctpn.gianhap * ctpn.soluong);
+                       })
+               })
+   
+            // //    Phiếu xuất
+               phieuxuatday.forEach(px => {
+                       statisticProfit.sophieuxuatday++;
+                       px.ctpx.forEach(ctpx => {
+                           statisticProfit.chiphixuatday += parseInt(ctpx.giaxuat * ctpx.soluong);
+                       })
+               })
+              
+   
+                //Thống kê tháng
+               //Phiếu nhập
+               phieunhapmonth.forEach(pn => {
+                   
+                statisticProfit.sophieunhapmonth++;
+                pn.ctpn.forEach(ctpn => {
+                    statisticProfit.chiphinhapmonth += parseInt(ctpn.gianhap * ctpn.soluong);
+                })
+                })
+
+                //    Phiếu xuất
+                    phieuxuatmonth.forEach(px => {
+                            statisticProfit.sophieuxuatmonth++;
+                            px.ctpx.forEach(ctpx => {
+                                statisticProfit.chiphixuatmonth += parseInt(ctpx.giaxuat * ctpx.soluong);
+                            })
+                    })
+   
+             
+                    //Thống kê năm
+               //Phiếu nhập
+               phieunhapyear.forEach(pn => {
+                statisticProfit.sophieunhapyear++;
+                pn.ctpn.forEach(ctpn => {
+                    statisticProfit.chiphinhapyear += parseInt(ctpn.gianhap * ctpn.soluong);
+                })
+                })
+
+                //    Phiếu xuất
+                    phieuxuatyear.forEach(px => {
+                            statisticProfit.sophieuxuatyear++;
+                            px.ctpx.forEach(ctpx => {
+                                statisticProfit.chiphixuatyear += parseInt(ctpx.giaxuat * ctpx.soluong);
+                            })
+                    })
+           
+   
+               res.json({statisticProfit})
+            
+           } catch(error) {
+               return res.status(500).json({ message: error.message });
+           }
+
+    },
 
 
     //Thống kê lợi nhuận năm
@@ -774,7 +879,7 @@ const statisticCtrl = {
             
          const date = new Date();
           
-            var statisticProfit = [];
+         
             var statisticProfit = {
                 sophieunhap: 0,
                 sophieuxuat: 0,

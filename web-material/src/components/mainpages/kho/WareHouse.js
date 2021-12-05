@@ -138,7 +138,7 @@ function WareHouses() {
     setOnEdit(false);
     setWareHouse(initialWareHouse);
     setLoading(false);
-    document.getElementById("modal_container").classList.add("modal_active");
+    document.getElementById("modal_container__warehouse").classList.add("modal_active");
   }
 
   const EditWareHouse = (data_warehouse_edit) => {
@@ -146,11 +146,11 @@ function WareHouses() {
     setOnEdit(true);
     setWareHouse(data_warehouse_edit);
     setImages(data_warehouse_edit.images);
-    document.getElementById("modal_container").classList.add("modal_active");
+    document.getElementById("modal_container__warehouse").classList.add("modal_active");
   }
 
   const CloseModalWareHouse = () => {
-    document.getElementById("modal_container").classList.remove("modal_active");
+    document.getElementById("modal_container__warehouse").classList.remove("modal_active");
   }
 
   const AddToListWareHouse = async (e) => {
@@ -174,7 +174,7 @@ function WareHouses() {
                    setOpenAlert(true);
 
 
-                   document.getElementById("modal_container").classList.remove("modal_active");
+                   document.getElementById("modal_container__warehouse").classList.remove("modal_active");
                    setCallback(!callback);
                   //  history.push("/vattu");
            } catch (err) {
@@ -201,7 +201,7 @@ function WareHouses() {
                    setMessage(res.data.message)
                    setOpenAlert(true);
 
-                   document.getElementById("modal_container").classList.remove("modal_active");
+                   document.getElementById("modal_container__warehouse").classList.remove("modal_active");
                    setCallback(!callback);
            } catch (err) {
               //  alert(err.response.data.message);
@@ -351,9 +351,9 @@ function WareHouses() {
       </div>
     </div>
 
-    <div className="modal_container" id="modal_container">
-          <div className="modal">
-            <h2>{onEdit ? "Cập Nhật Thông Tin Kho" : "Thêm Kho"}</h2>
+    <div className="modal_container__warehouse" id="modal_container__warehouse">
+          <div className="modal_warehouse">
+            <h2 className="title_add__warehouse">{onEdit ? "Cập Nhật Thông Tin Kho" : "Thêm Kho"}</h2>
             <div className="row">
               <label htmlFor="title">Tên kho</label>
               <input
@@ -383,6 +383,7 @@ function WareHouses() {
             <div className="row">
           <label htmlFor="stores">Đại lý</label>
           <select
+          className="select_daily__kho"
             name="madaily"
             value={warehouse.daily}
             onChange={handleChangeInput}
