@@ -219,6 +219,7 @@ function CreateImportBill() {
         format="DD-MM-YYYY"
         minDate={new Date("10-20-2021")}
         maxDate={new Date()}
+        onChangeRaw={(e) => e.preventDefault()}
         dateFormat="dd-MM-yyyy"
         selected={currentDate}
         onChange={(date) =>

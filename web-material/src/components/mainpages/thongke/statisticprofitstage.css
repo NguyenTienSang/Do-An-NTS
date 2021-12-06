@@ -1,0 +1,33 @@
+.header-title .container-filter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0px;
+    width: 100%;
+}
+
+.container-filter .time_statistic {
+     display: flex;
+     justify-content: space-between;
+     width: 200px;
+     align-items: center;
+     margin: 0px;
+
+}
+.container-filter .label {
+    font-size: 20px;
+}
+
+.container-filter .time_statistic p {
+    width: 60px;
+    font-size: 20px;
+    margin-right: 5px;
+}
+
+.container-filter .statistic-button {
+   margin: 0px;
+}
+
+/* .time_statistic input {
+margin: 0px;
+} */

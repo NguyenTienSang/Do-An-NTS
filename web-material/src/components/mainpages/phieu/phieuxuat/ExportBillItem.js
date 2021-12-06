@@ -17,36 +17,36 @@ function ExportBillItem({exportbill,stt}) {
     return (
       <div>
         <div className="exportbill_item">
-        <div style={{flex:0.5}} className="exportbill_item_element">
+        <div style={{width:"70px"}}  className="exportbill_item_element">
         <p>{stt+1}</p>
         </div>
-        <div className="exportbill_item_element">
+        <div  style={{width:"160px"}} className="exportbill_item_element">
         <p>{exportbill._id}</p>
         </div>
-        <div className="exportbill_item_element">
+        <div style={{flex:1}} className="exportbill_item_element">
         <p>{(exportbill.ngay).slice(8,10)}-{(exportbill.ngay).slice(5,7)}-{(exportbill.ngay).slice(0,4)}</p>
         </div>
 
-        <div className="exportbill_item_element">
+        <div style={{flex:1}} className="exportbill_item_element">
         <p>{exportbill.manv.hoten}</p>
         </div>
 
-        <div className="exportbill_item_element">
+        <div style={{flex:1}} className="exportbill_item_element">
         <p>{exportbill.manv.madaily.tendl}</p>
         </div>
          
-        <div className="exportbill_item_element">
+        <div style={{flex:1}} className="exportbill_item_element">
         <p>{exportbill.makho.tenkho}</p>
         </div>
 
-        <div className="exportbill_item_element">
+        <div style={{flex:1}} className="exportbill_item_element">
                   <p>{
                       Format(onLoadTotal())
                   }   
                       </p>
-                  </div>
+        </div>
       
-                  <div style={{flex:0.6}} className="exportbill_item_element">
+                  <div style={{flex:1}} className="exportbill_item_element">
                     {/* <button onClick={() => ViewDetailImportBill(importbill)}> <GrView/></button> */}
                     <button onClick={() => {
                             setDetailExport(!detailexport)

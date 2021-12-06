@@ -12,7 +12,7 @@
 
 .materials .search-material input {
     width: 200px;
-    height: 30px;
+    height: 40px;
     margin-left: 10px;
     padding: 0 10px;
     border: 1px solid #999;
@@ -58,8 +58,6 @@
 .material-header_list p {
     display: flex;
     justify-content: center;
-    /* flex: 1; */
-    /* width: 100%; */
     align-items: center;
     border-right: 1px solid #999;
     height: 100%;

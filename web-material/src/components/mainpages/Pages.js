@@ -64,7 +64,7 @@ function Pages() {
             
             <Route path="/phieuxuat" exact component={ExportBill} />
             <Route path="/lapphieuxuat" exact component={CreateExportBill} />
-            <Route path="/chitietkho" exact component={DetailWareHouse} />
+            <Route path="/chitietkho/:madaily/:makho" exact component={DetailWareHouse} />
 
 
             <Route path="/login" exact component={isLogged ?  HomePage : Login} />  

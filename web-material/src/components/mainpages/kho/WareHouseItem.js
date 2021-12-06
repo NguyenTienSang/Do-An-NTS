@@ -47,7 +47,7 @@ function WareHouseItem({warehouse,stt,EditWareHouse,DeleteWareHouse}) {
            </>
            : null
          }
-          <Link to={'/chitietkho'}><button style={{fontSize:36}}><AiOutlineEye style={{color: "rgb(26, 148, 255)"}}/></button></Link>
+          <Link to={`/chitietkho/${warehouse.madaily._id}/${warehouse._id}`}   ><button style={{fontSize:36}}><AiOutlineEye style={{color: "rgb(26, 148, 255)"}}/></button></Link>
     
           </div>
         

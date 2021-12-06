@@ -305,13 +305,13 @@ function Employees() {
               
         </div>
           <div className="header_list">
-            <p style={{flex:0.5}}>STT</p>
-            <p>ID</p>
-            <p>Họ tên</p>
-            <p>Hình ảnh</p>
-            <p>Đại lý</p>
-            <p style={{flex:0.5}}>Quyền</p>
-            <p>Trạng thái</p>
+            <p style={{width:"70px"}}>STT</p>
+            <p style={{width:"160px"}}>ID</p>
+            <p style={{flex:1}}>Họ tên</p>
+            <p style={{flex:1}}>Hình ảnh</p>
+            <p style={{flex:1}}>Đại lý</p>
+            <p style={{flex:1}}>Quyền</p>
+            <p style={{flex:1}}>Trạng thái</p>
             {
               isAdmin ?
               <>

@@ -19,35 +19,35 @@ function ImportBillItem({importbill,stt}) {
     return (
       <div>
         <div className="importbill_item">
-                  <div style={{flex:0.5}} className="importbill_item_element">
+                  <div style={{width:"70px"}} className="importbill_item_element">
                   <p>{stt+1}</p>
                   </div>
-                  <div className="importbill_item_element">
+                  <div style={{width:"160px"}} className="importbill_item_element">
                   <p>{importbill._id}</p>
                   </div>
-                  <div className="importbill_item_element">
+                  <div style={{flex:1}} className="importbill_item_element">
                   <p>{(importbill.ngay).slice(8,10)}-{(importbill.ngay).slice(5,7)}-{(importbill.ngay).slice(0,4)}</p>
                   </div>
 
-                  <div className="importbill_item_element">
+                  <div style={{flex:1}} className="importbill_item_element">
                   <p>{importbill.manv.hoten}</p>
                   </div>
 
-                  <div className="importbill_item_element">
+                  <div style={{flex:1}} className="importbill_item_element">
                   <p>{importbill.manv.madaily.tendl}</p>
                   </div>
 
-                  <div className="importbill_item_element">
+                  <div style={{flex:1}} className="importbill_item_element">
                   <p>{importbill.makho.tenkho}</p>
                   </div>
                   
-                  <div className="importbill_item_element">
+                  <div style={{flex:1}} className="importbill_item_element">
                   <p>{
                      Format(onLoadTotal())
                   }   
                       </p>
                   </div>
-                    <div style={{flex:0.6}} className="importbill_item_element">
+                    <div style={{flex:1}} className="importbill_item_element">
                     {/* <button onClick={() => ViewDetailImportBill(importbill)}> <GrView/></button> */}
                     <button onClick={() => {
                             setDetailImport(!detailimport)

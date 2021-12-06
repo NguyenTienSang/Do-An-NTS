@@ -24,17 +24,6 @@ function Statistic() {
 
                 <ul>
                     <li className="statistic-item">
-                            <Link to={'/thongkevattu'}><p>Thống kê <br/> đại lý</p> </Link>
-                      </li>
-
-                      <li className="statistic-item">
-                      <Link to={'/thongkevattu'}><p>Thống kê <br/> kho</p></Link>
-                            
-                      </li>
-                </ul>
-
-                <ul>
-                    <li className="statistic-item">
                             <Link to={'/thongkeloinhuannam'}><p>Thống kê <br/> lợi nhuận <br/> theo năm</p> </Link>
                       </li>
 

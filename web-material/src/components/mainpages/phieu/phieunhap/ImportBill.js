@@ -53,14 +53,14 @@ function ImportBill() {
               
             </div>
             <div className="header_list">
-              <p style={{flex:0.5}}>STT</p>
-              <p>ID</p>
-              <p>Ngày lập</p>
-              <p>Nhân viên</p>
-              <p>Đại lý</p>
-              <p>Kho</p>
-              <p>Tổng Tiền</p>
-              <p style={{flex:0.6}}>Chi tiết</p>
+            <p style={{width:"70px"}}>STT</p>
+              <p style={{width:"160px"}}>ID</p>
+              <p style={{flex:1}}>Ngày lập</p>
+              <p style={{flex:1}}>Nhân viên</p>
+              <p style={{flex:1}}>Đại lý</p>
+              <p style={{flex:1}}>Kho</p>
+              <p style={{flex:1}}>Tổng Tiền</p>
+              <p style={{flex:1}}>Chi tiết</p>
             </div>
             {importbills.filter(importbill=>{
               if(searchTerm === "") 

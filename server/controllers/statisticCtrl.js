@@ -1,8 +1,9 @@
 const NhanVien = require('../models/NhanVien');
 const PhieuNhap = require('../models/PhieuNhap');
 const PhieuXuat = require('../models/PhieuXuat');
-const DaiLy = require('../models/DaiLy')
-const Kho = require('../models/Kho')
+const DaiLy = require('../models/DaiLy');
+const Kho = require('../models/Kho');
+const VatTu = require('../models/VatTu');
 
 const statisticCtrl = {
 
@@ -270,8 +271,7 @@ const statisticCtrl = {
         try {
             const {madailyfilter,makhofilter} = req.body;
 
-            // console.log('mã đại lý test ')
-            // console.log('Test : ',req.body);
+            
 
             console.log('Mã đại lý thực hiện thống kê : ',madailyfilter)
             console.log('Mã kho thực hiện thống kê : ',makhofilter)
@@ -279,8 +279,8 @@ const statisticCtrl = {
             {
                 console.log('Chọn toàn đại lý')
                 const vattu = await VatTu.find();
-                res.json(vattu)
-                // console.log('listmaterialfilter : ',vattu);
+                return res.json(vattu)
+             
             }
             else {
                 if(makhofilter === "allwarehouses")
@@ -289,8 +289,8 @@ const statisticCtrl = {
                     const listmaterialfilter = [];
                     const phieunhap = await PhieuNhap.find().populate('manv').populate({path :'ctpn',populate: {path: 'mavt'}});
                     const phieuxuat = await PhieuXuat.find().populate('manv').populate({path :'ctpx',populate: {path: 'mavt'}});
-                    console.log('phieunhap : ',phieunhap);
-                    console.log('phieuxuat : ',phieuxuat);
+                    // console.log('phieunhap : ',phieunhap);
+                    // console.log('phieuxuat : ',phieuxuat);
 
                     //Lấy danh sách phiếu nhập trong đại lý
                     const filterpn = phieunhap.filter(pn => {
@@ -301,33 +301,38 @@ const statisticCtrl = {
                         
                             return madailyfilter == px.manv.madaily;
                     })
-                    console.log('filterpn : ',filterpn)
+                    // console.log('filterpn : ',filterpn);
+                  
                     //Lọc phiếu nhập
                     filterpn?.map(pn => {
                         pn.ctpn?.map(ctpn => {
                            const timvattu =  listmaterialfilter.find(listmaterialitem => {
                                         if(ctpn.mavt._id === listmaterialitem._id)
                                         {
-                                            console.log('---------- Tìm Thấy -----------')
+                                            console.log('---------- Tìm Thấy PN -----------')
                                             listmaterialitem.soluong+=ctpn.soluong;
                                         }
                                         return ctpn.mavt._id === listmaterialitem._id;
                             })
-                           
+                           console.log('timvattu : ',timvattu)
                             if(timvattu === undefined)
                             {
                                 listmaterialfilter.push({_id: ctpn.mavt._id, tenvt: ctpn.mavt.tenvt, soluong: ctpn.soluong, gianhap: ctpn.mavt.gianhap, giaxuat: ctpn.mavt.giaxuat,donvi:  ctpn.mavt.donvi, trangthai: ctpn.mavt.trangthai,images: ctpn.mavt.images})
-                                // console.log('listmaterialfilter : ',listmaterialfilter)
+                                console.log('listmaterialfilter : ',listmaterialfilter)
                             }
                         })
                     })
 
+                    console.log('filterpx : ',filterpx)
+
                     //Lọc phiếu xuất
                     filterpx?.map(px => {
+                        console.log('px : ',px)
                         px.ctpx?.map(ctpx => {
                            listmaterialfilter.find(listmaterialitem => {
                                         if(ctpx.mavt._id === listmaterialitem._id)
                                         {
+                                            console.log('---------- Tìm Thấy PX -----------')
                                             listmaterialitem.soluong-=ctpx.soluong;//Nếu vật tư trong phiếu xuất tìm thấy trong listmaterialfilter thì trừ ra
                                         }
                                         return ctpx.mavt._id === listmaterialitem._id;
@@ -416,21 +421,7 @@ const statisticCtrl = {
 
 
     statisticImportBillEmployees: async (req, res) => {
-    /*Thống kê phiếu nhập, phiếu xuất của nhân viên
-    Chi ra 2 option phiếu nhập, phiếu xuất
-    theo giai đoạn 
-        Đếm số phiếu nhập
-        Đếm số phiếu xuất
-        Tổng giá trị phiếu nhập
-        Tổng giá trị phiếu xuất
-
-        Trường hợp tất cả
-        Đếm số phiếu nhập
-        Tổng giá trị phiếu nhập
-        Đếm số phiếu xuất
-        Tổng giá trị phiếu xuất
-        Tổng lợi nhuận
-    */
+   
         try {
             const {manv,startDateFilter,endDateFilter,optionbill} = req.body;
             console.log("manv : ",manv);
@@ -439,17 +430,24 @@ const statisticCtrl = {
             console.log("endDateFilter : ",endDateFilter);
             console.log("endDateFilter : ",typeof(endDateFilter));
             console.log("optionbill : ",optionbill);
+
+            const datestart = new Date(startDateFilter);
+            const dateend = new Date(endDateFilter);//Khởi điểm là 0h của ngày đó 
+            dateend.setDate(dateend.getDate()+1)//Nên cộng thêm một ngày nữa để chính xác
+
+         
+
             //Trường hợp phiếu nhập
             if(optionbill === 'PhieuNhap')
             {
-                const phieunhap = await PhieuNhap.find({"manv" : manv, "ngay":{$gte:startDateFilter,$lt:endDateFilter}}).populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpn').populate({path :'ctpn',populate: {path: 'mavt'}})
+                const phieunhap = await PhieuNhap.find({"manv" : manv, "ngay":{$gte:datestart ,$lte: dateend}}).populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpn').populate({path :'ctpn',populate: {path: 'mavt'}})
                 // const phieunhap = await PhieuNhap.find({"manv" : manv, "ngay":{$gte:startDateFilter,$lt:endDateFilter}})
                 console.log('phieunhap : ',phieunhap)
                 res.json(phieunhap);
             }
             else if(optionbill === 'PhieuXuat')
             {
-                const phieuxuat = await PhieuXuat.find({"manv" : manv, "ngay":{$gte:startDateFilter,$lt:endDateFilter}}).populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpx').populate({path :'ctpx',populate: {path: 'mavt'}})
+                const phieuxuat = await PhieuXuat.find({"manv" : manv, "ngay":{$gte:datestart,$lte:dateend}}).populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpx').populate({path :'ctpx',populate: {path: 'mavt'}})
                 console.log('phieuxuat : ',phieuxuat)
                 res.json(phieuxuat);
             }

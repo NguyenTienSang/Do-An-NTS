@@ -220,6 +220,7 @@ function CreateExportBill() {
         maxDate={new Date()}
         dateFormat="dd-MM-yyyy"
         selected={currentDate}
+        onChangeRaw={(e) => e.preventDefault()}
         onChange={(date) =>
           {
             setCurrentDate(date)

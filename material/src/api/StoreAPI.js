@@ -6,7 +6,7 @@ function StoresAPI() {
   const [callback, setCallback] = useState(false);
 
     const getStores = async () => {
-      const res = await axios.get('http://192.168.1.5:5000/api/daily');
+      const res = await axios.get('http://192.168.1.4:5000/api/daily');
       console.log(res.data);
       setStores(res.data);
     };

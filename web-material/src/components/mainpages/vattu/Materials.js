@@ -254,21 +254,6 @@ function Materials() {
         
         <NavBar/>
         <div className="materials">
-        {/* <div className="row search-material">
-          <label>Tìm vật tư</label>
-                <input
-                  type="text"
-                  name="tenpn"
-                  placeholder="Nhập tên vật tư"
-                  id="inputsearch"
-                  required
-                  autocomplete="off"
-                  onChange={(event)=> {
-                    setSearchTerm(event.target.value);
-                    // document.getElementById("list-material").style.display = "block";
-                  }}
-                />
-        </div> */}
             <div className="header-title">
             <div className="row search-material">
                 <input
@@ -283,7 +268,7 @@ function Materials() {
                     // document.getElementById("list-material").style.display = "block";
                   }}
                 />
-        </div>
+            </div>
               <div className="title-tab">
                 <h2 style={{display:'flex',alignItems:'center'}}><GiExplosiveMaterials style={{marginRight:'5px'}}/>Vật Tư</h2>
               </div>
@@ -369,18 +354,6 @@ function Materials() {
               />
             </div>
 
-            {/* <div className="row">
-              <label htmlFor="soluong">Số lượng</label>
-              <input
-                type="number"
-                name="soluong"
-                placeholder="Nhập số lượng"
-                id="soluong"
-                required
-                value={material.soluong}
-                onChange={handleChangeInput}
-              />
-            </div> */}
 
             <div className="row">
               <label htmlFor="price">Giá nhập</label>

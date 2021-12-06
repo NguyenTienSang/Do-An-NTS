@@ -34,4 +34,10 @@
 @import url("./statisticmaterial.css");
 
 /*--------------------- StatisticMaterial ---------------------*/
-@import url("./statisticimportbill.css");
+@import url("./statisticbill.css");
+
+/*--------------------- StatisticProfitYear ---------------------*/
+@import url("./statisticprofityear.css");
+
+/*--------------------- StatisticProfitStage ---------------------*/
+@import url("./statisticprofitstage.css");

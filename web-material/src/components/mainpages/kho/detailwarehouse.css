@@ -8,7 +8,6 @@
 .container-filter {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
 }
 
 .container-filter .search-material,
@@ -19,9 +18,32 @@
 .container-filter .search-material input,
 .filter-select select {
     width: 200px;
-    height: 30px;
+    height: 40px;
     border: 1px solid #999;
     border-radius: 8px;
+}
+
+.header-title .title-tab h2 {
+    font-size: 25px;
+    font-weight: 400;
+    /* color: #fff; */
+}
+
+.warehouse_header__list {
+    display: flex;
+    border: 1px solid #999;
+    height: 50px;
+    align-items: center;
+    background-color: rgb(235, 232, 232);
+}
+
+.warehouse_header__list p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid #999;
+    height: 100%;
+    font-size: 18px;
 }
 
 input:focus,
@@ -31,7 +53,7 @@ input:focus,
 
 .container-filter .search-material,
 .filter-select select option {
-    height: 30px;
+    height: 40px;
 }
 
 .container-filter .search-material,

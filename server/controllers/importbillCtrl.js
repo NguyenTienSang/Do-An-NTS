@@ -6,7 +6,8 @@ const importbillCtrl = {
     getImportBill: async (req, res) => {
         try{
             const phieunhap = await PhieuNhap.find().populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpn').populate({path :'ctpn',populate: {path: 'mavt'}});
-            res.json(phieunhap)
+        
+            return res.json(phieunhap)
         } catch(error) {
             console.log(error)
             res.status(500).json({message: 'Lập phiếu nhập thất bại' })
@@ -63,32 +64,29 @@ const importbillCtrl = {
             
             const vattu = await VatTu.find();
 
-            ctpn.map(ctpnitem => {
-                console.log('ctpnitem : ',ctpnitem)
-                 vattu.map(async vt => {
-                     console.log('typeof(vt._id) : ',typeof(vt._id.toString()));
-                     console.log('typeof(ctpnitem.mavt) : ',typeof(ctpnitem.mavt));
-                     console.log('vt._id : ',vt._id);
-                    console.log('ctpnitem.mavt : ',ctpnitem.mavt);
-                    if(vt._id.toString() === ctpnitem.mavt)
-                    {
-                        vt.soluong += ctpnitem.soluong;
-                        await VatTu.findOneAndUpdate({ _id: (vt._id).toString() },vt, {new:true});
-                    }
-                });
+            ctpn?.map(async ctpnitem => {
+                const soluongvt = await VatTu.findById((ctpnitem.mavt).toString(),{"soluong": 1,"_id": 0})
+
+                await VatTu.findOneAndUpdate({ _id: (ctpnitem.mavt).toString() },{soluong: soluongvt.soluong + ctpnitem.soluong}, {new:true});
+
+
+                //  vattu?.map(async vt => {
+                //     if(vt._id.toString() === ctpnitem.mavt)
+                //     {
+                //         vt.soluong += ctpnitem.soluong;
+                //         await VatTu.findOneAndUpdate({ _id: (vt._id).toString() },vt, {new:true});
+                //     }
+                // });
             })
             // console.log('vt new : ',vattu);   
             // VatTu.update(filter,{vattu}) 
            
-            res.json({
-                success: true,
-                message: 'Đã thêm thành công',
-                phieunhap: newPhieuNhap
+            return res.json({
+                message: 'Đã thêm thành công',newPhieuNhap
             })
     
         } catch (error) {
-            console.log(error)
-            res.status(500).json({ success: false, message: 'Lập phiếu nhập thất bại' })
+            return res.status(500).json({ success: false, message: 'Lập phiếu nhập thất bại' })
         }
 
     }

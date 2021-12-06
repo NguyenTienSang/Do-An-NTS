@@ -6,7 +6,8 @@ const exportbillCtrl = {
     getExportBill: async (req, res) => {
         try{
             const phieuxuat = await PhieuXuat.find().populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpx').populate({path :'ctpx',populate: {path: 'mavt'}});
-            res.json(phieuxuat)
+            console.log('phieuxuat : ',phieuxuat)
+            return res.json(phieuxuat)
         } catch(error) {
             console.log(error)
             res.status(500).json({message: 'Lập phiếu xuất thất bại' })
@@ -14,12 +15,8 @@ const exportbillCtrl = {
     },
     createExportBill: async (req, res) => {
   
-        const {tenpx,ngay,manv,makho,ctpx} = req.body;
-        if(!tenpx)
-        {
-            return res.status(400)
-            .json({success: false,message:"Tên phiếu xuất không được trống"})
-        }
+        const {ngay,manv,makho,ctpx} = req.body;
+        
         if(!ngay)
         {
             return res.status(400)
@@ -47,39 +44,36 @@ const exportbillCtrl = {
         // console.log('kho : ',makho);
         console.log('ctpx : ',ctpx);
         try {
-            const phieuxuat = await PhieuXuat.findOne({ tenpx })
+            // const phieuxuat = await PhieuXuat.findOne({ tenpx })
             
-            if (phieuxuat)
-            {
-                return res
-                .status(400)
-                .json({ success: false, message: 'Tên phiếu xuất đã tồn tại' })
-            }
-            const newPhieuXuat = new PhieuXuat({tenpx,ngay,manv,makho,ctpx})
+            // if (phieuxuat)
+            // {
+            //     return res
+            //     .status(400)
+            //     .json({ success: false, message: 'Tên phiếu xuất đã tồn tại' })
+            // }
+            console.log('ctpx : ',ngay)
+            console.log('ctpx : ',manv)
+            console.log('ctpx : ',makho)
+            console.log('ctpx : ',ctpx)
+            const newPhieuXuat = new PhieuXuat({ngay,manv,makho,ctpx})
+            console.log('test')
+            console.log('test2',newPhieuXuat)
             await newPhieuXuat.save();
-            
-            ctpx?.map(async ctpxitem => {
-                // console.log('Tên vt : ',ctpxitem.mavt);
-                // console.log('Số lượng vt : ',ctpxitem.soluong);
 
+          
+            ctpx.map(async ctpxitem => {
                 const soluongvt = await VatTu.findById((ctpxitem.mavt).toString(),{"soluong": 1,"_id": 0})
-                // console.log("soluongvt : ",soluongvt.soluong);
+               
                 await VatTu.findOneAndUpdate({ _id: (ctpxitem.mavt).toString() },{soluong: soluongvt.soluong - ctpxitem.soluong}, {new:true});
             })
 
-            
-
-
-            res.json({
-                success: true,
+            return res.json({
                 message: 'Đã thêm thành công'
-                // ,
-                // phieuxuat: newPhieuXuat
             })
     
         } catch (error) {
-            console.log(error)
-            res.status(500).json({ success: false, message: 'Lập phiếu xuất thất bại' })
+            return res.status(500).json({ message: error.message });
         }
 
     }

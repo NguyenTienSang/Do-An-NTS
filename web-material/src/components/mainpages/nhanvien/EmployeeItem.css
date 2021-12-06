@@ -13,20 +13,11 @@
     
 } */
 
-
-
 .employee_item .id_employee p {
     max-width: 160px;
     width: 100%;
     word-wrap: break-word;
 }
-
-/* .employee_item p {
-    margin: 0;
-    font-weight: 300;
-    font-size: 20px;
-    color: rgb(8, 137, 243);
-} */
 
 .employee_item img {
     display: flex;
@@ -39,7 +30,6 @@
 
 .employee_item .employee_item_element {
     display: flex;
-    flex: 1;
     justify-content: center;
     align-items: center;
     border-right: 1px solid #999;

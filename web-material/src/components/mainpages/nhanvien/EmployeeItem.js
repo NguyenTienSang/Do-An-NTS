@@ -12,27 +12,27 @@ function EmployeeItem({employee,stt,EditEmployee,DeleteEmployee}) {
 
     return (
         <div className="employee_item">
-        <div style={{flex:0.5}} className="employee_item_element">
+        <div style={{width:"70px"}} className="employee_item_element">
         <p>{stt+1}</p>
         </div>
-        <div className="employee_item_element id_employee">
+        <div style={{width:"160px"}} className="employee_item_element id_employee">
         <p>{employee._id}</p>
         </div>
-        <div className="employee_item_element">
+        <div style={{flex:1}} className="employee_item_element">
         <p>{employee.hoten}</p>
         </div>
-        <div className="employee_item_element">
+        <div style={{flex:1}} className="employee_item_element">
           <img src={employee.images.url} alt="" />
         </div>
          
-        <div className="employee_item_element">
+        <div style={{flex:1}} className="employee_item_element">
             {employee.madaily.tendl}
         </div>
 
-        <div style={{flex:0.5}} className="employee_item_element">
+        <div style={{flex:1}} className="employee_item_element">
             {employee.role} 
         </div>
-          <div  className="employee_item_element">
+          <div style={{flex:1}}  className="employee_item_element">
           {employee.tinhtrang}
           </div>
           {

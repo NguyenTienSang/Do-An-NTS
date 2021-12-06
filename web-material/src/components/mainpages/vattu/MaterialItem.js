@@ -49,9 +49,6 @@ function MaterialItem({material,stt,EditMaterial,DeleteMaterial}) {
             <button style={{fontSize:36}} onClick={() => EditMaterial(material)}><FaRegEdit style={{color: "rgb(15, 184, 0)"}}/></button>
             <button style={{fontSize:36}} onClick={() => DeleteMaterial(material._id,material.images.public_id)} ><RiDeleteBin6Line style={{color: "red"}}/></button>
             </div>
-            {/* <div style={{flex:0.6}} className="material_item_element">
-            
-            </div> */}
            </>
            : null
          }
