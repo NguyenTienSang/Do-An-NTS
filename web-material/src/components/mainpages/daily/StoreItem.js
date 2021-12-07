@@ -30,6 +30,9 @@ function StoreItem({store,stt,EditStore,DeleteStore}) {
           {store.sodienthoai}
         </div>
         <div style={{flex:1}} className="store_item_element">
+          {store.trangthai}
+        </div>
+        <div style={{flex:1}} className="store_item_element">
           <button style={{fontSize:30}} onClick={() => EditStore(store)}><FaRegEdit style={{color: "rgb(15, 184, 0)"}}/></button>
           <button onClick={() => DeleteStore(store._id,store.images.public_id)} style={{fontSize:30}}><RiDeleteBin6Line style={{color: "red"}}/></button>
         </div>

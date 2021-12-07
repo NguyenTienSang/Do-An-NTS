@@ -14,7 +14,6 @@ import {BiBookAdd} from 'react-icons/bi';
 function DetailWareHouse() {
 
   const state = useContext(GlobalState);
-  // const [material, setMaterial] = useState(initialMaterial);
   const [images, setImages] = useState(false);
   const [loading, setLoading] = useState(false);
 

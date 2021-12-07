@@ -109,7 +109,7 @@
     width: 100%;
 }
 
-.modal_warehouse .row .select_daily__kho {
+.modal_store .row .select_store {
     height: 40px;
     width: 200px;
     padding-left: 20px;
@@ -118,7 +118,7 @@
     border-radius: 8px;
 }
 
-.modal__empmodal_warehouseoyee .row .select_daily__kho:focus {
+.modal_store .row .select_store:focus {
     outline: none;
 }
 

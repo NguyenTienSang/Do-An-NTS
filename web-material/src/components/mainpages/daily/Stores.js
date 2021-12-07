@@ -1,19 +1,20 @@
 import axios from "axios";
 import React, { useContext, useState, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom";
 
 import { GlobalState } from "../../../GlobalState";
 import StoreItem from "./StoreItem";
 import Header from "../../header/Header";
 import NavBar from "../../navbar/NavBar";
 import Loading from "../utils/loading/Loading";
-import {GiExplosiveMaterials} from 'react-icons/gi';
-import {BiBookAdd} from 'react-icons/bi';
+import { GiExplosiveMaterials } from "react-icons/gi";
+import { BiBookAdd } from "react-icons/bi";
 
 const initialStore = {
-  tendl:"",
-  diachi:"",
-  sodienthoai:""
+  tendl: "",
+  diachi: "",
+  sodienthoai: "",
+  trangthai: "Đang hoạt động",
 };
 
 function Stores() {
@@ -29,13 +30,13 @@ function Stores() {
   const param = useParams();
 
   const [stores] = state.storeAPI.stores;
-  const [searchTerm,setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [onEdit, setOnEdit] = useState(false);
   const [callback, setCallback] = state.storeAPI.callback;
- 
-  const [openalert,setOpenAlert] = useState(false);
 
-  const [message,setMessage] = useState("");
+  const [openalert, setOpenAlert] = useState(false);
+
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (param.id) {
@@ -61,15 +62,14 @@ function Stores() {
 
       if (!file) return alert("File không tồn tài");
 
-      if (file.size > 1024 * 1024)
-        return alert("Size quá lớn");//1mb
+      if (file.size > 1024 * 1024) return alert("Size quá lớn"); //1mb
 
       if (file.type !== "image/jpeg" && file.type !== "image/png")
         return alert("Định dạng file không đúng");
 
       let formData = new FormData();
       formData.append("file", file);
-      console.log('data file : ',file)
+      console.log("data file : ", file);
       setLoading(true);
       const res = await axios.post("/api/upload", formData, {
         headers: {
@@ -78,13 +78,13 @@ function Stores() {
         },
       });
       setLoading(false);
-      console.log('dữ liệu ảnh : ',res.data);
-      console.log('dữ liệu ảnh url : ',res.data.url);
+      console.log("dữ liệu ảnh : ", res.data);
+      console.log("dữ liệu ảnh url : ", res.data.url);
       setImages(res.data);
     } catch (err) {
       // alert(err.response.data.message);
 
-      setMessage(err.response.data.message)
+      setMessage(err.response.data.message);
       setOpenAlert(true);
     }
   };
@@ -105,11 +105,10 @@ function Stores() {
     } catch (err) {
       // alert(err.response.data.message);
 
-      setMessage(err.response.data.message)
+      setMessage(err.response.data.message);
       setOpenAlert(true);
     }
   };
-
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -126,77 +125,77 @@ function Stores() {
     setImages(false);
     setLoading(false);
     document.getElementById("modal_container").classList.add("modal_active");
-  }
+  };
 
   const EditStore = (data_store_edit) => {
-    console.log('dữ liệu vật tư edit : ',data_store_edit)
+    console.log("dữ liệu vật tư edit : ", data_store_edit);
     setOnEdit(true);
     setStore(data_store_edit);
     setImages(data_store_edit.images);
     document.getElementById("modal_container").classList.add("modal_active");
-  }
+  };
 
   const CloseModalStore = () => {
     document.getElementById("modal_container").classList.remove("modal_active");
-  }
+  };
 
   const AddToListStore = async () => {
-        // alert('Thêm thành công : '+material.tenvt);
-        console.log('Dữ liệu thêm mới : ',{...store, images });
-        console.log('test token : ',token);
-        //Thêm mới
-        if(!onEdit)
-        {
-          try {
-            const res = await axios.post(
-                     "/api/daily",
-                     { ...store, images },
-                     {
-                       headers: { Authorization: token },
-                     }
-                   );
-                  //  alert(res.data.message);
+    // alert('Thêm thành công : '+material.tenvt);
+    console.log("Dữ liệu thêm mới : ", { ...store, images });
+    console.log("test token : ", token);
+    //Thêm mới
+    if (!onEdit) {
+      try {
+        const res = await axios.post(
+          "/api/daily",
+          { ...store, images },
+          {
+            headers: { Authorization: token },
+          }
+        );
+        //  alert(res.data.message);
 
-                   setMessage(res.data.message);
-                   setOpenAlert(true);
+        setMessage(res.data.message);
+        setOpenAlert(true);
 
-                   document.getElementById("modal_container").classList.remove("modal_active");
-                   setCallback(!callback);
-           } catch (err) {
-              //  alert(err.response.data.message);
+        document
+          .getElementById("modal_container")
+          .classList.remove("modal_active");
+        setCallback(!callback);
+      } catch (err) {
+        //  alert(err.response.data.message);
 
-               setMessage(err.response.data.message)
-               setOpenAlert(true);
-           }
-        }
-        //Cập nhật thông tin vật tư
-        if(onEdit)
-        {
-          try {
-            const res = await axios.put(
-                     `/api/daily/${store._id}`,
-                     { ...store, images },
-                     {
-                       headers: { Authorization: token },
-                     }
-                   );
-                  //  alert(res.data.message);
+        setMessage(err.response.data.message);
+        setOpenAlert(true);
+      }
+    }
+    //Cập nhật thông tin vật tư
+    if (onEdit) {
+      try {
+        const res = await axios.put(
+          `/api/daily/${store._id}`,
+          { ...store, images },
+          {
+            headers: { Authorization: token },
+          }
+        );
+        //  alert(res.data.message);
 
-                   setMessage(res.data.message)
-                   setOpenAlert(true);
+        setMessage(res.data.message);
+        setOpenAlert(true);
 
-                   document.getElementById("modal_container").classList.remove("modal_active");
-                   setCallback(!callback);
-           } catch (err) {
-              //  alert(err.response.data.message);
+        document
+          .getElementById("modal_container")
+          .classList.remove("modal_active");
+        setCallback(!callback);
+      } catch (err) {
+        //  alert(err.response.data.message);
 
-              setMessage(err.response.data.message)
-              setOpenAlert(true);
-
-           }
-        }  
-  }
-
+        setMessage(err.response.data.message);
+        setOpenAlert(true);
+      }
+    }
+  };
 
   const DeleteStore = async (id, public_id) => {
     // alert('Xóa thành công'+' id : '+id+' public_id : '+public_id);
@@ -211,42 +210,37 @@ function Stores() {
         { headers: { Authorization: token } }
       );
       //Xóa vật tư trong db
-      const deletestore = await axios.delete(
-               `/api/daily/${id}`,
-               {
-                 headers: { Authorization: token },
-               }
-             );
-            //  alert(res.data.message);
-             await destroyImg;
-            // alert(deletestore.data.message);
+      const deletestore = await axios.delete(`/api/daily/${id}`, {
+        headers: { Authorization: token },
+      });
+      //  alert(res.data.message);
+      await destroyImg;
+      // alert(deletestore.data.message);
 
+      setMessage(deletestore.data.message);
+      setOpenAlert(true);
 
-            setMessage(deletestore.data.message)
-            setOpenAlert(true);
+      setCallback(!callback);
+      setLoading(false);
+    } catch (err) {
+      //  alert(err.response.data.message);
 
-             setCallback(!callback);
-             setLoading(false);
-     } catch (err) {
-        //  alert(err.response.data.message);
-
-         setMessage(err.response.data.message)
-         setOpenAlert(true);
-
-     }
-  }
+      setMessage(err.response.data.message);
+      setOpenAlert(true);
+    }
+  };
 
   return (
     <>
-  <div className="layout">
-    <div className="layout-first"><Header/></div>
-    <div className="layout-second">
-      <NavBar/>
-      <div className="stores">
-      <div className="header-title">
-
-
-      <div className="row search-store">
+      <div className="layout">
+        <div className="layout-first">
+          <Header />
+        </div>
+        <div className="layout-second">
+          <NavBar />
+          <div className="stores">
+            <div className="header-title">
+              <div className="row search-store">
                 <input
                   type="text"
                   name="tenpn"
@@ -255,152 +249,208 @@ function Stores() {
                   required
                   autocomplete="off"
                   autocomplete="off"
-                  onChange={(event)=> {
+                  onChange={(event) => {
                     setSearchTerm(event.target.value);
                     // document.getElementById("list-material").style.display = "block";
                   }}
                 />
-        </div>
-              <div className="title-tab">
-                <h2 style={{display:'flex',alignItems:'center'}}><GiExplosiveMaterials style={{marginRight:'5px'}}/>Đại Lý</h2>
               </div>
-           
-              <button className='add-item' onClick={AddStore}><BiBookAdd  style={{marginRight:'5px',marginTop:'5px'}}/>Thêm Đại Lý</button>
-            
+              <div className="title-tab">
+                <h2 style={{ display: "flex", alignItems: "center" }}>
+                  <GiExplosiveMaterials style={{ marginRight: "5px" }} />
+                  Đại Lý
+                </h2>
+              </div>
+
+              <button className="add-item" onClick={AddStore}>
+                <BiBookAdd style={{ marginRight: "5px", marginTop: "5px" }} />
+                Thêm Đại Lý
+              </button>
             </div>
 
-          <div className="store-header_list">
-            <p style={{width:"70px"}}>STT</p>
-            <p style={{width:"160px"}}>ID</p>
-            <p style={{flex:1}}>Tên đại lý</p>
-            <p style={{flex:1}}>Hình ảnh</p>
-            <p style={{flex:1}}>Địa chỉ</p>
-            <p style={{flex:1}}>SĐT</p>
-            <p style={{flex:1}}>Chức năng</p>
+            <div className="store-header_list">
+              <p style={{ width: "70px" }}>STT</p>
+              <p style={{ width: "160px" }}>ID</p>
+              <p style={{ flex: 1 }}>Tên đại lý</p>
+              <p style={{ flex: 1 }}>Hình ảnh</p>
+              <p style={{ flex: 1 }}>Địa chỉ</p>
+              <p style={{ flex: 1 }}>SĐT</p>
+              <p style={{ flex: 1 }}>Trạng thái</p>
+              <p style={{ flex: 1 }}>Chức năng</p>
+            </div>
+            {stores
+              ?.filter((store) => {
+                if (searchTerm === "") {
+                  return store;
+                } else if (
+                  store._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  store.tendl
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase()) ||
+                  store.diachi
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase()) ||
+                  store.sodienthoai
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ) {
+                  return store;
+                }
+              })
+              .map((store, index) => {
+                return (
+                  <StoreItem
+                    key={store._id}
+                    store={store}
+                    stt={index}
+                    EditStore={EditStore}
+                    DeleteStore={DeleteStore}
+                  />
+                );
+              })}
           </div>
-          {
-          stores?.filter(store=>{
-            if(searchTerm === "") 
-            {
-                return store;
-            }
-            else if(
-              store._id.toLowerCase().includes(searchTerm.toLowerCase())
-              || store.tendl.toLowerCase().includes(searchTerm.toLowerCase())
-              || store.diachi.toLowerCase().includes(searchTerm.toLowerCase())
-              || store.sodienthoai.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            {
-                return store;
-            }
-        }).map((store,index) => {
-              return(
-                <StoreItem
-                  key={store._id}
-                  store={store}
-                  stt={index}
-                  EditStore={EditStore}
-                  DeleteStore={DeleteStore}
-                />
-              )
-          })}
-      </div>
-    </div>
-  </div>
-
-  <div className="modal_container__store" id="modal_container">
-          <div className="modal_store">
-            <h2 className="title_add__store">{onEdit ? "Cập Nhật Thông Tin Đại Lý" : "Thêm Đại Lý"}</h2>
-            <div className="row">
-              <label htmlFor="title">Tên đại lý</label>
-              <input
-                type="text"
-                name="tendl"
-                placeholder="Nhập tên đại lý"
-                autoComplete="off"
-                id="tendl"
-                required
-                value={store.tendl}
-                onChange={handleChangeInput}
-              />
-            </div>
-
-            <div className="row">
-              <label htmlFor="diachi">Địa chỉ</label>
-              <input
-                type="text"
-                name="diachi"
-                placeholder="Nhập địa chỉ"
-                autoComplete="off"
-                id="diachi"
-                required
-                value={store.diachi}
-                onChange={handleChangeInput}
-              />
-            </div>
-
-            <div className="row">
-              <label htmlFor="sodienthoai">Số điện thoại</label>
-              <input
-                // type="number"
-                name="sodienthoai"
-                placeholder="Nhập số điện thoại"
-                autoComplete="off"
-                id="sodienthoai"
-                required
-                value={store.sodienthoai}
-                maxlength="10"
-                onChange={handleChangeInput}
-              />
-            </div>
-
-            
-            <div className="upload">
-              <h1>Hình ảnh</h1>
-              <input type="file" name="file" id="file_up" onChange={handleUpload} />
-              
-             
-              {loading ? (
-                <div id="file_img">
-                  <Loading />
-                </div>
-              ) : (
-                <div id="file_img" style={styleUpload}>
-                  <img src={images ? images.url : ""} alt=""></img>
-                  <span onClick={handleDestroy}>X</span>
-                </div>
-              )}
-            </div>
-
-
-            <div className="option-button">
-                <button id="add" onClick={AddToListStore}>{onEdit ? 'Cập nhật' : 'Thêm'}</button>
-                <button id="close"   onClick={CloseModalStore}>Hủy</button>
-            </div>
-
-          </div>
-  </div>
-
-  {
-      openalert ?  
-      <div className="modal_container__notification modal_active" id="modal_container__notification">
-      <div className="modal__notification">
-        <p className="title-notification">Thông báo</p>
-        <p>{message}</p>
-        <div className="option-button">
-            <button id="add" onClick={() =>{
-               document.getElementById("modal_container__notification").classList.remove("modal_active");
-               setOpenAlert(false);
-            }} >OK</button>
-            {/* <button id="close"  >Hủy</button> */}
         </div>
       </div>
-      </div>
-      : <></>
-    }
 
-  </>
-  )
+      <div className="modal_container__store" id="modal_container">
+        <div className="modal_store">
+          <h2 className="title_add__store">
+            {onEdit ? "Cập Nhật Thông Tin Đại Lý" : "Thêm Đại Lý"}
+          </h2>
+          <div className="row">
+            <label htmlFor="title">Tên đại lý</label>
+            <input
+              type="text"
+              name="tendl"
+              placeholder="Nhập tên đại lý"
+              autoComplete="off"
+              id="tendl"
+              required
+              value={store.tendl}
+              onChange={handleChangeInput}
+            />
+          </div>
+
+          <div className="row">
+            <label htmlFor="diachi">Địa chỉ</label>
+            <input
+              type="text"
+              name="diachi"
+              placeholder="Nhập địa chỉ"
+              autoComplete="off"
+              id="diachi"
+              required
+              value={store.diachi}
+              onChange={handleChangeInput}
+            />
+          </div>
+
+          <div className="row">
+            <label htmlFor="sodienthoai">Số điện thoại</label>
+            <input
+              // type="number"
+              name="sodienthoai"
+              placeholder="Nhập số điện thoại"
+              autoComplete="off"
+              id="sodienthoai"
+              required
+              value={store.sodienthoai}
+              maxlength="10"
+              onChange={handleChangeInput}
+            />
+          </div>
+
+          <div className="row">
+            <label>Trạng thái</label>
+            {onEdit ? (
+              <select
+                className="select_store"
+                name="trangthai"
+                value={store.trangthai}
+                onChange={handleChangeInput}
+              >
+                {/* <option value="" hidden>Vui lòng chọn trạng thái</option> */}
+                <option value="Đang kinh doanh">Đang hoạt động</option>
+                <option value="Ngừng kinh doanh">Ngừng hoạt động</option>
+              </select>
+            ) : (
+              <select
+                className="select_store"
+                name="trangthai"
+                value={store.trangthai}
+                onChange={handleChangeInput}
+                disabled="disabled"
+              >
+                {/* <option value="" hidden>Vui lòng chọn trạng thái</option> */}
+                <option value="Đang kinh doanh" selected>
+                  Đang kinh doanh
+                </option>
+                <option value="Ngừng kinh doanh">Ngừng kinh doanh</option>
+              </select>
+            )}
+          </div>
+
+          <div className="upload">
+            <h1>Hình ảnh</h1>
+            <input
+              type="file"
+              name="file"
+              id="file_up"
+              onChange={handleUpload}
+            />
+
+            {loading ? (
+              <div id="file_img">
+                <Loading />
+              </div>
+            ) : (
+              <div id="file_img" style={styleUpload}>
+                <img src={images ? images.url : ""} alt=""></img>
+                <span onClick={handleDestroy}>X</span>
+              </div>
+            )}
+          </div>
+
+          <div className="option-button">
+            <button id="add" onClick={AddToListStore}>
+              {onEdit ? "Cập nhật" : "Thêm"}
+            </button>
+            <button id="close" onClick={CloseModalStore}>
+              Hủy
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {openalert ? (
+        <div
+          className="modal_container__notification modal_active"
+          id="modal_container__notification"
+        >
+          <div className="modal__notification">
+            <p className="title-notification">Thông báo</p>
+            <p>{message}</p>
+            <div className="option-button">
+              <button
+                id="add"
+                onClick={() => {
+                  document
+                    .getElementById("modal_container__notification")
+                    .classList.remove("modal_active");
+                  setOpenAlert(false);
+                }}
+              >
+                OK
+              </button>
+              {/* <button id="close"  >Hủy</button> */}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <></>
+      )}
+    </>
+  );
 }
 
 export default Stores;
