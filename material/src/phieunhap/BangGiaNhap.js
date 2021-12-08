@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {Button} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {APIVattu} from './../api/API';
+import {APIVattu, TimVatTuPN} from './../api/API';
 import Header from './../components/Header';
 import {GlobalState} from '../GlobalState';
 
@@ -65,13 +65,10 @@ export default function BangGiaNhap({navigation, route}) {
   useEffect(async () => {
     console.log('load lại dữ liệu materialsfilter');
     const res = await axios.post(
-      'http://192.168.1.4:5000/api/thongke/timkiemvattuphieunhap',
+      `${TimVatTuPN}`,
       //  [JSON.parse(localStorage.getItem('inforuser')).madaily._id,exportbill.makho]
       {makhofilter: route.params.makho},
     );
-    console.log('Dữ liệu thống kê : ', res.data);
-    // console.log('madailyfilter : ',madailyfilter);
-    // console.log('makhofilter : ',makhofilter);
 
     setMaterialsFilter(res.data);
   }, []);
@@ -111,80 +108,87 @@ export default function BangGiaNhap({navigation, route}) {
 
         <ScrollView style={{paddingLeft: 5, paddingRight: 5}}>
           <View style={styles.listPrice}>
-            {materialsfilter?.map(item => (
-              <View key={item._id}>
-                <View
-                  style={{
-                    borderWidth: 1,
-                    borderStyle: 'solid',
-                    borderColor: '#1b94ff',
-                    borderRadius: 5,
-                    marginBottom: 20,
-                  }}>
+            {materialsfilter ? (
+              materialsfilter?.map(item => (
+                <View key={item._id}>
                   <View
-                    style={{display: 'flex', flex: 1, flexDirection: 'row'}}>
-                    <Image
-                      style={styles.image}
-                      source={{uri: item.images.url}}
-                    />
-
+                    style={{
+                      borderWidth: 1,
+                      borderStyle: 'solid',
+                      borderColor: '#1b94ff',
+                      borderRadius: 5,
+                      marginBottom: 20,
+                    }}>
                     <View
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        flexDirection: 'column',
-                      }}>
-                      <Button
-                        title="Thêm Vào Phiếu"
-                        buttonStyle={styles.buttonOption}
-                        onPress={() => {
-                          onClickAddCart(item);
-                          navigation.navigate('LapPhieuNhap', {id: item._id});
-                        }}
+                      style={{display: 'flex', flex: 1, flexDirection: 'row'}}>
+                      <Image
+                        style={styles.image}
+                        source={{uri: item.images.url}}
                       />
-                    </View>
-                  </View>
-                  <View style={styles.thonTinSP}>
-                    <View>
-                      <Text
-                        style={{
-                          color: '#000',
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
-                        }}>
-                        Tên: {item.tenvt}
-                      </Text>
-                    </View>
-                  </View>
-                  <View style={styles.thonTinSP}>
-                    <View>
-                      <Text
-                        style={{
-                          color: '#000',
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
-                        }}>
-                        SL Tồn: {item.soluong} {item.donvi}
-                      </Text>
-                    </View>
-                    <View>
+
                       <View
                         style={{
                           display: 'flex',
-                          flexDirection: 'row',
-                          color: '#000',
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          flexDirection: 'column',
                         }}>
-                        <Text>Giá Nhập : {Format(item.gianhap)}</Text>
-                        <Text>/{item.donvi}</Text>
+                        <Button
+                          title="Thêm Vào Phiếu"
+                          buttonStyle={styles.buttonOption}
+                          disabled={item.soluong === 0 ? true : false}
+                          onPress={() => {
+                            onClickAddCart(item);
+                            navigation.navigate('LapPhieuNhap', {id: item._id});
+                          }}
+                        />
+                      </View>
+                    </View>
+                    <View style={styles.thonTinSP}>
+                      <View>
+                        <Text
+                          style={{
+                            color: '#000',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                          }}>
+                          Tên: {item.tenvt}
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={styles.thonTinSP}>
+                      <View>
+                        <Text
+                          style={{
+                            color: '#000',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                          }}>
+                          SL Tồn: {item.soluong} {item.donvi}
+                        </Text>
+                      </View>
+                      <View>
+                        <View
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            color: '#000',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                          }}>
+                          <Text>Giá Nhập : {Format(item.gianhap)}</Text>
+                          <Text>/{item.donvi}</Text>
+                        </View>
                       </View>
                     </View>
                   </View>
                 </View>
+              ))
+            ) : (
+              <View>
+                <Text>Kho chưa có vật tư</Text>
               </View>
-            ))}
+            )}
           </View>
         </ScrollView>
       </View>

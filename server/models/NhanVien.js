@@ -26,6 +26,11 @@ const NhanVienSchema = new Schema({
         required: true,
         trim:true,
     },
+    gioitinh:{
+        type: String,
+        required: true,
+        trim:true,
+    },
     role:{
         type: String,
         required: true,
@@ -39,7 +44,11 @@ const NhanVienSchema = new Schema({
         type: String,
         required: true,
     },
-    tinhtrang:{
+    email:{
+        type: String,
+        required: true,
+    },
+    trangthai:{
         type: String,
         required: true,
     },

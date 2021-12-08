@@ -12,9 +12,8 @@ function UserAPI(token) {
     if (token) {
       const getUser = async () => {
         try {
-          // const res = await axios.get(`${APIInforUser}`, {
           const res = await axios.get(
-            'http://192.168.1.4:5000/api/auth/infor',
+            'http://192.168.1.10:5000/api/auth/infor',
             {
               headers: {Authorization: token},
             },

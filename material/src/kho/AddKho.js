@@ -1,304 +1,340 @@
-import axios from "axios";
-import React, { useContext, useState, useEffect } from "react";
+import axios from 'axios';
+import React, {useContext, useState, useEffect} from 'react';
 import {
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    useColorScheme,
-    View,
-    Image,
-    TextInput,
-    Alert
-    } from 'react-native';
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+  Image,
+  TextInput,
+  Alert,
+} from 'react-native';
 
 import {Button} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {launchImageLibrary} from 'react-native-image-picker';
-import { APIKho,APIUpload,APIDestroy, APIVattu } from '../api/API';
+import {APIKho, APIUpload, APIDestroy, APIVattu} from '../api/API';
 
 import Header from '../components/Header';
-import { GlobalState } from "../GlobalState";
+import {GlobalState} from '../GlobalState';
 
 const initialWareHouse = {
-    tenkho:"",
-    madaily:"",
-    diachi:"",
-    sodienthoai:0,
-    images: {
-        public_id: "",
-        url: "https://icon-library.com/images/default-user-icon/default-user-icon-3.jpg"
-    }
-    };
+  tenkho: '',
+  madaily: '',
+  diachi: '',
+  sodienthoai: 0,
+  trangthai: 'Đang hoạt động',
+  images: {
+    public_id: '',
+    url: '',
+  },
+};
 
-export default function AddKho({navigation,route}){
-
-//--------------------------
-const state = useContext(GlobalState);
-const [warehouse, setWareHouse] = useState(initialWareHouse);
-const [isAdmin] = state.userAPI.isAdmin;
-const [token] = state.token;
-const [callback, setCallback] = state.warehouseAPI.callback;
-
+export default function AddKho({navigation, route}) {
+  //--------------------------
+  const state = useContext(GlobalState);
+  const [warehouse, setWareHouse] = useState(initialWareHouse);
+  const [isAdmin] = state.userAPI.isAdmin;
+  const [token] = state.token;
+  const [callback, setCallback] = state.warehouseAPI.callback;
 
   //-----------------------
-    if(route.params !== undefined)
-    {
-        warehouse.madaily = route.params.daily._id;
-    }
+  if (route.params !== undefined) {
+    warehouse.madaily = route.params.daily._id;
+  }
 
-
-    const openGallery = async () => {
-        const options = {
-        storageOptions: {
+  const openGallery = async () => {
+    const options = {
+      storageOptions: {
         path: 'images',
         mediaType: 'photo',
-        },
-        includeBase64: true,
-        };
-        
-        launchImageLibrary(options, response => {
-        console.log('Response = ', response);
-        if (response.didCancel) {
+      },
+      includeBase64: true,
+    };
+
+    launchImageLibrary(options, response => {
+      console.log('Response = ', response);
+      if (response.didCancel) {
         console.log('User cancelled image picker');
-        } else if (response.error) {
+      } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
-        } else if (response.customButton) {
+      } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
-        } else {
-        
-        // console.log('data response.assets : ',response.assets[0]);    
+      } else {
+        // console.log('data response.assets : ',response.assets[0]);
 
         const uri = response.assets[0].uri;
         const type = response.assets[0].type;
         const size = response.assets[0].fileSize;
         const name = response.assets[0].fileName;
-        const source = {uri,type,size,name};
-        console.log('source',source);
-            handleUpload(source);
-        }
-        });
-        };
-
-        const handleUpload = async (file) => {
-            const token = await AsyncStorage.getItem("token");
-            console.log('token : ',token);
-            console.log('file data : ',file);
-
-            try {
-                // if (!isAdmin) return alert("Bạn không phải là Admin");
-                // const file = e.target.files[0];
-          
-                if (!file) return alert("File không tồn tài");
-          
-                if (file.size > 1024 * 1024)
-                  return alert("Size quá lớn");//1mb
-          
-                if (file.type !== "image/jpeg" && file.type !== "image/png")
-                  return alert("Định dạng file không đúng");
-          
-                let formData = new FormData();
-                formData.append("file", file);
-                console.log('data file : ',file)
-                // setLoading(true);
-                console.log('-------------- test --------------');
-
-                const res = await axios.post(`${APIUpload}`, formData, {
-                  headers: {
-                    "content-type": "multipart/form-data",
-                    Authorization: token,
-                  },
-                });
-                // setLoading(false);
-                console.log('dữ liệu ảnh : ',res.data);
-                console.log('dữ liệu ảnh url : ',res.data.url);
-
-                // setImageShow(res.data.url);
-                // setImageData(res.data)
-
-                setWareHouse({...warehouse,images : res.data})
-              } catch (err) {
-                alert(err.response.data.message);
-              }
-        }
-
-
-      const ThemKho = async (e) => {
-        console.log(e);
-            // alert('Thêm thành công : '+employee.tenvt);
-            // console.log('Dữ liệu thêm mới : ',{...employee, images });
-          console.log('warehouse : ',warehouse)
-            // //Thêm mới
-            
-              try {
-                const res = await axios.post(
-                         `${APIKho}`,
-                         { ...warehouse},
-                         {
-                           headers: { Authorization: token },
-                         }
-                       );
-                        Alert.alert(
-                    'Thông báo',
-                    res.data.message,
-                [
-                { text: "OK", onPress: () => {
-                    setCallback(!callback);
-                navigation.replace("Kho");
-                } }
-                ],
-                );   
-                      //  history.push("/vattu");
-               } catch (err) {
-                   alert(err.response.data.message);
-               }
+        const source = {uri, type, size, name};
+        handleUpload(source);
       }
-    
+    });
+  };
 
+  const handleUpload = async file => {
+    const token = await AsyncStorage.getItem('token');
 
-    
-    return(
-        <View style={{flex:1}}>
-             <Header title="Trở về" type="arrow-left"navigation={navigation} />
-             <ScrollView>
+    try {
+      if (!file) return alert('File không tồn tài');
+
+      if (file.size > 1024 * 1024) return alert('Size quá lớn'); //1mb
+
+      if (file.type !== 'image/jpeg' && file.type !== 'image/png')
+        return alert('Định dạng file không đúng');
+
+      let formData = new FormData();
+      formData.append('file', file);
+
+      if (warehouse.images.public_id !== '') {
+        axios
+          .post(
+            `${APIDestroy}`,
+            {
+              public_id: warehouse.images.public_id,
+            },
+            {headers: {Authorization: token}},
+          )
+          .then(() => {});
+      }
+
+      const res = await axios.post(`${APIUpload}`, formData, {
+        headers: {
+          'content-type': 'multipart/form-data',
+          Authorization: token,
+        },
+      });
+      setWareHouse({...warehouse, images: res.data});
+    } catch (err) {
+      alert(err.response.data.message);
+    }
+  };
+
+  const ThemKho = async () => {
+    console.log('warehouse._id : ', warehouse._id);
+    console.log('warehouse : ', warehouse);
+    console.log('token :', token);
+    try {
+      const res = await axios.post(
+        `${APIKho}`,
+        {...warehouse},
+        {
+          headers: {Authorization: token},
+        },
+      );
+      Alert.alert('Thông báo', res.data.message, [
+        {
+          text: 'OK',
+          onPress: () => {
+            setCallback(!callback);
+            navigation.replace('Kho');
+          },
+        },
+      ]);
+    } catch (err) {
+      alert(err.response.data.message);
+    }
+  };
+
+  return (
+    <View style={{flex: 1}}>
+      <Header title="Trở về" type="arrow-left" navigation={navigation} />
+      <ScrollView>
         <View>
-                <Text style={{display:'flex',marginTop:20,marginBottom:20,marginLeft:'auto',marginRight:'auto',fontSize:20,fontWeight:'300',}}>Thêm Kho</Text>
-                <View style={{display:'flex',justifyContent:'flex-end'}}>
-                   
+          <Text
+            style={{
+              display: 'flex',
+              marginTop: 20,
+              marginBottom: 20,
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              fontSize: 20,
+              fontWeight: '300',
+            }}>
+            Thêm Kho
+          </Text>
+          <View style={{display: 'flex', justifyContent: 'flex-end'}}>
+            <View style={styles.rowInput}>
+              <Text>Tên kho</Text>
+              <TextInput
+                style={styles.textInput}
+                placeholder="Tên kho"
+                value={warehouse.tenkho}
+                onChangeText={text =>
+                  setWareHouse({...warehouse, tenkho: text})
+                }
+              />
+            </View>
 
-                    <View style={styles.rowInput}>
-                        <Text>Tên kho</Text>
-                        <TextInput style={styles.textInput} 
-                             placeholder="Tên kho"
-                             value={warehouse.tenkho}
-                             onChangeText={(text) =>  setWareHouse({...warehouse,tenkho : text})}
-                        />
-                    </View>
+            <View style={styles.rowInput}>
+              <Text>Đại lý</Text>
+              <TextInput
+                style={styles.textInput}
+                placeholder="Nhập đại lý"
+                value={
+                  route.params === undefined ? '' : route.params.daily.tendl
+                }
+                editable={false}
+                //  onChangeText={(text) =>  setMaDL(text)}
+              />
+            </View>
 
-                    <View style={styles.rowInput}>
-                        <Text>Đại lý</Text>
-                        <TextInput style={styles.textInput} 
-                             placeholder="Nhập đại lý"
-                             value={route.params === undefined ? '' : route.params.daily.tendl}
-                             editable={false}
-                            //  onChangeText={(text) =>  setMaDL(text)}
-                        />
-                    </View>
+            <View
+              style={{
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                marginBottom: 30,
+              }}>
+              <Button
+                buttonStyle={styles.buttonAction}
+                title="Chọn đại lý"
+                onPress={() => {
+                  navigation.navigate('DanhSachDaiLy', {page: 'AddKho'});
+                }}
+              />
+            </View>
 
-                    <View style={{marginLeft:'auto',marginRight:'auto',marginBottom:30}}>
-                        <Button buttonStyle={styles.buttonAction} title="Chọn đại lý"
-                                onPress={() => {
-                                    navigation.navigate("DanhSachDaiLy",{page: 'AddKho'})
-                                    }}
-                            />
-                    </View>
+            <View style={styles.rowInput}>
+              <Text>Địa chỉ</Text>
+              <TextInput
+                style={styles.textInput}
+                placeholder="Địa chỉ"
+                value={warehouse.diachi}
+                onChangeText={text =>
+                  setWareHouse({...warehouse, diachi: text})
+                }
+              />
+            </View>
 
+            <View style={styles.rowInput}>
+              <Text>SĐT</Text>
+              <TextInput
+                style={styles.textInput}
+                placeholder="Số điện thoại"
+                value={warehouse.sodienthoai}
+                maxLength={10}
+                keyboardType="numeric"
+                onChangeText={text =>
+                  setWareHouse({...warehouse, sodienthoai: text})
+                }
+              />
+            </View>
 
-                    <View style={styles.rowInput}>
-                        <Text>Địa chỉ</Text>
-                        <TextInput style={styles.textInput} 
-                             placeholder="Địa chỉ"
-                             value={warehouse.diachi}
-                             onChangeText={(text) =>  setWareHouse({...warehouse,diachi : text})}
+            <View>
+              <Button
+                title="Thêm Ảnh"
+                buttonStyle={styles.buttonAddPicutre}
+                onPress={() => {
+                  openGallery();
+                }}
+              />
+            </View>
 
-                        />
-                    </View>
-                   
-                    <View style={styles.rowInput}>
-                        <Text>SĐT     </Text>
-                        <TextInput style={styles.textInput} 
-                             placeholder="Số điện thoại"
-                             value={warehouse.sodienthoai}
-                             maxLength={10}
-                             keyboardType = 'numeric'
-                             onChangeText={(text) =>  setWareHouse({...warehouse,sodienthoai : text})}
+            <View
+              style={{
+                width: 300,
+                height: 240,
+                display: 'flex',
+                justifyContent: 'center',
+                textAlign: 'center',
+                alignItems: 'center',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                marginTop: 40,
+                marginBottom: 40,
+                borderWidth: 1,
+                borderStyle: 'solid',
+                borderColor: '#999',
+                borderRadius: 8,
+              }}>
+              <Image
+                source={{
+                  uri: warehouse.images.url ? warehouse.images.url : null,
+                }}
+                style={{
+                  width: 300,
+                  height: 240,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                  alignItems: 'center',
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                  marginTop: 40,
+                  marginBottom: 40,
+                  borderRadius: 8,
+                }}
+              />
+            </View>
+          </View>
 
-                        />
-                    </View>
+          <View style={styles.groupButtonAction}>
+            <Button
+              buttonStyle={styles.buttonAction}
+              title="Thêm"
+              onPress={() => {
+                ThemKho();
+              }}
+            />
 
-                    <View>
-                            <Button title="Thêm Ảnh" buttonStyle={styles.buttonAddPicutre} 
-                                    onPress={() => {
-                                        openGallery();
-                                        }}
-                            
-                            />
-                    </View>
-
-
-                    <View style={{width:300, height:240,display:'flex',justifyContent:'center',textAlign:'center',alignItems:'center',marginLeft:'auto',marginRight:'auto',marginTop:40,marginBottom:40, borderWidth:1, borderStyle:'solid',borderColor:'#333'}}>
-                                <Image
-                                    source={{uri:warehouse.images.url}}
-                                        style={{
-                                            width:300, 
-                                            height:240,
-                                            display:'flex',
-                                            justifyContent:'center',
-                                            textAlign:'center',
-                                            alignItems:'center',
-                                            marginLeft:'auto',
-                                            marginRight:'auto',
-                                            marginTop:40, 
-                                            marginBottom:40, 
-                                        }}
-                                    />         
-                    </View>
-                </View>
-
-                <View style={styles.groupButtonAction}>
-                    <Button buttonStyle={styles.buttonAction} title="Thêm"
-                            onPress={() => {
-                                ThemKho();
-                                }}
-                    />
-
-                    <Button buttonStyle={styles.buttonAction} title="Hủy"
-                         onPress={()=>{
-                            navigation.navigate("Kho")
-                        }}
-                    />
-                </View>
+            <Button
+              buttonStyle={styles.buttonAction}
+              title="Hủy"
+              onPress={() => {
+                navigation.navigate('Kho');
+              }}
+            />
+          </View>
         </View>
-        </ScrollView>
-        </View>
-    )
+      </ScrollView>
+    </View>
+  );
 }
 
-
 const styles = StyleSheet.create({
-    rowInput: {
-        display: 'flex',
-        justifyContent:'space-evenly',
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom:20
-    },  
-    textInput: {
-        borderWidth:1,
-        borderStyle:'solid',
-        borderColor:'#333',
-        width:220,
-        height:40
-    },
-    groupButtonAction: {
-        display:'flex',
-        justifyContent:'space-evenly',
-        flexDirection:'row',
-        marginBottom:20
-    },
-    buttonAction: {
-        width: 120,
-        height: 40,
-        borderRadius: 5,
-        backgroundColor: '#1b94ff',
-    },
-    buttonAddPicutre: {
-        width: 120,
-        height: 40,
-        borderRadius: 5,
-        backgroundColor: '#1b94ff',
-        marginRight:'auto',
-        marginLeft:'auto'
-    },
-})
+  rowInput: {
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  label: {
+    display: 'flex',
+    alignItems: 'center',
+    width: 70,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: '#999',
+    borderRadius: 8,
+    width: 240,
+    height: 40,
+    paddingLeft: 10,
+  },
+  groupButtonAction: {
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  buttonAction: {
+    width: 120,
+    height: 40,
+    borderRadius: 5,
+    backgroundColor: '#1b94ff',
+  },
+  buttonAddPicutre: {
+    width: 120,
+    height: 40,
+    borderRadius: 5,
+    backgroundColor: '#1b94ff',
+    marginRight: 'auto',
+    marginLeft: 'auto',
+  },
+});

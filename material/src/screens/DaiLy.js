@@ -12,12 +12,12 @@ import {
 } from 'react-native';
 // import BangGia from './BangGia';
 import {Button} from 'react-native-elements';
-import {APIDaiLy} from '../api/API';
 import Header from '../components/Header';
 import {Icon} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Animatable from 'react-native-animatable';
 const SCREEN_WIDTH = Dimensions.get('window').width;
+import {APIDaiLy, APIDestroy} from '../api/API';
 
 export default function DaiLy({navigation}) {
   const [indexCheck, setIndexCheck] = useState('0');
@@ -29,11 +29,9 @@ export default function DaiLy({navigation}) {
   const DeleteStore = async (id, public_id) => {
     const token = await AsyncStorage.getItem('token');
 
-    console.log('token : ', token);
-
     axios
       .post(
-        'http://192.168.1.4:5000/api/destroy',
+        `${APIDestroy}`,
         {
           public_id,
         },
@@ -41,7 +39,7 @@ export default function DaiLy({navigation}) {
       )
       .then(() => {
         axios
-          .delete(`http://192.168.1.4:5000/api/daily/${id}`, {
+          .delete(`${APIDaiLy}/${id}`, {
             headers: {Authorization: token},
           })
           .then(res => {
@@ -55,32 +53,20 @@ export default function DaiLy({navigation}) {
             ]);
           })
           .catch(error => {
-            Alert.alert('Thông báo  Thất Bại 1', error.response.data.message);
+            Alert.alert('Lỗi', error.response.data.message);
           });
       })
       .catch(error => {
-        Alert.alert('Thông báo Thất Bại 2', error.response.data.message);
+        Alert.alert('Lỗi', error.response.data.message);
       });
   };
 
   const Infor = async () => {
     const token = await AsyncStorage.getItem('token');
     const Username = await AsyncStorage.getItem('username');
-    const res = await axios.get('http://192.168.1.4:5000/api/daily');
+    const res = await axios.get(`${APIDaiLy}`);
     console.log('res.data : ', res.data);
     setData(res.data);
-
-    // console.log(`Username : ${Username}`);
-    //   await fetch(`${APIDaiLy}`,{
-    //   headers:new Headers({
-    //     Authorization:"Bearer "+token
-    //   })
-    //   }).then(res=>res.json())
-    //   .then(data=>{
-    //       setData(data.daily);
-
-    //   }
-    //   )
   };
 
   useEffect(async () => {
@@ -112,7 +98,7 @@ export default function DaiLy({navigation}) {
         <View style={styles.TextInput2}>
           <TextInput
             style={{width: '80%'}}
-            placeholder="Nhập tên đại lý"
+            placeholder="Nhập từ khóa tìm kiếm"
             onChangeText={text => setSearch(text)}
             onFocus={() => {
               setTeInputFocussed(false);
@@ -142,12 +128,15 @@ export default function DaiLy({navigation}) {
                 if (search == '') {
                   return item;
                 } else if (
-                  item.tendl.toLowerCase().includes(search.toLowerCase())
+                  item._id.toLowerCase().includes(search.toLowerCase()) ||
+                  item.tendl.toLowerCase().includes(search.toLowerCase()) ||
+                  item.diachi.toLowerCase().includes(search.toLowerCase()) ||
+                  item.sodienthoai.toLowerCase().includes(search.toLowerCase())
                 ) {
                   return item;
                 }
               })
-              .map(item => (
+              ?.map(item => (
                 <View key={item._id}>
                   <View>
                     <View
@@ -168,11 +157,6 @@ export default function DaiLy({navigation}) {
                           style={styles.image}
                           source={{uri: item.images.url}}
                         />
-                        {/* <View> 
-                                                        <Text>Tên đại lý: {item.madaily.tendl}</Text>   
-                                                       
-                                                        <Text>Quyền: {item.role}</Text>    
-                                                    </View> */}
 
                         <View
                           style={{
@@ -229,8 +213,8 @@ export default function DaiLy({navigation}) {
                           marginLeft: 15,
                           marginRight: 15,
                         }}>
-                        <Text style={{marginLeft: 15}}>Tên: {item.tendl}</Text>
-                        <Text>Địa chỉ:{item.diachi}</Text>
+                        <Text style={{marginLeft: 15}}>ID: {item._id}</Text>
+                        <Text>Tên ĐL:{item.tendl}</Text>
                       </View>
                       <View
                         style={{
@@ -242,7 +226,21 @@ export default function DaiLy({navigation}) {
                           marginRight: 15,
                         }}>
                         <Text style={{marginLeft: 15}}>
-                          SĐT: {item.sodienthoai}
+                          Địa chỉ:{item.diachi}
+                        </Text>
+                        <Text>SĐT: {item.sodienthoai}</Text>
+                      </View>
+                      <View
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          marginTop: 10,
+                          marginLeft: 15,
+                          marginRight: 15,
+                        }}>
+                        <Text style={{marginLeft: 15}}>
+                          Trạng thái: {item.trangthai}
                         </Text>
                       </View>
                     </View>

@@ -113,14 +113,6 @@ export default function LapPhieuNhap({navigation, route}) {
     setDetailImportBill([]);
   }, [importbills]);
 
-  // useEffect(async () => {
-
-  //   // importbills
-
-  //   setImportBill({...importbill,tenpn : 'PN' + (importbills.length+1)})
-
-  // },[])
-
   return (
     <View style={{flex: 1}}>
       <Header title="Trở về" type="arrow-left" navigation={navigation} />
@@ -138,13 +130,6 @@ export default function LapPhieuNhap({navigation, route}) {
             Nhập Thông Tin Phiếu Nhập
           </Text>
         </View>
-        {/* <View style={{display:'flex',flexDirection:'row',alignItems:'center',marginBottom:10}}>
-          <Text>Tên phiếu nhập   </Text>
-          <TextInput style={styles.textInput} 
-                value={importbill.tenpn}
-                editable = {false}
-          />
-       </View> */}
         <View
           style={{
             display: 'flex',
@@ -252,7 +237,7 @@ export default function LapPhieuNhap({navigation, route}) {
                 justifyContent: 'center',
                 textAlign: 'center',
               }}>
-              Mã VT
+              STT
             </Text>
             <Text>Tên VT</Text>
             <Text>Giá</Text>
@@ -274,14 +259,16 @@ export default function LapPhieuNhap({navigation, route}) {
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'space-between',
+                    alignItems: 'center',
                     paddingLeft: 10,
                     paddingRight: 10,
                   }}>
+                  <Text>{i + 1}</Text>
                   <Text>{item.material.tenvt}</Text>
                   <Text>{Format(item.material.gianhap)}</Text>
                   <TouchableOpacity
                     onPress={() => {
-                      onChangeQual(i, false);
+                      onChangeQual(i, item.quantity, false);
                     }}>
                     <MaterialCommunityIcons
                       name="minus-circle-outline"
@@ -289,10 +276,24 @@ export default function LapPhieuNhap({navigation, route}) {
                       color="black"
                     />
                   </TouchableOpacity>
-                  <Text>{item.quantity}</Text>
+                  {/* <Text>{typeof item.quantity}</Text> */}
+                  <TextInput
+                    style={styles.textInputSL}
+                    maxLength={4}
+                    keyboardType="numeric"
+                    onChangeText={text => {
+                      console.log('text : ', item.quantity);
+                      if (text.length === 0) {
+                        onChangeQual(i, 0, 'typing');
+                      } else if (text.length > 0 && parseInt(text) < 1000) {
+                        onChangeQual(i, parseInt(text), 'typing');
+                      }
+                    }}
+                    value={item.quantity}
+                  />
                   <TouchableOpacity
                     onPress={() => {
-                      onChangeQual(i, true);
+                      onChangeQual(i, item.quantity, true);
                     }}>
                     <MaterialCommunityIcons
                       name="plus-circle-outline"
@@ -380,13 +381,10 @@ export default function LapPhieuNhap({navigation, route}) {
                 'Ngày lập : ',
                 JSON.stringify(importbill.ngay).slice(0, 11),
               );
-              console.log('Mã nhân viên : ', importbill.manv);
-              console.log('Mã kho : ', importbill.makho);
-              console.log('datacart : ', datacart);
 
               try {
                 const res = await axios.post(
-                  'http://192.168.1.4:5000/api/phieunhap',
+                  `${APIPN}`,
                   {
                     ...importbill,
                     ctpn: datacart.map(item => ({
@@ -437,8 +435,9 @@ export default function LapPhieuNhap({navigation, route}) {
     return total;
   }
 
-  function onChangeQual(i, type) {
+  function onChangeQual(i, soluong, type) {
     let cantd = datacart[i].quantity;
+    //Tăng số lượng
     if (type == true) {
       cantd = cantd + 1;
       datacart[i].quantity = cantd;
@@ -446,12 +445,18 @@ export default function LapPhieuNhap({navigation, route}) {
       AsyncStorage.setItem('cart', JSON.stringify(datacart));
       setDataCart(datacart);
     } else if (type == false && cantd >= 2) {
+      //Giảm số lượng
       cantd = cantd - 1;
       datacart[i].quantity = cantd;
       AsyncStorage.setItem('cart', JSON.stringify(datacart));
       setDataCart(datacart);
     } else if (type == false && cantd == 1) {
+      //Giảm số lượng và số lượng đang bằng 1
       datacart.splice(i, 1);
+      AsyncStorage.setItem('cart', JSON.stringify(datacart));
+      setDataCart(datacart);
+    } else if (type === 'typing') {
+      datacart[i].quantity = soluong;
       AsyncStorage.setItem('cart', JSON.stringify(datacart));
       setDataCart(datacart);
     }
@@ -484,6 +489,16 @@ const styles = StyleSheet.create({
     borderColor: '#999',
     borderRadius: 8,
     width: 270,
+    height: 40,
+  },
+  textInputSL: {
+    justifyContent: 'center',
+    textAlign: 'center',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: '#999',
+    borderRadius: 8,
+    width: 70,
     height: 40,
   },
   groupButtonAction: {

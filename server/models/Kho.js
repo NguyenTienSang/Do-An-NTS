@@ -18,6 +18,10 @@ const KhoSchema = new Schema({
         type: String,
         required: true,
     },
+    trangthai:{
+        type: String,
+        required: true,
+    },
     images:{
         type: Object,
         required: true,

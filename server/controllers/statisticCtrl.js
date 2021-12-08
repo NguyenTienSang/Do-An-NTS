@@ -285,12 +285,10 @@ const statisticCtrl = {
             else {
                 if(makhofilter === "allwarehouses")
                 {
-                    console.log('Chọn đại lý cụ thể')
                     const listmaterialfilter = [];
                     const phieunhap = await PhieuNhap.find().populate('manv').populate({path :'ctpn',populate: {path: 'mavt'}});
                     const phieuxuat = await PhieuXuat.find().populate('manv').populate({path :'ctpx',populate: {path: 'mavt'}});
-                    // console.log('phieunhap : ',phieunhap);
-                    // console.log('phieuxuat : ',phieuxuat);
+                 
 
                     //Lấy danh sách phiếu nhập trong đại lý
                     const filterpn = phieunhap.filter(pn => {

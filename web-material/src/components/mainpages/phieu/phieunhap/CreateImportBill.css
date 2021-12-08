@@ -209,7 +209,7 @@ button.deactive {
     border-radius: 8px;
 }
 
-/* -------------------------------------- */
+/* -------------- notification ------------------------ */
 
 .modal_container__notification {
     position: fixed;
@@ -249,6 +249,11 @@ button.deactive {
     flex-direction: column;
     border-radius: 8px;
     padding: 20px;
+}
+
+.modal__notification .title-notification {
+    color: rgb(26, 148, 255);
+    font-weight: 900;
 }
 
 .modal__notification .option-button {

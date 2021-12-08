@@ -15,7 +15,7 @@ const initialWareHouse = {
   madaily: "",
   diachi: "",
   sodienthoai: "",
-  trangthai: "",
+  trangthai: "Đang kinh doanh",
 };
 
 function WareHouses() {
@@ -129,6 +129,7 @@ function WareHouses() {
   };
 
   const AddWareHouse = () => {
+    setImages(false);
     setOnEdit(false);
     setWareHouse(initialWareHouse);
     setLoading(false);
@@ -392,7 +393,7 @@ function WareHouses() {
             <select
               className="select_daily__kho"
               name="madaily"
-              value={warehouse.daily}
+              value={warehouse.madaily}
               onChange={handleChangeInput}
             >
               <option value="" disabled selected hidden>

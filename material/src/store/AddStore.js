@@ -17,43 +17,36 @@ import {GlobalState} from '../GlobalState';
 import {Button} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {APIDaiLy} from '../api/API';
-import {APIUpload} from '../api/API';
+import {APIDaiLy, APIUpload, APIDestroy} from '../api/API';
 import Header from '../components/Header';
 
 export default function AddStore({navigation}) {
   const state = useContext(GlobalState);
 
-  const [madl, setMaDL] = useState('');
-  const [tendl, setTenDL] = useState('');
-  const [diachi, setDiaChi] = useState('');
-  const [sodienthoai, setSDT] = useState('');
-  const [imageShow, setImageShow] = useState('');
-  const [imageData, setImageData] = useState('');
   const [token] = state.token;
 
   const [store, setStore] = useState({
     tendl: '',
     diachi: '',
     sodienthoai: '',
+    trangthai: 'Đang hoạt động',
+    images: {
+      public_id: '',
+      url: '',
+    },
   });
 
   const ThemDaiLy = async () => {
-    // const token = await AsyncStorage.getItem("token");
-    // console.log('Data store : ',{ ...store,images: imageData });
-    // console.log('token : ',token);
-
     axios
       .post(
-        'http://192.168.1.4:5000/api/daily',
-        {...store, images: imageData},
+        `${APIDaiLy}`,
+        {...store},
         {
           headers: {Authorization: token},
         },
       )
       .then(res => {
         console.log('res : ', res);
-        //   Alert.alert('Thông báo',res.data.message);
         Alert.alert('Thông báo', res.data.message, [
           {
             text: 'OK',
@@ -93,18 +86,13 @@ export default function AddStore({navigation}) {
         const size = response.assets[0].fileSize;
         const name = response.assets[0].fileName;
         const source = {uri, type, size, name};
-        console.log('source', source);
         handleUpload(source);
       }
     });
   };
 
-  //---------------------------------------//
-
   const handleUpload = async file => {
     const token = await AsyncStorage.getItem('token');
-    console.log('token : ', token);
-    console.log('file data : ', file);
 
     try {
       // if (!isAdmin) return alert("Bạn không phải là Admin");
@@ -119,28 +107,29 @@ export default function AddStore({navigation}) {
 
       let formData = new FormData();
       formData.append('file', file);
-      console.log('data file : ', file);
-      // setLoading(true);
-      console.log('-------------- test --------------');
 
-      const res = await axios.post(
-        'http://192.168.1.4:5000/api/upload',
-        formData,
-        {
-          headers: {
-            'content-type': 'multipart/form-data',
-            Authorization: token,
-          },
+      if (store.images.public_id !== '') {
+        axios
+          .post(
+            `${APIDestroy}`,
+            {
+              public_id: store.images.public_id,
+            },
+            {headers: {Authorization: token}},
+          )
+          .then(() => {});
+      }
+
+      const res = await axios.post(`${APIUpload}`, formData, {
+        headers: {
+          'content-type': 'multipart/form-data',
+          Authorization: token,
         },
-      );
-      // setLoading(false);
-      console.log('dữ liệu ảnh : ', res.data);
-      console.log('dữ liệu ảnh url : ', res.data.url);
+      });
 
-      setImageShow(res.data.url);
-      setImageData(res.data);
-    } catch (err) {
-      alert(err.response.data.message);
+      setStore({...store, images: res.data});
+    } catch (error) {
+      alert(error.response.data.message);
     }
   };
 
@@ -168,15 +157,6 @@ export default function AddStore({navigation}) {
                 style={styles.textInput}
                 placeholder="Tên đại lý"
                 value={store.tendl}
-                //  onChangeText={(text) =>  setTenDL(text)}
-
-                //  const [store, setStore] = useState({
-                //     tendl: "",
-                //     diachi: "",
-                //     sodienthoai: "",
-                //     imageData: "",
-                // });
-
                 onChangeText={text => setStore({...store, tendl: text})}
               />
             </View>
@@ -230,10 +210,11 @@ export default function AddStore({navigation}) {
                 marginBottom: 40,
                 borderWidth: 1,
                 borderStyle: 'solid',
-                borderColor: '#333',
+                borderColor: '#999',
+                borderRadius: 8,
               }}>
               <Image
-                source={{uri: imageShow}}
+                source={{uri: store.images.url ? store.images.url : null}}
                 style={{
                   width: 300,
                   height: 240,
@@ -245,6 +226,7 @@ export default function AddStore({navigation}) {
                   marginRight: 'auto',
                   marginTop: 40,
                   marginBottom: 40,
+                  borderRadius: 8,
                 }}
               />
             </View>

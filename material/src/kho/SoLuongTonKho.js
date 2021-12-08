@@ -18,7 +18,7 @@ import {
 import {GlobalState} from '../GlobalState';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '../components/Header';
-import {APICTPN} from '../api/API';
+import {APICTPN, APISTISTICWAREHOUSE} from '../api/API';
 import {APICTPX} from '../api/API';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -59,9 +59,9 @@ export default function SoLuongTonKho({navigation, route}) {
 
   useEffect(async () => {
     const res = await axios.post(
-      'http://192.168.1.4:5000/api/thongke/vattu',
+      `${APISTISTICWAREHOUSE}`,
       //  [JSON.parse(localStorage.getItem('inforuser')).madaily._id,exportbill.makho]
-      {madailyfilter: 'allstores', makhofilter: route.params.makho},
+      {madailyfilter: route.params.madaily, makhofilter: route.params.makho},
     );
     console.log('Dữ liệu thống kê : ', res.data);
 
@@ -97,6 +97,18 @@ export default function SoLuongTonKho({navigation, route}) {
                       style={styles.image}
                       source={{uri: item.images.url}}
                     />
+                  </View>
+                  <View style={styles.thonTinSP}>
+                    <View>
+                      <Text
+                        style={{
+                          color: '#000',
+                          marginLeft: 'auto',
+                          marginRight: 'auto',
+                        }}>
+                        ID: {item._id}
+                      </Text>
+                    </View>
                   </View>
                   <View style={styles.thonTinSP}>
                     <View>

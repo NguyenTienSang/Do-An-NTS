@@ -46,7 +46,7 @@ export function DrawerContent({navigation, props}) {
 
   const logout = () => {
     // AsyncStorage.removeItem('firstLogin');
-    AsyncStorage.clear();
+    // AsyncStorage.clear();
     navigation.replace('SignInScreen');
     // AsyncStorage.removeItem('token').then(() => {
 

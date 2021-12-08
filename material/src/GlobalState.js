@@ -8,6 +8,7 @@ import WareHouseAPI from './api/WareHouseAPI';
 import ImportBillAPI from './api/ImportBillAPI';
 import ExportBillAPI from './api/ExportBillAPI';
 // import StatisticAPI from "./api/StatisticAPI"
+import {APIToken} from './api/API';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -21,12 +22,13 @@ export const DataProvider = ({children}) => {
     // const firstLogin = localStorage.getItem('firstLogin');
 
     const firstLogin = AsyncStorage.getItem('firstLogin');
-
+    console.log('firstLogin : ', firstLogin);
     if (firstLogin) {
+      console.log('test');
       const refreshToken = async () => {
-        const res = await axios.get(
-          'http://192.168.1.4:5000/api/auth/refresh_token',
-        );
+        const res = await axios.get(`${APIToken}`);
+        console.log('res.data.accesstoken : ', res.data.accesstoken);
+        console.log('nts');
         setToken(res.data.accesstoken);
 
         setTimeout(() => {

@@ -17,7 +17,7 @@ const initialEmployee = {
   username: "",
   password: "",
   gioitinh: "nam",
-  role: "",
+  role: "user",
   sodienthoai: "",
   cmnd: "",
   email: "",
@@ -137,6 +137,7 @@ function Employees() {
   };
 
   const AddEmployee = () => {
+    setImages(false);
     setOnEdit(false);
     setEmployee(initialEmployee);
     document
@@ -389,7 +390,7 @@ function Employees() {
             <select
               className="select-daily-nhanvien"
               name="madaily"
-              value={employee.madaily.tendl}
+              value={employee.madaily}
               onChange={handleChangeInput}
             >
               <option value="" disabled selected hidden>
@@ -472,9 +473,6 @@ function Employees() {
               value={employee.role}
               onChange={handleChangeInput}
             >
-              <option value="" disabled selected hidden>
-                Vui lòng chọn quyền
-              </option>
               <option value="admin">Admin</option>
               <option value="user">User</option>
             </select>

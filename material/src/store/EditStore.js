@@ -1,5 +1,6 @@
 import React, {useContext, useState, useEffect} from 'react';
 import axios from 'axios';
+import {Picker} from '@react-native-picker/picker';
 import {
   SafeAreaView,
   ScrollView,
@@ -18,7 +19,7 @@ import {Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {APIDaiLy} from '../api/API';
+import {APIDaiLy, APIUpload, APIDestroy} from '../api/API';
 
 export default function EditStore({navigation, route}) {
   console.log('Data Item : ', route);
@@ -30,18 +31,11 @@ export default function EditStore({navigation, route}) {
     tendl: route.params.item.tendl,
     diachi: route.params.item.diachi,
     sodienthoai: route.params.item.sodienthoai,
+    trangthai: route.params.item.tinhtrang,
     images: route.params.item.images,
     tendlcheck: route.params.item.tendl,
   });
 
-  // const [tendl,setTenDL] = useState("");
-  // const [diachi,setDiaChi] = useState("");
-  // const [sodienthoai,setSDT] = useState("");
-  // const [images, setImages] = useState("");
-  // const [tendl,setTenDL] = useState(route.params.tendl);
-  // const [diachi,setDiaChi] = useState(route.params.diachi);
-  // const [sodienthoai,setSDT] = useState(route.params.sodienthoai);
-  // const [images, setImages] = useState(route.params.images);
   const [token] = state.token;
   console.log('Token : ', token);
   // const [imageData, setImageData] = useState(route.params.images);
@@ -49,11 +43,9 @@ export default function EditStore({navigation, route}) {
   const SuaDaiLy = async () => {
     // const token = await AsyncStorage.getItem("token");
 
-    console.log('Bắt đầu sửa : ', token);
-    console.log('Dữ liệu store : ', store);
     axios
       .put(
-        `http://192.168.1.4:5000/api/daily/${store._id}`,
+        `${APIDaiLy}/${store._id}`,
         {...store},
         {
           headers: {Authorization: token},
@@ -115,7 +107,7 @@ export default function EditStore({navigation, route}) {
 
     axios
       .post(
-        'http://192.168.1.4:5000/api/destroy',
+        `${APIDestroy}`,
         {
           public_id,
         },
@@ -140,21 +132,13 @@ export default function EditStore({navigation, route}) {
           // setLoading(true);
           console.log('-------------- test --------------');
 
-          const res = await axios.post(
-            'http://192.168.1.4:5000/api/upload',
-            formData,
-            {
-              headers: {
-                'content-type': 'multipart/form-data',
-                Authorization: token,
-              },
+          const res = await axios.post(`${APIUpload}`, formData, {
+            headers: {
+              'content-type': 'multipart/form-data',
+              Authorization: token,
             },
-          );
-          // setLoading(false);
-          console.log('dữ liệu ảnh : ', res.data);
-          console.log('dữ liệu ảnh url : ', res.data.url);
+          });
 
-          // setImages(res.data);
           setStore({...store, images: res.data});
         } catch (err) {
           alert(err.response.data.message);
@@ -177,11 +161,11 @@ export default function EditStore({navigation, route}) {
           fontSize: 20,
           fontWeight: '300',
         }}>
-        Sửa Thông Tin Đại Lý
+        Cập Nhật Thông Tin Đại Lý
       </Text>
       <View style={{display: 'flex', justifyContent: 'flex-end'}}>
         <View style={styles.rowInput}>
-          <Text>Tên đại lý</Text>
+          <Text style={styles.label}>Tên đại lý</Text>
           <TextInput
             style={styles.textInput}
             placeholder="Tên đại lý"
@@ -191,7 +175,7 @@ export default function EditStore({navigation, route}) {
         </View>
 
         <View style={styles.rowInput}>
-          <Text>Địa chỉ</Text>
+          <Text style={styles.label}>Địa chỉ</Text>
           <TextInput
             style={styles.textInput}
             placeholder="Địa chỉ"
@@ -201,7 +185,7 @@ export default function EditStore({navigation, route}) {
         </View>
 
         <View style={styles.rowInput}>
-          <Text>SĐT </Text>
+          <Text style={styles.label}>SĐT</Text>
           <TextInput
             style={styles.textInput}
             placeholder="Số điện thoại"
@@ -210,6 +194,19 @@ export default function EditStore({navigation, route}) {
             //  onChangeText={(text) =>  setSDT(text)}
             onChangeText={text => setStore({...store, sodienthoai: text})}
           />
+        </View>
+
+        <View style={styles.rowInput}>
+          <Text>Trạng thái</Text>
+          <Picker
+            style={styles.pickerDropdown}
+            selectedValue={store.trangthai}
+            onValueChange={itemValue =>
+              setStore({...store, trangthai: itemValue})
+            }>
+            <Picker.Item label="Đang hoạt động" value="Đang hoạt động" />
+            <Picker.Item label="Ngừng hoạt động" value="Ngừng hoạt động" />
+          </Picker>
         </View>
 
         <View>
@@ -236,7 +233,8 @@ export default function EditStore({navigation, route}) {
             marginBottom: 40,
             borderWidth: 1,
             borderStyle: 'solid',
-            borderColor: '#333',
+            borderColor: '#999',
+            borderRadius: 8,
           }}>
           <Image
             source={{uri: store.images ? store.images.url : ''}}
@@ -251,6 +249,7 @@ export default function EditStore({navigation, route}) {
               marginRight: 'auto',
               marginTop: 40,
               marginBottom: 40,
+              borderRadius: 8,
             }}
           />
         </View>
@@ -285,12 +284,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
+  label: {
+    display: 'flex',
+    alignItems: 'center',
+    width: 60,
+  },
   textInput: {
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: '#333',
-    width: 220,
+    borderColor: '#999',
+    borderRadius: 8,
+    width: 240,
     height: 40,
+    paddingLeft: 10,
   },
   groupButtonAction: {
     display: 'flex',
@@ -310,5 +316,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#1b94ff',
     marginRight: 'auto',
     marginLeft: 'auto',
+  },
+  pickerDropdown: {
+    width: 230,
+    height: 50,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: 8,
+    borderColor: '#000',
+    backgroundColor: '#dbdbdb',
+    color: '#000',
   },
 });

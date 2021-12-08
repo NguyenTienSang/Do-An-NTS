@@ -388,7 +388,7 @@ export default function LapPhieuXuat({navigation, route}) {
 
               try {
                 const res = await axios.post(
-                  'http://192.168.1.4:5000/api/phieuxuat',
+                  'http://192.168.1.10:5000/api/phieuxuat',
                   {
                     ...exportbill,
                     ctpx: datacart.map(item => ({

@@ -94,8 +94,7 @@ function DetailEmployee() {
                     <RiAdminLine /> Quyền: {detailEmployee?.role}
                   </p>
                   <p>
-                    <IoMaleFemaleSharp /> Giới tính:
-                    {detailEmployee?.gioitinh}
+                    <IoMaleFemaleSharp /> Giới tính: {detailEmployee?.gioitinh}
                   </p>
                 </div>
 
@@ -118,8 +117,8 @@ function DetailEmployee() {
                 </div>
                 <div className="row">
                   <p>
-                    <MdOutlinePersonPin /> Tình trạng:{" "}
-                    {detailEmployee?.tinhtrang}
+                    <MdOutlinePersonPin /> Trạng thái:
+                    {detailEmployee?.trangthai}
                   </p>
                 </div>
               </div>

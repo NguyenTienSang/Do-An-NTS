@@ -27,7 +27,6 @@ function DetailWareHouse() {
   const [warehouses] = state.warehouseAPI.warehouses;
   const [materials] = state.materialAPI.materials;
   const [importbills] = state.importbillAPI.importbills;
-  // const [statisticmaterials] = state.statisticAPI.statisticmaterials;
 
   const [materialsfilter,setMaterialsFilter] = useState(materials)
   const [searchTerm,setSearchTerm] = useState("");
@@ -44,9 +43,6 @@ function DetailWareHouse() {
     const res = await axios.post('/api/thongke/vattu',
            {madailyfilter : params.madaily, makhofilter : params.makho}
     );
-    console.log('Dữ liệu thống kê : ',res)
-    console.log('madailyfilter : ',madailyfilter);
-    console.log('makhofilter : ',makhofilter);
     setMaterialsFilter(res.data);
 },[madailyfilter,makhofilter])
 

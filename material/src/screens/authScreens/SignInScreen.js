@@ -17,8 +17,7 @@ import Header from '../../components/Header';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {apiURL} from './apiURL';
 // import { DSNhapVien } from '../../global/Data';
-// import {APILogin} from '../../api/API';
-import {APISTATE} from '../../api/API';
+import {APILogin} from '../../api/API';
 
 import Swiper from 'react-native-swiper';
 
@@ -36,15 +35,7 @@ export default function SignInScreen({props, navigation}) {
 
   const sendCred = async () => {
     try {
-      // console.log('hi nts',user);
-      // const res = await axios.get('/api/employee');
-
-      // AsyncStorage.setItem('k', JSON.stringify(1));
-      // AsyncStorage.getItem('k').then(h => {
-      //   console.log('h', h);
-      // });
-
-      const res = await axios.post('http://192.168.1.4:5000/api/auth/login', {
+      const res = await axios.post(`${APILogin}`, {
         ...user,
       });
 
@@ -52,7 +43,7 @@ export default function SignInScreen({props, navigation}) {
 
       AsyncStorage.setItem('inforuser', JSON.stringify(res.data.user));
 
-      AsyncStorage.setItem('firstLogin', JSON.stringify(true));
+      AsyncStorage.setItem('firstLogin', true);
 
       navigation.navigate('DrawerNavigator', {role: res.data.user.role});
     } catch (error) {
