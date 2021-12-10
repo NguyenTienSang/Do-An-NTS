@@ -6,15 +6,10 @@ import axios from "axios";
 import { useEffect } from "react";
 import { IoMdArrowDropdown } from "react-icons/io";
 import ChangePassword from "../mainpages/auth/ChangePassword";
+import InforUser from "../common/InforUser";
 
 function Header() {
-  const state = useContext(GlobalState);
-  // const [isLogged, setIsLogged] = state.userAPI.isLogged;
-  // const [isAdmin, setIsAdmin] = state.userAPI.isAdmin;
-  // const [inforuser] = state.userAPI.inforuser;
-  // console.log('test-----------------------------------------')
   const inforuser = JSON.parse(localStorage.getItem("inforuser"));
-  // console.log('inforuser : ',inforuser)
 
   const logoutUser = async () => {
     await axios.get("/api/auth/logout");
@@ -31,11 +26,6 @@ function Header() {
             Chương Trình Quản Lý Đại Lý Phế Liệu
           </h1>
         </div>
-        {/* <div className="menu">
-            Thông báo
-            <BsBellFill />
-            
-          </div> */}
 
         <div className="my-item">
           <div className="header__navbar-item header__navbar-user">
@@ -53,9 +43,15 @@ function Header() {
 
             <ul className="header__navbar-user-menu">
               <li className="header__navbar-user-item header__navbar-user-item--separate">
-                <Link to="/login" onClick={logoutUser}>
+                <div
+                  onClick={() => {
+                    document
+                      .getElementById("modal_container__inforuser")
+                      .classList.add("modal_active");
+                  }}
+                >
                   Thông tin của tôi
-                </Link>
+                </div>
               </li>
               <li className="header__navbar-user-item header__navbar-user-item--separate">
                 <div
@@ -80,6 +76,8 @@ function Header() {
 
       {/* Thay đổi mật khẩu */}
       <ChangePassword />
+
+      <InforUser />
     </>
   );
 }

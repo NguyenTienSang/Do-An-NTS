@@ -24,7 +24,16 @@ function StatisticProfitYear() {
   const [dataStatistic, setDataStatistic] = useState([]);
 
   const Format = (number) => {
-    return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
+    if (number >= 0) {
+      return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
+    } else
+      return (
+        "-" +
+        String(number)
+          .replace(/(.)(?=(\d{3})+$)/g, "$1.")
+          .slice(2) +
+        " VND"
+      );
   };
 
   const handlechangestore = (e) => {
@@ -37,7 +46,7 @@ function StatisticProfitYear() {
     if (madailyfilter !== "") {
       console.log("madailyfilter : ", madailyfilter);
       const res = await axios.post(
-        "http://192.168.1.10:5000/api/thongke/loinhuannam",
+        "/api/thongke/loinhuannam",
         {
           madailyfilter,
           yearstatistic: parseInt(moment(yearstatistic).format("YYYY")),

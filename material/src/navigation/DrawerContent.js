@@ -28,6 +28,7 @@ export function DrawerContent({navigation, props}) {
   // const [manv,setMaNV] = useState('');
   //   var inforuser = '';
   const [inforuser, setInforUser] = useState('');
+
   //   const inforuser = '';
 
   AsyncStorage.getItem('inforuser').then(async dataUser => {

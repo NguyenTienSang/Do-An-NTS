@@ -31,7 +31,7 @@ export default function EditStore({navigation, route}) {
     tendl: route.params.item.tendl,
     diachi: route.params.item.diachi,
     sodienthoai: route.params.item.sodienthoai,
-    trangthai: route.params.item.tinhtrang,
+    trangthai: route.params.item.trangthai,
     images: route.params.item.images,
     tendlcheck: route.params.item.tendl,
   });

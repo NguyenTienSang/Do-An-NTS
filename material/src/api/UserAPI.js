@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import APIInforUser from './API';
+// import APIInforUser from './API';
+import {APIInforUser} from './API';
 
 function UserAPI(token) {
   const [isLogged, setIsLogged] = useState(false);
@@ -12,12 +13,9 @@ function UserAPI(token) {
     if (token) {
       const getUser = async () => {
         try {
-          const res = await axios.get(
-            'http://192.168.1.10:5000/api/auth/infor',
-            {
-              headers: {Authorization: token},
-            },
-          );
+          const res = await axios.get(`${APIInforUser}`, {
+            headers: {Authorization: token},
+          });
           setIsLogged(true);
           setInforUser(res.data);
           // AsyncStorage.setItem('inforuser',JSON.stringify(res.data));

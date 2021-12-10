@@ -175,35 +175,6 @@ export default function SoLuongTonKho({navigation, route}) {
   );
 }
 
-// if(dsvttonkho.length > 0)
-// {
-//     console.log('Hi2');
-
-// if(loading === undefined)
-// {
-//     if(dsvttonkho.length == 0)
-//     {
-//         return (
-//             <View>
-//                 <Text style={{marginTop:350,marginLeft:'auto',marginRight:'auto'}}>Đang load dữ liệu</Text>
-//             </View>
-//         )
-//     }
-// }
-// if(loading == '')
-// {
-//     if(dsvttonkho.length == 0)
-//     {
-//         return (
-//             <View style={{flex:1}}>
-//             <Header title="Trở về" type="arrow-left" navigation={navigation} />
-//                <Text style={{marginTop:300,marginLeft:'auto',marginRight:'auto',fontSize:25}}>Kho chưa có vật tư</Text>
-//             </View>
-//         )
-//     }
-// }
-// }
-
 const styles = StyleSheet.create({
   title: {
     fontSize: 30,

@@ -57,9 +57,13 @@
 
 .create-exportbill .list-material .header-list-material {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     padding: 0px 10px;
     border-bottom: 1px solid #999;
+    height: 40px;
+    background-color: rgb(26, 148, 255);
+    color: #fff;
 }
 
 .list-material .header-list-material p {
@@ -97,6 +101,8 @@
 .create-exportbill .form-bill .header-title {
     display: flex;
     justify-content: center;
+    font-weight: 700;
+    font-size: 20px;
 }
 
 .list-item-bill {
@@ -125,10 +131,13 @@
 }
 
 .list-item-bill h3,
-.header-item-bill,
-.item-bill {
+.header-item-bill,.item-bill {
     align-items: center;
     border-bottom: 1px solid #999;
+}
+
+.item-bill:last-child {
+    border-bottom:none;
 }
 
 .list-item-bill .header-item-bill,
@@ -181,6 +190,7 @@
     background-color: rgb(26, 148, 255);
     color: #fff;
     margin-right: 0px;
+    font-weight: 700;
 }
 
 button.deactive {

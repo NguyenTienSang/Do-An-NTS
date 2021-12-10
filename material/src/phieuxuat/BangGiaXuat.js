@@ -11,9 +11,11 @@ import {
 } from 'react-native';
 import {Button} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {APIVattu} from './../api/API';
+// import APISTISTICWAREHOUSE from '../api';
+// import APISTISTICWAREHOUSE
 import Header from './../components/Header';
 import {GlobalState} from '../GlobalState';
+import {APISTISTICWAREHOUSE} from './../api/API';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -64,13 +66,10 @@ export default function BangGiaXuat({navigation, route}) {
   }
 
   useEffect(async () => {
-    console.log('load lại dữ liệu materialsfilter');
     const res = await axios.post(
-      'http://192.168.1.10:5000/api/thongke/vattu',
-      //  [JSON.parse(localStorage.getItem('inforuser')).madaily._id,exportbill.makho]
+      `${APISTISTICWAREHOUSE}`,
       {madailyfilter: route.params.madaily, makhofilter: route.params.makho},
     );
-
     setMaterialsFilter(res.data);
   }, []);
 
@@ -163,8 +162,8 @@ export default function BangGiaXuat({navigation, route}) {
                 </View>
               ))
             ) : (
-              <View>
-                <Text>Kho chưa có vật tư</Text>
+              <View style={{marginLeft: 'auto', marginRight: 'auto'}}>
+                <Text style={{fontSize: 20}}>Kho chưa có vật tư</Text>
               </View>
             )}
           </View>

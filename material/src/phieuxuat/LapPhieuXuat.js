@@ -20,9 +20,7 @@ import {Icon, Button} from 'react-native-elements';
 import NumericInput from 'react-native-numeric-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '../components/Header';
-import {APIPN} from '../api/API';
-import {APICTPN} from '../api/API';
-import {APIVattu} from '../api/API';
+import {APIPX, APISTISTICWAREHOUSE} from '../api/API';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import {GlobalState} from '../GlobalState';
@@ -42,8 +40,8 @@ export default function LapPhieuXuat({navigation, route}) {
   var [madl, setMaDL] = useState('');
   const [datehdn, setDateHDN] = useState(new Date());
   const [onSearch, setOnSearch] = useState(false);
+  const [materialsfilter, setMaterialsFilter] = useState(null);
   const [exportbill, setExportBill] = useState({
-    // tenpx: "",
     ngay: moment(),
     manv: inforuser._id,
     makho: '',
@@ -54,13 +52,18 @@ export default function LapPhieuXuat({navigation, route}) {
 
   //Set mã kho
   AsyncStorage.getItem('kt').then(async kt => {
-    console.log('Chọn kho  : ', kt);
     if (kt == 'chonkho') {
       // exportbill.makho = route.params.kho._id;
       setExportBill({...exportbill, makho: route.params.kho._id});
       setLoading(!loading);
       console.log('Set loading lại');
       AsyncStorage.setItem('kt', 'none');
+
+      const res = await axios.post(`${APISTISTICWAREHOUSE}`, {
+        madailyfilter: madl,
+        makhofilter: route.params.kho._id,
+      });
+      setMaterialsFilter(res.data);
     }
   });
 
@@ -90,10 +93,8 @@ export default function LapPhieuXuat({navigation, route}) {
     console.log('Load lại');
     AsyncStorage.getItem('cart')
       .then(data => {
-        // if (data !== null) {
         data = JSON.parse(data);
         setDataCart(data);
-        // }
       })
       .catch(err => {
         alert(err);
@@ -113,11 +114,24 @@ export default function LapPhieuXuat({navigation, route}) {
 
   // console.log('inforuser : ',inforuser.madaily._id)
 
-  useEffect(async () => {
-    // Exportbills
+  // useEffect(async () => {
+  //   // Exportbills
+  //   setExportBill({...exportbill, tenpx: 'PX' + (exportbills.length + 1)});
+  // }, []);
 
-    setExportBill({...exportbill, tenpx: 'PX' + (exportbills.length + 1)});
-  }, []);
+  // useEffect(async () => {
+  //   console.log("load lại dữ liệu materialsfilter");
+  //   const res = await axios.post(
+  //     "/api/thongke/vattu",
+  //     {
+  //       madailyfilter: JSON.parse(localStorage.getItem("inforuser")).madaily
+  //         ._id,
+  //       makhofilter: exportbill.makho,
+  //     }
+  //   );
+
+  //   setMaterialsFilter(res.data);
+  // }, [exportbill.makho]);
 
   return (
     <View style={{flex: 1}}>
@@ -136,13 +150,6 @@ export default function LapPhieuXuat({navigation, route}) {
             Nhập Thông Tin Phiếu Xuất
           </Text>
         </View>
-        {/* <View style={{display:'flex',flexDirection:'row',alignItems:'center',marginBottom:10}}>
-          <Text>Tên phiếu xuất   </Text>
-          <TextInput style={styles.textInput} 
-                value={exportbill.tenpx}
-                editable = {false}
-          />
-       </View> */}
         <View
           style={{
             display: 'flex',
@@ -192,14 +199,19 @@ export default function LapPhieuXuat({navigation, route}) {
           />
         </View>
 
-        <View style={styles.rowInput}>
-          <Text>Mã kho </Text>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 10,
+          }}>
+          <Text style={styles.label}>Kho</Text>
           <TextInput
             style={styles.textInput}
             placeholder="Vui lòng chọn kho"
             value={route.params !== undefined ? route.params.kho.tenkho : ''}
             editable={false}
-            //  onChangeText={(text) =>  setMaDL(text)}
           />
         </View>
 
@@ -213,7 +225,6 @@ export default function LapPhieuXuat({navigation, route}) {
                 madl: madl,
                 page: 'LapPhieuXuat',
               });
-              // navigation.navigate("DanhSachDaiLy",{page: 'AddKho'})
             }}
           />
         </View>
@@ -245,15 +256,13 @@ export default function LapPhieuXuat({navigation, route}) {
             }}>
             <Text
               style={{
-                display: 'flex',
-                justifyContent: 'center',
-                textAlign: 'center',
+                width: 30,
               }}>
-              Mã VT
+              STT
             </Text>
-            <Text>Tên VT</Text>
-            <Text>Giá</Text>
-            <Text>Số Lượng</Text>
+            <Text style={{flex: 1, textAlign: 'center'}}>Tên VT</Text>
+            <Text style={{flex: 1, textAlign: 'center'}}>Giá</Text>
+            <Text style={{width: 72}}>Số Lượng</Text>
           </View>
           {datacart?.map((item, i) => {
             return (
@@ -271,32 +280,59 @@ export default function LapPhieuXuat({navigation, route}) {
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'space-between',
+                    alignItems: 'center',
                     paddingLeft: 10,
                     paddingRight: 10,
                   }}>
-                  <Text>{item.material.tenvt}</Text>
-                  <Text>{Format(item.material.giaxuat)}</Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      onChangeQual(i, false);
+                  <Text style={{width: 30}}>{i + 1}</Text>
+                  <Text style={{flex: 1, textAlign: 'center'}}>
+                    {item.material.tenvt}
+                  </Text>
+                  <Text style={{flex: 1, textAlign: 'center'}}>
+                    {Format(item.material.giaxuat)}
+                  </Text>
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      width: 80,
                     }}>
-                    <MaterialCommunityIcons
-                      name="minus-circle-outline"
-                      size={15}
-                      color="black"
+                    <TouchableOpacity
+                      onPress={() => {
+                        onChangeQual(i, item.quantity, false);
+                      }}>
+                      <MaterialCommunityIcons
+                        name="minus-circle-outline"
+                        size={15}
+                        color="black"
+                      />
+                    </TouchableOpacity>
+                    <TextInput
+                      style={styles.textInputSL}
+                      maxLength={4}
+                      keyboardType="numeric"
+                      placeholder="số lượng"
+                      value={item.quantity.toString()}
+                      onChangeText={text => {
+                        if (text.length === 0) {
+                          onChangeQual(i, 0, 'typing');
+                        } else if (text.length > 0 && parseInt(text) < 1000) {
+                          onChangeQual(i, parseInt(text), 'typing');
+                        }
+                      }}
                     />
-                  </TouchableOpacity>
-                  <Text>{item.quantity}</Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      onChangeQual(i, true);
-                    }}>
-                    <MaterialCommunityIcons
-                      name="plus-circle-outline"
-                      size={15}
-                      color="black"
-                    />
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        onChangeQual(i, item.quantity, true);
+                      }}>
+                      <MaterialCommunityIcons
+                        name="plus-circle-outline"
+                        size={15}
+                        color="black"
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
                 <View style={{marginLeft: 'auto', marginRight: 'auto'}}>
                   <Icon
@@ -361,8 +397,9 @@ export default function LapPhieuXuat({navigation, route}) {
             buttonStyle={[styles.buttonAction, {width: 250}]}
             title="Thêm Vật Tư Vào Danh Sách"
             onPress={() => {
-              console.log('Mã kho : ', exportbill.makho);
-              console.log('Mã đại lý : ', inforuser.madaily._id);
+              // console.log('datacart : ', datacart);
+              // console.log('Mã kho : ', exportbill.makho);
+              // console.log('Mã đại lý : ', inforuser.madaily._id);
               navigation.navigate('BangGiaXuat', {
                 madaily: inforuser.madaily._id,
                 makho: exportbill.makho,
@@ -385,35 +422,70 @@ export default function LapPhieuXuat({navigation, route}) {
               console.log('Mã nhân viên : ', exportbill.manv);
               console.log('Mã kho : ', exportbill.makho);
               console.log('datacart : ', datacart);
-
-              try {
-                const res = await axios.post(
-                  'http://192.168.1.10:5000/api/phieuxuat',
-                  {
-                    ...exportbill,
-                    ctpx: datacart.map(item => ({
-                      mavt: item.material._id,
-                      giaxuat: item.material.giaxuat,
-                      soluong: item.quantity,
-                    })),
-                  },
-                  {
-                    headers: {Authorization: token},
-                  },
-                );
-                console.log('exportbill nè : ', exportbill);
-
+              if (datacart.length == 0) {
                 Alert.alert('Thông báo', res.data.message, [
                   {
                     text: 'OK',
-                    onPress: () => {
-                      setCallback(!callback);
-                      navigation.navigate('PhieuXuat');
-                    },
+                    onPress: () => {},
                   },
                 ]);
-              } catch (err) {
-                alert(err.response.data.message);
+              } else {
+                var checkoverstorage = false;
+                var materialoverstorage = {};
+
+                //Duyệt để check số lượng tồn
+                datacart?.map(ctpx => {
+                  if (!checkoverstorage) {
+                    materialoverstorage = materialsfilter.find(vt => {
+                      if (ctpx.material._id === vt._id) {
+                        if (ctpx.quantity > vt.soluong) {
+                          checkoverstorage = true;
+                        }
+                        return ctpx.quantity > vt.soluong;
+                      }
+                    });
+                  }
+                });
+              }
+              if (!checkoverstorage) {
+                try {
+                  const res = await axios.post(
+                    `${APIPX}`,
+                    {
+                      ...exportbill,
+                      ctpx: datacart.map(item => ({
+                        mavt: item.material._id,
+                        giaxuat: item.material.giaxuat,
+                        soluong: item.quantity,
+                      })),
+                    },
+                    {
+                      headers: {Authorization: token},
+                    },
+                  );
+                  Alert.alert('Thông báo', res.data.message, [
+                    {
+                      text: 'OK',
+                      onPress: () => {
+                        setCallback(!callback);
+                        navigation.navigate('PhieuXuat');
+                      },
+                    },
+                  ]);
+                } catch (err) {
+                  alert(err.response.data.message);
+                }
+              } else {
+                Alert.alert(
+                  'Thông báo',
+                  materialoverstorage.tenvt + ' không đủ số lượng tồn',
+                  [
+                    {
+                      text: 'OK',
+                      onPress: () => {},
+                    },
+                  ],
+                );
               }
             }}
           />
@@ -439,8 +511,9 @@ export default function LapPhieuXuat({navigation, route}) {
     return total;
   }
 
-  function onChangeQual(i, type) {
+  function onChangeQual(i, soluong, type) {
     let cantd = datacart[i].quantity;
+    //Tăng số lượng
     if (type == true) {
       cantd = cantd + 1;
       datacart[i].quantity = cantd;
@@ -448,16 +521,22 @@ export default function LapPhieuXuat({navigation, route}) {
       AsyncStorage.setItem('cart', JSON.stringify(datacart));
       setDataCart(datacart);
     } else if (type == false && cantd >= 2) {
+      //Giảm số lượng
       cantd = cantd - 1;
       datacart[i].quantity = cantd;
       AsyncStorage.setItem('cart', JSON.stringify(datacart));
       setDataCart(datacart);
     } else if (type == false && cantd == 1) {
+      //Giảm số lượng và số lượng đang bằng 1
       datacart.splice(i, 1);
       AsyncStorage.setItem('cart', JSON.stringify(datacart));
       setDataCart(datacart);
+    } else if (type === 'typing') {
+      datacart[i].quantity = soluong;
+      AsyncStorage.setItem('cart', JSON.stringify(datacart));
+      setDataCart(datacart);
     }
-    return setLoading(loading + 1);
+    return setLoading(!loading);
   }
 
   function removeProduct(i) {
@@ -487,6 +566,18 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: 270,
     height: 40,
+  },
+  textInputSL: {
+    justifyContent: 'center',
+    textAlign: 'center',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: '#999',
+    borderRadius: 8,
+    width: 45,
+    height: 40,
+    marginLeft: 5,
+    marginRight: 5,
   },
   groupButtonAction: {
     display: 'flex',

@@ -29,7 +29,16 @@ function StatisticProfitStage() {
   const [message, setMessage] = useState("");
 
   const Format = (number) => {
-    return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
+    if (number >= 0) {
+      return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
+    } else
+      return (
+        "-" +
+        String(number)
+          .replace(/(.)(?=(\d{3})+$)/g, "$1.")
+          .slice(2) +
+        " VND"
+      );
   };
 
   const handlechangestore = (e) => {

@@ -108,7 +108,7 @@ export default function HomeScreen({navigation}){
                            
                                 
                             <Button
-                                title="Thống kê lợi nhuận"
+                                title="Thống kê"
                                 buttonStyle={styles.taskButton}
                                 titleStyle={parameters.buttonTitle}
                                 onPress={()=>{

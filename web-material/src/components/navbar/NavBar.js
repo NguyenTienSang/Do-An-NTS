@@ -48,40 +48,28 @@ function NavBar() {
   return (
     <div className="navbar">
       <div className="item-navbar">
-        <NavLink
-          activeStyle={{ backgroundColor: "#0198fc", color: "#fff" }}
-          to="/trangchu"
-        >
+        <NavLink to="/trangchu">
           <FaHome />
           Trang chủ
         </NavLink>
       </div>
 
       <div className="item-navbar">
-        <NavLink
-          activeStyle={{ backgroundColor: "#0198fc", color: "#fff" }}
-          to="/nhanvien"
-        >
+        <NavLink to="/nhanvien">
           <BsFillPersonLinesFill />
           Nhân Viên
         </NavLink>
       </div>
 
       <div className="item-navbar">
-        <NavLink
-          activeStyle={{ backgroundColor: "#0198fc", color: "#fff" }}
-          to="/vattu"
-        >
+        <NavLink to="/vattu">
           <GiExplosiveMaterials />
           Vật Tư
         </NavLink>
       </div>
       {isAdmin ? (
         <div className="item-navbar">
-          <NavLink
-            activeStyle={{ backgroundColor: "#0198fc", color: "#fff" }}
-            to="/daily"
-          >
+          <NavLink to="/daily">
             <IoStorefrontOutline />
             Đại Lý
           </NavLink>
@@ -89,16 +77,12 @@ function NavBar() {
       ) : null}
 
       <div className="item-navbar">
-        <NavLink
-          activeStyle={{ backgroundColor: "#0198fc", color: "#fff" }}
-          to="/kho"
-        >
+        <NavLink to="/kho">
           <FaWarehouse />
           Kho
         </NavLink>
       </div>
 
-      {/* ----------------------------- CODE NEW ------------------------------------- */}
       <div
         className="item-navbar"
         onClick={() => {
@@ -106,19 +90,18 @@ function NavBar() {
           setOpenStatistic(false);
         }}
       >
-        <GiNotebook />
-        Phiếu
-        {openbill ? <AiFillCaretDown /> : <AiFillCaretRight />}
+        <p>
+          <GiNotebook />
+          Phiếu
+          {openbill ? <AiFillCaretDown /> : <AiFillCaretRight />}
+        </p>
       </div>
 
       <div
         className="item-navbar"
         style={{ display: openbill ? "block" : "none" }}
       >
-        <NavLink
-          activeStyle={{ backgroundColor: "#0198fc", color: "#fff" }}
-          to="/phieunhap"
-        >
+        <NavLink to="/phieunhap">
           <BsJournalArrowDown />
           Phiếu Nhập
         </NavLink>
@@ -128,17 +111,11 @@ function NavBar() {
         className="item-navbar"
         style={{ display: openbill ? "block" : "none" }}
       >
-        <NavLink
-          activeStyle={{ backgroundColor: "#0198fc", color: "#fff" }}
-          to="/phieuxuat"
-        >
+        <NavLink to="/phieuxuat">
           <BsJournalArrowUp />
           Phiếu Xuất
         </NavLink>
       </div>
-
-      {/* GrDocumentDownload,GrDocumentPerformance */}
-      {/* ------------------------------------------------------------------ */}
 
       {isAdmin ? (
         <>
@@ -149,21 +126,20 @@ function NavBar() {
               setOpenBill(false);
             }}
           >
-            <VscGraphLine />
-            Thống Kê
-            {openstatistic ? <AiFillCaretDown /> : <AiFillCaretRight />}
+            <p>
+              <VscGraphLine />
+              Thống Kê
+              {openstatistic ? <AiFillCaretDown /> : <AiFillCaretRight />}
+            </p>
           </div>
 
           <div
             className="item-navbar "
             style={{ display: openstatistic ? "block" : "none" }}
           >
-            <NavLink
-              activeStyle={{ backgroundColor: "#0198fc", color: "#fff" }}
-              to="/thongkephieunhanvien"
-            >
+            <NavLink to="/thongkephieunhanvien">
               <BsPersonSquare />
-              Nhân Viên
+              Nhân Viên Lập Phiếu
             </NavLink>
           </div>
 
@@ -171,12 +147,9 @@ function NavBar() {
             className="item-navbar "
             style={{ display: openstatistic ? "block" : "none" }}
           >
-            <NavLink
-              activeStyle={{ backgroundColor: "#0198fc", color: "#fff" }}
-              to="/thongkevattu"
-            >
+            <NavLink to="/thongkevattu">
               <SiMaterialui />
-              Vật Tư
+              Vật Tư Tồn
             </NavLink>
           </div>
 
@@ -184,10 +157,7 @@ function NavBar() {
             className="item-navbar item_bill"
             style={{ display: openstatistic ? "block" : "none" }}
           >
-            <NavLink
-              activeStyle={{ backgroundColor: "#0198fc", color: "#fff" }}
-              to="/thongkeloinhuannam"
-            >
+            <NavLink to="/thongkeloinhuannam">
               <IoGolfOutline />
               Lợi Nhuận Năm
             </NavLink>
@@ -197,10 +167,7 @@ function NavBar() {
             className="item-navbar item_bill"
             style={{ display: openstatistic ? "block" : "none" }}
           >
-            <NavLink
-              activeStyle={{ backgroundColor: "#0198fc", color: "#fff" }}
-              to="/thongkeloinhuangiaidoan"
-            >
+            <NavLink to="/thongkeloinhuangiaidoan">
               <AiOutlineColumnWidth />
               Lợi Nhuận Giai Đoạn
             </NavLink>

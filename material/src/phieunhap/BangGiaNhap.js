@@ -136,7 +136,7 @@ export default function BangGiaNhap({navigation, route}) {
                         <Button
                           title="Thêm Vào Phiếu"
                           buttonStyle={styles.buttonOption}
-                          disabled={item.soluong === 0 ? true : false}
+                          // disabled={item.soluong === 0 ? true : false}
                           onPress={() => {
                             onClickAddCart(item);
                             navigation.navigate('LapPhieuNhap', {id: item._id});
@@ -185,8 +185,8 @@ export default function BangGiaNhap({navigation, route}) {
                 </View>
               ))
             ) : (
-              <View>
-                <Text>Kho chưa có vật tư</Text>
+              <View style={{marginLeft: 'auto', marginRight: 'auto'}}>
+                <Text style={{fontSize: 20}}>Kho chưa có vật tư</Text>
               </View>
             )}
           </View>

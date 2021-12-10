@@ -50,29 +50,7 @@ export default function SignInScreen({props, navigation}) {
       alert(error.response.data.message);
     }
 
-    //   await fetch(`${APILogin}`,{
-    //   method:"POST",
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body:JSON.stringify({
-    //     "username":username,
-    //     "password":password,
-    //   })
-    // })
-    // .then(res=>res.json())
-    // .then(async (data)=>{
-    //       try{
-
-    //         // await AsyncStorage.setItem('token',data.accessToken);
-    //         // await AsyncStorage.setItem('username',username);
-    //         // await AsyncStorage.setItem('nhanvien',JSON.stringify(data.nhanvien));
-    //         navigation.navigate("DrawerNavigator",{role: data.nhanvien.role})
-
-    //       } catch(e){
-    //         Alert.alert('Thông báo',data.message);
-    //       }
-    // })
+  
   };
 
   return (

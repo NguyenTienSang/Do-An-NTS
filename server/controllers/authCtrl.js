@@ -243,7 +243,7 @@ const authCtrl = {
 
       // let updatedNhanVien = user;
       nhanvien.password = hashedPassword;
-      // {hoten,madaily,diachi,username,password : hashedPassword,role,sodienthoai,cmnd,tinhtrang,images}
+      // {hoten,madaily,diachi,username,password : hashedPassword,role,sodienthoai,cmnd,trangthai,images}
 
       let updatedNhanVien = await NhanVien.findOneAndUpdate(
         { _id: req.params.id },

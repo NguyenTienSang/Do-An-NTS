@@ -10,7 +10,7 @@ Content-Type: application/json
    "role" : "user",
    "sodienthoai": "0123456785",
    "cmnd":"123456781",
-   "tinhtrang":true,
+   "trangthai":true,
    "images" : "https://res.cloudinary.com/ntsit1999/image/upload/v1630638345/samples/237094265_1962984640536375_6226300357679383118_n_qtdgsl.jpg"
 }
 

@@ -302,8 +302,6 @@ function Employees() {
               {isAdmin ? (
                 <>
                   <p style={{ flex: 1 }}>Chức năng</p>
-                  {/* <p style={{flex:0.6}}>Xóa</p>
-              <p style={{flex:0.6}}>Chi tiết</p> */}
                 </>
               ) : null}
             </div>

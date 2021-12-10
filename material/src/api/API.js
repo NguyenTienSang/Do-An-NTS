@@ -1,6 +1,6 @@
 //API
 //Đăng nhập
-export const APISTATE = 'http://192.168.1.7:5000/api';
+export const APISTATE = 'http://192.168.1.5:5000/api';
 
 //Aunthentication
 export const APILogin = `${APISTATE}/auth/login`;
@@ -36,6 +36,13 @@ export const APIUpload = `${APISTATE}/upload`;
 export const APIDestroy = `${APISTATE}/destroy`;
 
 //Thống kê
+//Thống kê phiếu nhân viên
+export const APITKPNV = `${APISTATE}/thongke/phieunhapnhanvien`;
+
+//Thống kê phiếu nhân viên
+export const APITKVTT = `${APISTATE}/thongke/vattu`;
+// /thongke/vattu
+
 // statisticProfitYear
 export const APITKLNN = `${APISTATE}/thongke/loinhuannam`;
 // statisticProfitYear

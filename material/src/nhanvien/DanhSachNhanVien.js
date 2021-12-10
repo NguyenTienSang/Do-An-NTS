@@ -15,7 +15,7 @@ import Header from '../components/Header';
 import {Button} from 'react-native-elements';
 import {GiaBan} from '../global/Data';
 // import { DSNhapVien } from '../global/Data';
-import EditEmployee from './../nhanvien/EditEmployee';
+import EditEmployee from './EditEmployee';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {APINhanVien, APIDestroy} from '../api/API';
 import {Icon} from 'react-native-elements';
@@ -25,10 +25,8 @@ import * as Animatable from 'react-native-animatable';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-export default function DSNhanVienUser({navigation}) {
+export default function DanhSachNhanVien({navigation}) {
   const state = useContext(GlobalState);
-  const [inforuser, setInforUser] = useState('');
-
   const [textInput2Focussed, setTeInput2Focussed] = useState(false);
   const [employees] = state.employeeAPI.employees;
   const [employee, setEmployee] = useState(employees);
@@ -37,13 +35,7 @@ export default function DSNhanVienUser({navigation}) {
   const [token] = state.token;
   const [callback, setCallback] = state.employeeAPI.callback;
 
-  console.log('inforuser : ', inforuser);
-  useEffect(() => {
-    AsyncStorage.getItem('inforuser').then(async dataUser => {
-      setInforUser(JSON.parse(dataUser));
-      console.log('dataUser : ', dataUser);
-    });
-  }, [employees]);
+  useEffect(() => {}, [employees]);
 
   return (
     <View style={{flex: 1}}>
@@ -55,7 +47,7 @@ export default function DSNhanVienUser({navigation}) {
             color="white"
             size={28}
             onPress={() => {
-              navigation.navigate('UserHomeScreen');
+              navigation.navigate('HomeScreen');
             }}
           />
         </View>
@@ -103,32 +95,19 @@ export default function DSNhanVienUser({navigation}) {
 
         <ScrollView>
           <View style={styles.listPrice}>
-            {employees && inforuser ? (
+            {employees ? (
               employees
                 .filter(item => {
-                  if (
-                    search == '' &&
-                    inforuser.madaily._id.toString() ===
-                      item.madaily._id.toString()
-                  ) {
-                    console.log(
-                      'inforuser.madaily._id.toString() : ',
-                      inforuser.madaily._id.toString(),
-                    );
-                    console.log('item._id.toString() : ', item._id.toString());
+                  if (search == '') {
                     return item;
                   } else if (
-                    (item._id.toLowerCase().includes(search.toLowerCase()) ||
-                      item.hoten.toLowerCase().includes(search.toLowerCase()) ||
-                      item.madaily.tendl
-                        .toLowerCase()
-                        .includes(search.toLowerCase()) ||
-                      item.role.toLowerCase().includes(search.toLowerCase()) ||
-                      item.trangthai
-                        .toLowerCase()
-                        .includes(search.toLowerCase())) &&
-                    inforuser.madaily._id.toString() ===
-                      item.madaily._id.toString()
+                    item._id.toLowerCase().includes(search.toLowerCase()) ||
+                    item.hoten.toLowerCase().includes(search.toLowerCase()) ||
+                    item.madaily.tendl
+                      .toLowerCase()
+                      .includes(search.toLowerCase()) ||
+                    item.role.toLowerCase().includes(search.toLowerCase()) ||
+                    item.trangthai.toLowerCase().includes(search.toLowerCase())
                   ) {
                     return item;
                   }
@@ -154,6 +133,35 @@ export default function DSNhanVienUser({navigation}) {
                             style={styles.image}
                             source={{uri: item.images.url}}
                           />
+                          {/* <View>
+                            <Text>Tên đại lý: {item.madaily.tendl}</Text>
+
+                            <Text>Quyền: {item.role}</Text>
+                            <Text>Trạng thái: {item.trangthai}</Text>
+                          </View> */}
+
+                          <View
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              marginTop: 14,
+                              marginBottom: 14,
+                            }}>
+                            <Button
+                              title="Chọn"
+                              buttonStyle={[
+                                styles.buttonOption,
+                                {marginBottom: 40},
+                              ]}
+                              onPress={() => {
+                                // console.log('madl : ' ,item.madaily);
+                                // AsyncStorage.setItem('kt','0');
+                                navigation.navigate('ThongKeNhanVienLapPhieu', {
+                                  nhanvien: item,
+                                });
+                              }}
+                            />
+                          </View>
                         </View>
                         <View
                           style={{
@@ -257,6 +265,86 @@ export default function DSNhanVienUser({navigation}) {
             )}
           </View>
         </ScrollView>
+        {/* :
+              <View>
+                  <Text style={{marginTop:350,marginLeft:'auto',marginRight:'auto'}}>Danh sách nhân viên trống</Text>
+              </View> */}
+
+        {/* {
+              data.length > 0
+              ? 
+              <ScrollView>
+              <View style={styles.listPrice}>
+              {
+                      employees?.filter(item=>{
+                          if(search == "") 
+                          {
+                              return item;
+                          }
+                          else if(item.hoten.toLowerCase().includes(search.toLowerCase()))
+                          {
+                              return item;
+                          }
+                      })?.map(item=>
+                          <View key={item._id}>
+                                  <View>
+                                     <View style={{display:'flex',flexDirection:'column',borderWidth:1,borderColor:'#1b94ff',borderRadius:5,marginLeft:3,marginRight:3,marginBottom:20,paddingTop:7,paddingBottom:7}}>
+                                         <View style={styles.thongTinNV}>
+                                              <Image 
+                                                  style={styles.image}
+                                                  source={{uri: item.images.url}}/>
+                                                  <View> 
+                                                      <Text>Tên đại lý: {item.madaily.tendl}</Text>   
+                                                     
+                                                      <Text>Quyền: {item.role}</Text>    
+                                                  </View>
+                                              
+  
+                                                  <View style={{display:'flex',flexDirection:'column',marginTop:14,marginBottom:14}}>
+                                                      <Button 
+                                                      title="Cập nhật"
+                                                      buttonStyle={[styles.buttonOption,{marginBottom:40}]}
+                                                      onPress={()=>{
+                                                          // console.log('madl : ' ,item.madaily);
+                                                          // AsyncStorage.setItem('kt','0');
+                                                          navigation.navigate('EditEmployee',{id : item._id,hoten : item.hoten,
+                                                              madl: item.madaily._id, diachi : item.diachi,
+                                                              username: item.username, password: item.password,
+                                                              sodienthoai : item.sodienthoai,cmnd: item.cmnd,
+                                                              role: item.role, images: item.images})
+                                                          }}
+                                                          />
+  
+                                                      <Button 
+                                                      title="Xóa"
+                                                      buttonStyle={styles.buttonOption}
+                                                      onPress={()=>{
+                                                          Delete(item._id);
+                                                              }}
+                                                      />     
+                                                  </View>
+  
+  
+                                         </View>
+                                         <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',marginTop:10,marginLeft:15,marginRight:15}}>
+                                              <Text style={{marginLeft:15}}>Họ tên: {item.hoten}</Text>
+                                              <Text>Địa chỉ:{item.diachi}</Text>
+                                         </View>
+                                         <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',marginTop:10,marginLeft:15,marginRight:15}}>
+                                              <Text style={{marginLeft:15}}>SĐT: {item.sodienthoai}</Text>
+                                         </View>
+                                     </View>
+                                  </View> 
+                          </View>
+                      )
+                  }
+              </View>
+              </ScrollView>
+              :
+              <View>
+                  <Text style={{marginTop:350,marginLeft:'auto',marginRight:'auto'}}>Danh sách nhân viên trống</Text>
+              </View>
+          }     */}
       </View>
     </View>
   );
@@ -294,7 +382,7 @@ const styles = StyleSheet.create({
   },
   thongTinNV: {
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
     paddingLeft: 2,

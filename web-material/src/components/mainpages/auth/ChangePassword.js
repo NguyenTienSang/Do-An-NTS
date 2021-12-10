@@ -5,7 +5,6 @@ import { GlobalState } from "../../../GlobalState";
 
 function ChangePassword() {
   const state = useContext(GlobalState);
-  const [token] = state.token;
 
   const [openalert, setOpenAlert] = useState(false);
 
@@ -18,13 +17,13 @@ function ChangePassword() {
   });
 
   const changePass = async () => {
-    //   const  localStorage.getItem('inforuser')
+   
     const _id = JSON.parse(localStorage.getItem("inforuser"))._id;
 
     console.log("password : ", password);
     console.log("_id : ", _id);
     axios
-      .put(`http://192.168.1.10:5000/api/auth/changepassword/${_id}`, {
+      .put(`/api/auth/changepassword/${_id}`, {
         ...password,
       })
       .then((res) => {

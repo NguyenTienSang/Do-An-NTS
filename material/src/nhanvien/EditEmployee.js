@@ -162,7 +162,7 @@ export default function EditEmployee({navigation, route}) {
             fontSize: 20,
             fontWeight: '300',
           }}>
-          Sửa Thông Tin Nhân Viên
+          Cập Nhật Thông Tin Nhân Viên
         </Text>
         <View style={{display: 'flex', justifyContent: 'flex-end'}}>
           <View style={styles.rowInput}>
@@ -171,7 +171,6 @@ export default function EditEmployee({navigation, route}) {
               style={styles.textInput}
               placeholder="Họ tên"
               value={employee.hoten}
-              //  onChangeText={(text) =>  setHoTen(text)
               onChangeText={text => setEmployee({...employee, hoten: text})}
             />
           </View>

@@ -140,7 +140,7 @@ export default function NhanVien({navigation}) {
                       .toLowerCase()
                       .includes(search.toLowerCase()) ||
                     item.role.toLowerCase().includes(search.toLowerCase()) ||
-                    item.tinhtrang.toLowerCase().includes(search.toLowerCase())
+                    item.trangthai.toLowerCase().includes(search.toLowerCase())
                   ) {
                     return item;
                   }
@@ -170,7 +170,7 @@ export default function NhanVien({navigation}) {
                             <Text>Tên đại lý: {item.madaily.tendl}</Text>
 
                             <Text>Quyền: {item.role}</Text>
-                            <Text>Trạng thái: {item.tinhtrang}</Text>
+                            <Text>Trạng thái: {item.trangthai}</Text>
                           </View> */}
 
                           <View
@@ -288,7 +288,6 @@ export default function NhanVien({navigation}) {
                             Email: {item.email}
                           </Text>
                         </View>
-
                       </View>
                     </View>
                   </View>

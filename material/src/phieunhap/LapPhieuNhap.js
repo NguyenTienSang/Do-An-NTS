@@ -20,9 +20,7 @@ import {Icon, Button} from 'react-native-elements';
 import NumericInput from 'react-native-numeric-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '../components/Header';
-import {APIPN} from '../api/API';
-import {APICTPN} from '../api/API';
-import {APIVattu} from '../api/API';
+import {APIPN, APIInforUser} from '../api/API';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import {GlobalState} from '../GlobalState';
@@ -38,8 +36,6 @@ export default function LapPhieuNhap({navigation, route}) {
   const [callback, setCallback] = state.importbillAPI.callback;
   const [datacart, setDataCart] = useState([]);
   const [loading, setLoading] = useState(true);
-  // var [makh,setMaKH] = useState('');
-  // const [tenpn,setTenPN] = useState('');
   const [id, setID] = useState('');
   var [madl, setMaDL] = useState('');
   const [datehdn, setDateHDN] = useState(new Date());
@@ -68,6 +64,8 @@ export default function LapPhieuNhap({navigation, route}) {
 
   //Set ngày lập
   const onDateChange = (event, selectedDate) => {
+    console.log('event : ', event);
+    console.log('selectedDate : ', selectedDate);
     const currentDate = selectedDate || date;
     setShow(false);
     setDate(moment(currentDate));
@@ -89,7 +87,6 @@ export default function LapPhieuNhap({navigation, route}) {
   };
 
   useEffect(() => {
-    console.log('Load lại');
     AsyncStorage.getItem('cart')
       .then(data => {
         // if (data !== null) {
@@ -180,7 +177,13 @@ export default function LapPhieuNhap({navigation, route}) {
           />
         </View>
 
-        <View style={styles.rowInput}>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 10,
+          }}>
           <Text style={styles.label}>Kho</Text>
           <TextInput
             style={styles.textInput}
@@ -233,15 +236,13 @@ export default function LapPhieuNhap({navigation, route}) {
             }}>
             <Text
               style={{
-                display: 'flex',
-                justifyContent: 'center',
-                textAlign: 'center',
+                width: 30,
               }}>
               STT
             </Text>
-            <Text>Tên VT</Text>
-            <Text>Giá</Text>
-            <Text>Số Lượng</Text>
+            <Text style={{flex: 1, textAlign: 'center'}}>Tên VT</Text>
+            <Text style={{flex: 1, textAlign: 'center'}}>Giá</Text>
+            <Text style={{width: 72}}>Số Lượng</Text>
           </View>
           {datacart?.map((item, i) => {
             return (
@@ -263,44 +264,56 @@ export default function LapPhieuNhap({navigation, route}) {
                     paddingLeft: 10,
                     paddingRight: 10,
                   }}>
-                  <Text>{i + 1}</Text>
-                  <Text>{item.material.tenvt}</Text>
-                  <Text>{Format(item.material.gianhap)}</Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      onChangeQual(i, item.quantity, false);
+                  <Text style={{width: 30}}>{i + 1}</Text>
+                  <Text style={{flex: 1, textAlign: 'center'}}>
+                    {item.material.tenvt}
+                  </Text>
+                  <Text style={{flex: 1, textAlign: 'center'}}>
+                    {Format(item.material.gianhap)}
+                  </Text>
+
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      width: 80,
                     }}>
-                    <MaterialCommunityIcons
-                      name="minus-circle-outline"
-                      size={15}
-                      color="black"
+                    <TouchableOpacity
+                      onPress={() => {
+                        onChangeQual(i, item.quantity, false);
+                      }}>
+                      <MaterialCommunityIcons
+                        name="minus-circle-outline"
+                        size={15}
+                        color="black"
+                      />
+                    </TouchableOpacity>
+                    <TextInput
+                      style={styles.textInputSL}
+                      maxLength={4}
+                      keyboardType="numeric"
+                      placeholder="số lượng"
+                      value={item.quantity.toString()}
+                      onChangeText={text => {
+                        if (text.length === 0) {
+                          onChangeQual(i, 0, 'typing');
+                        } else if (text.length > 0 && parseInt(text) < 1000) {
+                          onChangeQual(i, parseInt(text), 'typing');
+                        }
+                      }}
                     />
-                  </TouchableOpacity>
-                  {/* <Text>{typeof item.quantity}</Text> */}
-                  <TextInput
-                    style={styles.textInputSL}
-                    maxLength={4}
-                    keyboardType="numeric"
-                    onChangeText={text => {
-                      console.log('text : ', item.quantity);
-                      if (text.length === 0) {
-                        onChangeQual(i, 0, 'typing');
-                      } else if (text.length > 0 && parseInt(text) < 1000) {
-                        onChangeQual(i, parseInt(text), 'typing');
-                      }
-                    }}
-                    value={item.quantity}
-                  />
-                  <TouchableOpacity
-                    onPress={() => {
-                      onChangeQual(i, item.quantity, true);
-                    }}>
-                    <MaterialCommunityIcons
-                      name="plus-circle-outline"
-                      size={15}
-                      color="black"
-                    />
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        onChangeQual(i, item.quantity, true);
+                      }}>
+                      <MaterialCommunityIcons
+                        name="plus-circle-outline"
+                        size={15}
+                        color="black"
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
                 <View style={{marginLeft: 'auto', marginRight: 'auto'}}>
                   <Icon
@@ -498,8 +511,10 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderColor: '#999',
     borderRadius: 8,
-    width: 70,
+    width: 45,
     height: 40,
+    marginLeft: 5,
+    marginRight: 5,
   },
   groupButtonAction: {
     display: 'flex',

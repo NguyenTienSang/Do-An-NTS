@@ -132,6 +132,13 @@ export default function DanhSachDaiLy({navigation, route}) {
                                   daily: item,
                                 });
                               } else if (
+                                route.params.page == 'ThongKeVatTuTon'
+                              ) {
+                                console.log('đại lý nè : ', item);
+                                navigation.navigate('ThongKeVatTuTon', {
+                                  daily: item, type : 'chondaily'
+                                });
+                              } else if (
                                 route.params.page == 'ThongKeTheoNamTungDaiLy'
                               ) {
                                 navigation.navigate('ThongKeTheoNamTungDaiLy', {
