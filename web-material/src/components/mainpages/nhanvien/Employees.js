@@ -9,6 +9,7 @@ import Header from "../../header/Header";
 import Loading from "../utils/loading/Loading";
 import { BsFillPersonLinesFill } from "react-icons/bs";
 import { BiBookAdd } from "react-icons/bi";
+import Pagination from "../../common/Pagination";
 
 const initialEmployee = {
   hoten: "",
@@ -124,12 +125,8 @@ function Employees() {
   };
 
   const handleChangeInput = (e) => {
-    console.log("e.target : ", e.target);
     const { name, value } = e.target;
-    console.log("name : ", name);
-    console.log("value : ", value);
     setEmployee({ ...employee, [name]: value });
-    console.log("Thông tin nhân viên : ", employee);
   };
 
   const styleUpload = {
@@ -146,7 +143,6 @@ function Employees() {
   };
 
   const EditEmployee = (data_employee_edit) => {
-    console.log("dữ liệu vật tư edit : ", data_employee_edit);
     setOnEdit(true);
     setEmployee(data_employee_edit);
     setImages(data_employee_edit.images);
@@ -162,10 +158,6 @@ function Employees() {
   };
 
   const AddToListEmployee = async (e) => {
-    console.log(e);
-    // alert('Thêm thành công : '+employee.tenvt);
-    // console.log('Dữ liệu thêm mới : ',{...employee, images });
-
     // //Thêm mới
     if (!onEdit) {
       try {
@@ -253,6 +245,20 @@ function Employees() {
     }
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [employeesPerPage] = useState(5);
+
+  // Get current posts
+  const indexOfLastEmployee = currentPage * employeesPerPage;
+  const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
+  const currentEmployees = employees?.slice(
+    indexOfFirstEmployee,
+    indexOfLastEmployee
+  );
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <>
       <div className="layout">
@@ -264,7 +270,6 @@ function Employees() {
           <div className="employees">
             <div className="header-title">
               <div className="row search-employee">
-                {/* <label>Tìm nhân viên</label> */}
                 <input
                   type="text"
                   name="tenpn"
@@ -305,7 +310,7 @@ function Employees() {
                 </>
               ) : null}
             </div>
-            {employees
+            {currentEmployees
               .filter((employee) => {
                 if (searchTerm === "") {
                   return employee;
@@ -337,7 +342,7 @@ function Employees() {
                     <EmployeeItem
                       key={employee._id}
                       employee={employee}
-                      stt={index}
+                      stt={(currentPage - 1) * employeesPerPage + index}
                       EditEmployee={EditEmployee}
                       DeleteEmployee={DeleteEmployee}
                     />
@@ -360,6 +365,13 @@ function Employees() {
                   }
                 }
               })}
+
+            <Pagination
+              itemsPerpage={employeesPerPage}
+              totalItems={employees?.length}
+              paginate={paginate}
+              currentPage={currentPage}
+            />
           </div>
         </div>
       </div>

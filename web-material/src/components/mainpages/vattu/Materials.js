@@ -9,6 +9,7 @@ import NavBar from "../../navbar/NavBar";
 import Loading from "../utils/loading/Loading";
 import { GiExplosiveMaterials } from "react-icons/gi";
 import { BiBookAdd } from "react-icons/bi";
+import Pagination from "../../common/Pagination";
 
 const initialMaterial = {
   tenvt: "",
@@ -28,7 +29,6 @@ function Materials() {
   const [isAdmin] = state.userAPI.isAdmin;
   const [token] = state.token;
 
-  const history = useHistory();
   const param = useParams();
 
   const [materials] = state.materialAPI.materials;
@@ -40,9 +40,9 @@ function Materials() {
 
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    setCallback(!callback);
-  }, []);
+  // useEffect(() => {
+  //   setCallback(!callback);
+  // }, []);
 
   useEffect(() => {
     if (param.id) {
@@ -84,12 +84,8 @@ function Materials() {
         },
       });
       setLoading(false);
-      console.log("dữ liệu ảnh : ", res.data);
-      console.log("dữ liệu ảnh url : ", res.data.url);
       setImages(res.data);
     } catch (err) {
-      // alert(err.response.data.message);
-
       setMessage(err.response.data.message);
       setOpenAlert(true);
     }
@@ -109,8 +105,6 @@ function Materials() {
       setLoading(false);
       setImages(false);
     } catch (err) {
-      // alert(err.response.data.message);
-
       setMessage(err.response.data.message);
       setOpenAlert(true);
     }
@@ -145,13 +139,7 @@ function Materials() {
   };
 
   const AddToListMaterial = async () => {
-    // alert('Thêm thành công : '+material.tenvt);
-    console.log("Dữ liệu thêm mới : ", { ...material, images });
-    console.log("Số lượng : ", typeof material.soluong);
-    console.log("Trạng thái : ", material.trangthai);
-
     if (!onEdit) {
-      console.log("thêm mới nè");
       try {
         const res = await axios.post(
           "/api/vattu",
@@ -160,7 +148,6 @@ function Materials() {
             headers: { Authorization: token },
           }
         );
-        //  alert(res.data.message);
 
         setMessage(res.data.message);
         setOpenAlert(true);
@@ -171,8 +158,6 @@ function Materials() {
         setCallback(!callback);
         //  history.push("/vattu");
       } catch (err) {
-        //  alert(err.response.data.message);
-
         setMessage(err.response.data.message);
         setOpenAlert(true);
       }
@@ -236,6 +221,37 @@ function Materials() {
     }
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [materialsPerPage] = useState(10);
+
+  // Get current posts
+  const indexOfLastMaterial = currentPage * materialsPerPage;
+  const indexOfFirstMaterial = indexOfLastMaterial - materialsPerPage;
+  let currentMaterials = [];
+  // let currentMaterials = materials?.slice(
+  //   indexOfFirstMaterial,
+  //   indexOfLastMaterial
+  // );
+
+  useEffect(() => {
+    currentMaterials = materials
+      ?.filter((material) => {
+        if (searchTerm === "") {
+          return material;
+        } else if (
+          material._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          material.tenvt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          material.trangthai.toLowerCase().includes(searchTerm.toLowerCase())
+        ) {
+          return material;
+        }
+      })
+      .slice(indexOfFirstMaterial, indexOfLastMaterial);
+  }, [searchTerm]);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <>
       <div className="layout">
@@ -256,7 +272,6 @@ function Materials() {
                   autocomplete="off"
                   onChange={(event) => {
                     setSearchTerm(event.target.value);
-                    // document.getElementById("list-material").style.display = "block";
                   }}
                 />
               </div>
@@ -289,34 +304,43 @@ function Materials() {
                 </>
               ) : null}
             </div>
-            {materials
-              ?.filter((material) => {
-                if (searchTerm === "") {
-                  return material;
-                } else if (
-                  material._id
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  material.tenvt
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  material.trangthai
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                ) {
-                  return material;
-                }
-              })
-              .map((material, index) => {
+            {
+              // currentMaterials
+              //   ?.filter((material) => {
+              //     if (searchTerm === "") {
+              //       return material;
+              //     } else if (
+              //       material._id
+              //         .toLowerCase()
+              //         .includes(searchTerm.toLowerCase()) ||
+              //       material.tenvt
+              //         .toLowerCase()
+              //         .includes(searchTerm.toLowerCase()) ||
+              //       material.trangthai
+              //         .toLowerCase()
+              //         .includes(searchTerm.toLowerCase())
+              //     ) {
+              //       return material;
+              //     }
+              //   })
+              currentMaterials?.map((material, index) => {
                 return (
                   <MaterialItem
                     material={material}
-                    stt={index}
+                    stt={(currentPage - 1) * materialsPerPage + index}
                     EditMaterial={EditMaterial}
                     DeleteMaterial={DeleteMaterial}
                   />
                 );
-              })}
+              })
+            }
+
+            <Pagination
+              itemsPerpage={materialsPerPage}
+              totalItems={materials?.length}
+              paginate={paginate}
+              currentPage={currentPage}
+            />
           </div>
         </div>
       </div>

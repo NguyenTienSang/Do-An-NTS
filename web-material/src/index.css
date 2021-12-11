@@ -102,3 +102,6 @@ p {
 
 /*--------------------- ChangePassword ---------------------*/
 @import url("./components/common/inforuser.css");
+
+/*--------------------- Pagination ---------------------*/
+@import url("./components/common/pagination.css");

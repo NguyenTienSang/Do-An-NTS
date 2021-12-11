@@ -9,6 +9,7 @@ import Header from "../../header/Header";
 import Loading from "../utils/loading/Loading";
 import { GiExplosiveMaterials } from "react-icons/gi";
 import { BiBookAdd } from "react-icons/bi";
+import Pagination from "../../common/Pagination";
 
 const initialWareHouse = {
   tenkho: "",
@@ -26,7 +27,6 @@ function WareHouses() {
 
   const [isAdmin] = state.userAPI.isAdmin;
   const [token] = state.token;
-  console.log("token : ", token);
 
   const param = useParams();
   const [searchTerm, setSearchTerm] = useState("");
@@ -241,6 +241,20 @@ function WareHouses() {
     }
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [warehousesPerPage] = useState(5);
+
+  // Get current posts
+  const indexOfLastWareHouse = currentPage * warehousesPerPage;
+  const indexOfFirstWareHouse = indexOfLastWareHouse - warehousesPerPage;
+  const currentWareHouses = warehouses?.slice(
+    indexOfFirstWareHouse,
+    indexOfLastWareHouse
+  );
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <>
       <div className="layout">
@@ -255,13 +269,12 @@ function WareHouses() {
                 <input
                   type="text"
                   name="tenpn"
-                  placeholder="Nhập tên kho"
+                  placeholder="Nhập từ khóa tìm kiếm"
                   id="inputsearch"
                   required
                   autocomplete="off"
                   onChange={(event) => {
                     setSearchTerm(event.target.value);
-                    // document.getElementById("list-material").style.display = "block";
                   }}
                 />
               </div>
@@ -298,7 +311,7 @@ function WareHouses() {
               } */}
               <p style={{ flex: 1 }}>Chức Năng</p>
             </div>
-            {warehouses
+            {currentWareHouses
               ?.filter((warehouse) => {
                 if (searchTerm === "") {
                   return warehouse;
@@ -317,6 +330,9 @@ function WareHouses() {
                     .includes(searchTerm.toLowerCase()) ||
                   warehouse.sodienthoai
                     .toLowerCase()
+                    .includes(searchTerm.toLowerCase()) ||
+                  warehouse.trangthai
+                    .toLowerCase()
                     .includes(searchTerm.toLowerCase())
                 ) {
                   return warehouse;
@@ -328,7 +344,7 @@ function WareHouses() {
                     <WareHouseItem
                       key={warehouse._id}
                       warehouse={warehouse}
-                      stt={index}
+                      stt={(currentPage - 1) * warehousesPerPage + index}
                       EditWareHouse={EditWareHouse}
                       DeleteWareHouse={DeleteWareHouse}
                     />
@@ -342,7 +358,7 @@ function WareHouses() {
                       <WareHouseItem
                         key={warehouse._id}
                         warehouse={warehouse}
-                        stt={index}
+                        stt={(currentPage - 1) * warehousesPerPage + index}
                         EditWareHouse={EditWareHouse}
                         DeleteWareHouse={DeleteWareHouse}
                       />
@@ -350,6 +366,13 @@ function WareHouses() {
                   }
                 }
               })}
+
+            <Pagination
+              itemsPerpage={warehousesPerPage}
+              totalItems={warehouses?.length}
+              paginate={paginate}
+              currentPage={currentPage}
+            />
           </div>
         </div>
       </div>

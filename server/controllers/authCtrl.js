@@ -2,6 +2,12 @@ const NhanVien = require("../models/NhanVien");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+const validateEmail = (email) => {
+  const res =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return res.test(email);
+};
+
 const authCtrl = {
   register: async (req, res) => {
     try {
@@ -20,8 +26,13 @@ const authCtrl = {
         images,
       } = req.body;
 
-      console.log("madaily : ", madaily);
-      console.log("req.body : ", req.body);
+      // console.log("madaily : ", madaily);
+      // console.log("req.body : ", req.body);
+      if (!validateEmail(email)) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Email không hợp lệ" });
+      }
 
       if (!hoten) {
         return res
@@ -49,11 +60,9 @@ const authCtrl = {
           .status(400)
           .json({ success: false, message: "Mật khẩu trống" });
       }
-      // if (password.length < 6) {
-      //   return res
-      //     .status(400)
-      //     .json({ message: "Mật khẩu không được ngắn hơn 6 kí tự" });
-      // }
+      if (password.length < 6) {
+        return res.status(400).json({ message: "Mật khẩu ít nhất 6 kí tự" });
+      }
       if (!gioitinh) {
         return res
           .status(400)
@@ -84,6 +93,7 @@ const authCtrl = {
       if (!email) {
         return res.status(400).json({ success: false, message: "Email trống" });
       }
+
       if (!trangthai) {
         return res
           .status(400)
@@ -207,6 +217,10 @@ const authCtrl = {
         return res
           .status(400)
           .json({ message: "Mật khẩu và mật khẩu xác nhận không khớp" });
+      }
+
+      if (newpassword.length < 6 || renewpassword.length < 6) {
+        return res.status(400).json({ message: "Mật khẩu ít nhất 6 ký tự" });
       }
 
       const nhanvien = await NhanVien.findOne({ _id: req.params.id });

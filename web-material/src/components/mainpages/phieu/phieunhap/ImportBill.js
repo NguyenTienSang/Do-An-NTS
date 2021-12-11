@@ -7,15 +7,28 @@ import NavBar from "../../../navbar/NavBar";
 import Header from "../../../header/Header";
 import { GiExplosiveMaterials } from "react-icons/gi";
 import { BiBookAdd } from "react-icons/bi";
+import Pagination from "../../../common/Pagination";
 
 function ImportBill() {
   const state = useContext(GlobalState);
   const [searchTerm, setSearchTerm] = useState("");
 
   const [importbills] = state.importbillAPI.importbills;
-  if (importbills.length !== 0) {
-    console.log("importbills.length !== 0 :", importbills);
-  }
+ 
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [importbillsPerPage] = useState(10);
+
+  // Get current posts
+  const indexOfLastImportbill = currentPage * importbillsPerPage;
+  const indexOfFirstImportbill = indexOfLastImportbill - importbillsPerPage;
+  const currentImportbills = importbills?.slice(
+    indexOfFirstImportbill,
+    indexOfLastImportbill
+  );
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="layout">
@@ -27,7 +40,6 @@ function ImportBill() {
         <div className="importbills">
           <div className="header-title">
             <div className="row search-importbill">
-              {/* <label>Tìm nhân viên</label> */}
               <input
                 type="text"
                 name="id"
@@ -37,7 +49,6 @@ function ImportBill() {
                 autocomplete="off"
                 onChange={(event) => {
                   setSearchTerm(event.target.value);
-                  // document.getElementById("list-material").style.display = "block";
                 }}
               />
             </div>
@@ -67,7 +78,7 @@ function ImportBill() {
             <p style={{ flex: 1 }}>Tổng Cộng</p>
             <p style={{ flex: 1 }}>Chi tiết</p>
           </div>
-          {importbills
+          {currentImportbills
             .filter((importbill) => {
               if (searchTerm === "") {
                 return importbill;
@@ -97,11 +108,18 @@ function ImportBill() {
                   <ImportBillItem
                     key={importbill._id}
                     importbill={importbill}
-                    stt={index}
+                    stt={(currentPage - 1) * importbillsPerPage + index}
                   />
                 </>
               );
             })}
+
+          <Pagination
+            itemsPerpage={importbillsPerPage}
+            totalItems={importbills?.length}
+            paginate={paginate}
+            currentPage={currentPage}
+          />
         </div>
       </div>
     </div>

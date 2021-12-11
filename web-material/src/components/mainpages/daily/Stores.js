@@ -9,6 +9,7 @@ import NavBar from "../../navbar/NavBar";
 import Loading from "../utils/loading/Loading";
 import { GiExplosiveMaterials } from "react-icons/gi";
 import { BiBookAdd } from "react-icons/bi";
+import Pagination from "../../common/Pagination";
 
 const initialStore = {
   tendl: "",
@@ -140,9 +141,6 @@ function Stores() {
   };
 
   const AddToListStore = async () => {
-    // alert('Thêm thành công : '+material.tenvt);
-    console.log("Dữ liệu thêm mới : ", { ...store, images });
-    console.log("test token : ", token);
     //Thêm mới
     if (!onEdit) {
       try {
@@ -198,7 +196,6 @@ function Stores() {
   };
 
   const DeleteStore = async (id, public_id) => {
-    // alert('Xóa thành công'+' id : '+id+' public_id : '+public_id);
     try {
       setLoading(true);
       //Xóa ảnh trên cloudinary
@@ -213,9 +210,7 @@ function Stores() {
       const deletestore = await axios.delete(`/api/daily/${id}`, {
         headers: { Authorization: token },
       });
-      //  alert(res.data.message);
       await destroyImg;
-      // alert(deletestore.data.message);
 
       setMessage(deletestore.data.message);
       setOpenAlert(true);
@@ -223,12 +218,21 @@ function Stores() {
       setCallback(!callback);
       setLoading(false);
     } catch (err) {
-      //  alert(err.response.data.message);
-
       setMessage(err.response.data.message);
       setOpenAlert(true);
     }
   };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [storesPerPage] = useState(5);
+
+  // Get current posts
+  const indexOfLastStore = currentPage * storesPerPage;
+  const indexOfFirstStore = indexOfLastStore - storesPerPage;
+  const currentStores = stores?.slice(indexOfFirstStore, indexOfLastStore);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <>
@@ -278,7 +282,7 @@ function Stores() {
               <p style={{ flex: 1 }}>Trạng thái</p>
               <p style={{ flex: 1 }}>Chức năng</p>
             </div>
-            {stores
+            {currentStores
               ?.filter((store) => {
                 if (searchTerm === "") {
                   return store;
@@ -302,12 +306,19 @@ function Stores() {
                   <StoreItem
                     key={store._id}
                     store={store}
-                    stt={index}
+                    stt={(currentPage - 1) * storesPerPage + index}
                     EditStore={EditStore}
                     DeleteStore={DeleteStore}
                   />
                 );
               })}
+
+            <Pagination
+              itemsPerpage={storesPerPage}
+              totalItems={stores?.length}
+              paginate={paginate}
+              currentPage={currentPage}
+            />
           </div>
         </div>
       </div>

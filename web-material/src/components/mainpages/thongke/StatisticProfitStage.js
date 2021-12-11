@@ -157,7 +157,7 @@ function StatisticProfitStage() {
               <p style={{ flex: 1 }}>Tổng Tiền Nhập</p>
               <p style={{ width: "130px" }}>Số Phiếu Xuất</p>
               <p style={{ flex: 1 }}>Tổng Tiền Xuất</p>
-              <p style={{ flex: 1 }}>Doanh Thu Tháng</p>
+              <p style={{ flex: 1 }}>Lợi Nhuận Tháng</p>
             </div>
             {dataStatistic?.map((item, index) => (
               <div className="material_item">
@@ -193,7 +193,7 @@ function StatisticProfitStage() {
               </div>
             ))}
             <div className="statistic_profit__year">
-              Doanh thu từ {parseInt(moment(startyearstatistic).format("YYYY"))}{" "}
+              Lợi nhuận từ {parseInt(moment(startyearstatistic).format("YYYY"))}{" "}
               - {parseInt(moment(endyearstatistic).format("YYYY"))} :{" "}
               {Format(onLoadTotal())}
             </div>

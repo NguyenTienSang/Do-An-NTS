@@ -42,7 +42,7 @@ const Login = () => {
               <div className="sign-in-htm">
                 <div className="group">
                   <label for="user" className="label">
-                    Tài khoản
+                    Username
                   </label>
                   <input
                     id="user"
