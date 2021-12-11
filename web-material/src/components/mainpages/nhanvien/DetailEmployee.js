@@ -31,31 +31,19 @@ function DetailEmployee() {
       });
     }
 
-    // const res = await axios.get('/api/thongke/phieunhanvien');
-    // //
-    // console.log('res.data1 : ',res.data)
-    // setDataStatistic(res.data);
 
     await axios
       .post("/api/thongke/phieunhanvien", {
         manv: params._id,
       })
       .then((res) => {
-        // setDataStatistic(res.data);
-        // console.log('thống kê phiếu nhân viên : ',res.data)
-        // res.data?.map(item => {
-        //         console.log('item.thang : ',item.thang)
-        // })
         setDataStatistic(res.data);
       })
       .catch((error) => {
         console.log("error.response : ", error.response.data.message);
-        // Alert.alert('Thông báo ',error);
       });
   }, [params._id, employees]);
 
-  // if (detailEmployee.length === 0) return null;
-  // console.log('Thông tin chi tiết nhân viên',detailEmployee);
   return (
     <>
       <div>
@@ -84,7 +72,7 @@ function DetailEmployee() {
                     ID: {detailEmployee?._id}
                   </p>
                   <p>
-                    <IoStorefrontOutline /> Đại lý:{" "}
+                    <IoStorefrontOutline /> Đại lý:
                     {detailEmployee?.madaily?.tendl}
                   </p>
                 </div>
@@ -106,6 +94,16 @@ function DetailEmployee() {
                     <AiOutlineIdcard /> CMND: {detailEmployee?.cmnd}
                   </p>
                 </div>
+                <div className="row">
+                  <p>
+                    <MdOutlinePersonPin /> Trạng thái:
+                    {detailEmployee?.trangthai}
+                  </p>
+                  <p>
+                    <MdOutlinePersonPin /> Tài khoản:
+                    {detailEmployee?.username}
+                  </p>
+                </div>
 
                 <div className="row">
                   <p>
@@ -113,12 +111,6 @@ function DetailEmployee() {
                   </p>
                   <p>
                     <TiLocationOutline /> Địa chỉ: {detailEmployee?.diachi}
-                  </p>
-                </div>
-                <div className="row">
-                  <p>
-                    <MdOutlinePersonPin /> Trạng thái:
-                    {detailEmployee?.trangthai}
                   </p>
                 </div>
               </div>

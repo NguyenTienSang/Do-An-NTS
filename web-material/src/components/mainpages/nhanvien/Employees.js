@@ -32,14 +32,14 @@ function Employees() {
   const [images, setImages] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isAdmin] = state.userAPI.isAdmin;
-  // const [inforuser] = state.userAPI.inforuser;
   const [token] = state.token;
 
-  const history = useHistory();
   const param = useParams();
 
-  const [searchTerm, setSearchTerm] = useState("");
   const [employees] = state.employeeAPI.employees;
+  const [listEmployeeSearch, setListEmployeeSearch] = useState(employees);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const [stores] = state.storeAPI.stores;
   const [onEdit, setOnEdit] = useState(false);
   const [callback, setCallback] = state.employeeAPI.callback;
@@ -50,9 +50,73 @@ function Employees() {
 
   const inforuser = JSON.parse(localStorage.getItem("inforuser"));
 
+  //-------------- Phân trang ----------------
+  const [currentPage, setCurrentPage] = useState(1);
+  const [employeesPerPage] = useState(5);
+
+  // Get current posts
+  const indexOfLastEmployee = currentPage * employeesPerPage;
+  const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
+
+  // Lấy ra danh sách kho có trong từ khóa search
   useEffect(() => {
-    console.log("param.id : ");
-    console.log("param.id2 : ", param.id);
+    if (inforuser.role === "user") {
+      setListEmployeeSearch(
+        employees?.filter((employee) => {
+          if (
+            searchTerm === "" &&
+            inforuser.madaily._id.toString() === employee.madaily._id.toString()
+          ) {
+            return employee;
+          } else if (
+            (employee._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              employee.hoten.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              employee.madaily.tendl
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              employee.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              employee.trangthai
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())) &&
+            inforuser.madaily._id.toString() === employee.madaily._id.toString()
+          ) {
+            return employee;
+          }
+        })
+      );
+    } else {
+      setListEmployeeSearch(
+        employees?.filter((employee) => {
+          if (searchTerm === "") {
+            return employee;
+          } else if (
+            employee._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            employee.hoten.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            employee.madaily.tendl
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            employee.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            employee.trangthai.toLowerCase().includes(searchTerm.toLowerCase())
+          ) {
+            return employee;
+          }
+        })
+      );
+    }
+
+    setCurrentPage(1); //Khởi tạo lại trang hiện tại là 1
+  }, [searchTerm, employees]);
+
+  //Gán list vào trang hiện tại
+  const currentEmployees = listEmployeeSearch?.slice(
+    indexOfFirstEmployee,
+    indexOfLastEmployee
+  );
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  useEffect(() => {
     if (param.id) {
       setOnEdit(true);
       employees.forEach((employee) => {
@@ -62,7 +126,6 @@ function Employees() {
         }
       });
     } else {
-      console.log("param.id3 : ");
       setOnEdit(false);
       setEmployee(initialEmployee);
       setImages(false);
@@ -245,20 +308,6 @@ function Employees() {
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [employeesPerPage] = useState(5);
-
-  // Get current posts
-  const indexOfLastEmployee = currentPage * employeesPerPage;
-  const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
-  const currentEmployees = employees?.slice(
-    indexOfFirstEmployee,
-    indexOfLastEmployee
-  );
-
-  // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
   return (
     <>
       <div className="layout">
@@ -310,34 +359,25 @@ function Employees() {
                 </>
               ) : null}
             </div>
-            {currentEmployees
-              .filter((employee) => {
-                if (searchTerm === "") {
-                  return employee;
-                } else if (
-                  employee._id
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  employee.hoten
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  employee.madaily.tendl
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  employee.role
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  employee.trangthai
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                ) {
-                  return employee;
-                }
-              })
-              .map((employee, index) => {
-                console.log(employee);
+            {currentEmployees.map((employee, index) => {
+              console.log(employee);
 
-                if (isAdmin) {
+              if (isAdmin) {
+                return (
+                  <EmployeeItem
+                    key={employee._id}
+                    employee={employee}
+                    stt={(currentPage - 1) * employeesPerPage + index}
+                    EditEmployee={EditEmployee}
+                    DeleteEmployee={DeleteEmployee}
+                  />
+                );
+              } else {
+                if (
+                  employee.madaily._id.toString() ===
+                  inforuser.madaily._id.toString()
+                ) {
+                  // if(employee.madaily._id.toString() === inforuser.madaily)
                   return (
                     <EmployeeItem
                       key={employee._id}
@@ -347,28 +387,13 @@ function Employees() {
                       DeleteEmployee={DeleteEmployee}
                     />
                   );
-                } else {
-                  if (
-                    employee.madaily._id.toString() ===
-                    inforuser.madaily._id.toString()
-                  ) {
-                    // if(employee.madaily._id.toString() === inforuser.madaily)
-                    return (
-                      <EmployeeItem
-                        key={employee._id}
-                        employee={employee}
-                        stt={index}
-                        EditEmployee={EditEmployee}
-                        DeleteEmployee={DeleteEmployee}
-                      />
-                    );
-                  }
                 }
-              })}
+              }
+            })}
 
             <Pagination
               itemsPerpage={employeesPerPage}
-              totalItems={employees?.length}
+              totalItems={listEmployeeSearch?.length}
               paginate={paginate}
               currentPage={currentPage}
             />

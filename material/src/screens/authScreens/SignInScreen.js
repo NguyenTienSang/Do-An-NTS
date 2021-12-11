@@ -39,8 +39,6 @@ export default function SignInScreen({props, navigation}) {
         ...user,
       });
 
-      console.log('hi nts', res.data.user);
-
       AsyncStorage.setItem('inforuser', JSON.stringify(res.data.user));
 
       AsyncStorage.setItem('firstLogin', true);

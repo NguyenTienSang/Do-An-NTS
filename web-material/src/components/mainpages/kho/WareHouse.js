@@ -29,19 +29,103 @@ function WareHouses() {
   const [token] = state.token;
 
   const param = useParams();
+
+  const [warehouses] = state.warehouseAPI.warehouses;
+  const [listWareHouseSearch, setListWareHouseSearch] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [stores] = state.storeAPI.stores;
   const [onEdit, setOnEdit] = useState(false);
-  const [warehouses] = state.warehouseAPI.warehouses;
   const [callback, setCallback] = state.warehouseAPI.callback;
-
-  // console.log('warehouses : ',warehouses)
 
   const [openalert, setOpenAlert] = useState(false);
 
   const [message, setMessage] = useState("");
 
   const inforuser = JSON.parse(localStorage.getItem("inforuser"));
+
+  //-------------- Phân trang ----------------
+  const [currentPage, setCurrentPage] = useState(1);
+  const [warehousesPerPage] = useState(5);
+
+  // Get current posts
+  const indexOfLastWareHouse = currentPage * warehousesPerPage;
+  const indexOfFirstWareHouse = indexOfLastWareHouse - warehousesPerPage;
+
+  // Lấy ra danh sách kho có trong từ khóa search
+  useEffect(() => {
+    if (inforuser.role === "user") {
+      setListWareHouseSearch(
+        warehouses?.filter((warehouse) => {
+          if (
+            searchTerm === "" &&
+            inforuser.madaily._id.toString() ===
+              warehouse.madaily._id.toString()
+          ) {
+            return warehouse;
+          } else if (
+            (warehouse._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              warehouse.tenkho
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              warehouse.madaily.tendl
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              warehouse.diachi
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              warehouse.sodienthoai
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              warehouse.trangthai
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())) &&
+            inforuser.madaily._id.toString() ===
+              warehouse.madaily._id.toString()
+          ) {
+            return warehouse;
+          }
+        })
+      );
+    } else {
+      setListWareHouseSearch(
+        warehouses?.filter((warehouse) => {
+          if (searchTerm === "") {
+            return warehouse;
+          } else if (
+            warehouse._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              warehouse.tenkho
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              warehouse.madaily.tendl
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              warehouse.diachi
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              warehouse.sodienthoai
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              warehouse.trangthai
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+          ) {
+            return warehouse;
+          }
+        })
+      );
+    }
+
+    setCurrentPage(1); //Khởi tạo lại trang hiện tại là 1
+  }, [searchTerm, warehouses]);
+
+  //Gán list vào trang hiện tại
+  const currentWareHouses = listWareHouseSearch?.slice(
+    indexOfFirstWareHouse,
+    indexOfLastWareHouse
+  );
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   useEffect(() => {
     if (param.id) {
@@ -108,20 +192,14 @@ function WareHouses() {
       setLoading(false);
       setImages(false);
     } catch (err) {
-      // alert(err.response.data.message);
-
       setMessage(err.response.data.message);
       setOpenAlert(true);
     }
   };
 
   const handleChangeInput = (e) => {
-    console.log("e.target : ", e.target);
     const { name, value } = e.target;
-    console.log("name : ", name);
-    console.log("value : ", value);
     setWareHouse({ ...warehouse, [name]: value });
-    console.log("Thông tin kho : ", warehouse);
   };
 
   const styleUpload = {
@@ -241,20 +319,6 @@ function WareHouses() {
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [warehousesPerPage] = useState(5);
-
-  // Get current posts
-  const indexOfLastWareHouse = currentPage * warehousesPerPage;
-  const indexOfFirstWareHouse = indexOfLastWareHouse - warehousesPerPage;
-  const currentWareHouses = warehouses?.slice(
-    indexOfFirstWareHouse,
-    indexOfLastWareHouse
-  );
-
-  // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
   return (
     <>
       <div className="layout">
@@ -311,35 +375,22 @@ function WareHouses() {
               } */}
               <p style={{ flex: 1 }}>Chức Năng</p>
             </div>
-            {currentWareHouses
-              ?.filter((warehouse) => {
-                if (searchTerm === "") {
-                  return warehouse;
-                } else if (
-                  warehouse._id
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  warehouse.tenkho
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  warehouse.madaily.tendl
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  warehouse.diachi
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  warehouse.sodienthoai
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  warehouse.trangthai
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
+            {currentWareHouses?.map((warehouse, index) => {
+              if (isAdmin) {
+                return (
+                  <WareHouseItem
+                    key={warehouse._id}
+                    warehouse={warehouse}
+                    stt={(currentPage - 1) * warehousesPerPage + index}
+                    EditWareHouse={EditWareHouse}
+                    DeleteWareHouse={DeleteWareHouse}
+                  />
+                );
+              } else {
+                if (
+                  warehouse.madaily._id.toString() ===
+                  inforuser.madaily._id.toString()
                 ) {
-                  return warehouse;
-                }
-              })
-              .map((warehouse, index) => {
-                if (isAdmin) {
                   return (
                     <WareHouseItem
                       key={warehouse._id}
@@ -349,27 +400,13 @@ function WareHouses() {
                       DeleteWareHouse={DeleteWareHouse}
                     />
                   );
-                } else {
-                  if (
-                    warehouse.madaily._id.toString() ===
-                    inforuser.madaily._id.toString()
-                  ) {
-                    return (
-                      <WareHouseItem
-                        key={warehouse._id}
-                        warehouse={warehouse}
-                        stt={(currentPage - 1) * warehousesPerPage + index}
-                        EditWareHouse={EditWareHouse}
-                        DeleteWareHouse={DeleteWareHouse}
-                      />
-                    );
-                  }
                 }
-              })}
+              }
+            })}
 
             <Pagination
               itemsPerpage={warehousesPerPage}
-              totalItems={warehouses?.length}
+              totalItems={listWareHouseSearch?.length}
               paginate={paginate}
               currentPage={currentPage}
             />

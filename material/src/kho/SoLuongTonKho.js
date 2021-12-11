@@ -28,43 +28,24 @@ export default function SoLuongTonKho({navigation, route}) {
   const [loading, setLoading] = useState();
   const state = useContext(GlobalState);
   // const [token] = state.token;
-  const [materialsfilter, setMaterialsFilter] = useState(null);
+  const [materialsfilter, setMaterialsFilter] = useState([]);
 
   const Format = number => {
     return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND';
   };
-  // Truyền vô id kho
-  // Thống kê trong một kho
-  // thống kê số lượng tồn trong kho
-  // Duyệt chi tiết phiếu nhập, phiếu xuất
-  // Trong phiếu có mã kho -> nếu phieu.makho = idkho
 
-  // const dsvttonkho = [
-  // ];
-
-  // dsvttonkho.push(new product('vt1', 'Thùng giấy',50))
-
-  // console.log('Danh sách vật tư tồn kho : ',dsvttonkho)
-
-  // duyệt chi tiết phiếu
+  // useEffect(async () => {
+  //   if (dsvttonkho.length == 0) {
+  //     await ThongKeSoLuongTon();
+  //     setLoading('');
+  //   }
+  // }, [loading]);
 
   useEffect(async () => {
-    console.log('loading 1 : ', loading);
-    if (dsvttonkho.length == 0) {
-      await ThongKeSoLuongTon();
-      setLoading('');
-      console.log('loading 2 : ', loading);
-    }
-  }, [loading]);
-
-  useEffect(async () => {
-    const res = await axios.post(
-      `${APISTISTICWAREHOUSE}`,
-      //  [JSON.parse(localStorage.getItem('inforuser')).madaily._id,exportbill.makho]
-      {madailyfilter: route.params.madaily, makhofilter: route.params.makho},
-    );
-    console.log('Dữ liệu thống kê : ', res.data);
-
+    const res = await axios.post(`${APISTISTICWAREHOUSE}`, {
+      madailyfilter: route.params.madaily,
+      makhofilter: route.params.makho,
+    });
     setMaterialsFilter(res.data);
   }, []);
 
@@ -81,93 +62,112 @@ export default function SoLuongTonKho({navigation, route}) {
 
         <ScrollView style={{paddingLeft: 5, paddingRight: 5}}>
           <View style={styles.listPrice}>
-            {materialsfilter?.map(item => (
-              <View key={item._id}>
-                <View
-                  style={{
-                    borderWidth: 1,
-                    borderStyle: 'solid',
-                    borderColor: '#999',
-                    borderRadius: 5,
-                    marginBottom: 20,
-                  }}>
+            {materialsfilter.length > 0 ? (
+              materialsfilter?.map(item => (
+                <View key={item._id}>
                   <View
-                    style={{display: 'flex', flex: 1, flexDirection: 'row'}}>
-                    <Image
-                      style={styles.image}
-                      source={{uri: item.images.url}}
-                    />
-                  </View>
-                  <View style={styles.thonTinSP}>
-                    <View>
-                      <Text
-                        style={{
-                          color: '#000',
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
-                        }}>
-                        ID: {item._id}
-                      </Text>
+                    style={{
+                      borderWidth: 1,
+                      borderStyle: 'solid',
+                      borderColor: '#999',
+                      borderRadius: 5,
+                      marginBottom: 20,
+                    }}>
+                    <View
+                      style={{display: 'flex', flex: 1, flexDirection: 'row'}}>
+                      <Image
+                        style={styles.image}
+                        source={{uri: item.images.url}}
+                      />
                     </View>
-                  </View>
-                  <View style={styles.thonTinSP}>
-                    <View>
-                      <Text
-                        style={{
-                          color: '#000',
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
-                        }}>
-                        Tên: {item.tenvt}
-                      </Text>
+                    <View style={styles.thonTinSP}>
+                      <View>
+                        <Text
+                          style={{
+                            color: '#000',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                          }}>
+                          ID: {item._id}
+                        </Text>
+                      </View>
                     </View>
-                    <View>
-                      <Text
-                        style={{
-                          color: '#000',
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
-                        }}>
-                        SL Tồn: {item.soluong} {item.donvi}
-                      </Text>
+                    <View style={styles.thonTinSP}>
+                      <View>
+                        <Text
+                          style={{
+                            color: '#000',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                          }}>
+                          Tên: {item.tenvt}
+                        </Text>
+                      </View>
+                      <View>
+                        <Text
+                          style={{
+                            color: '#000',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                          }}>
+                          SL Tồn: {item.soluong} {item.donvi}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                  <View style={styles.thonTinSP}>
-                    <View>
-                      <View
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          color: '#000',
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
-                        }}>
+                    <View style={styles.thonTinSP}>
+                      <View>
                         <View
                           style={{
                             display: 'flex',
                             flexDirection: 'row',
-                            marginRight: 20,
+                            color: '#000',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
                           }}>
-                          <Text>Giá Nhập : {Format(item.gianhap)}</Text>
-                          <Text>/</Text>
-                          <Text>{item.donvi}</Text>
-                        </View>
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            marginRight: 20,
-                          }}>
-                          <Text>Giá Xuất : {Format(item.giaxuat)}</Text>
-                          <Text>/</Text>
-                          <Text>{item.donvi}</Text>
+                          <View
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'row',
+                              marginRight: 20,
+                            }}>
+                            <Text>Giá Nhập : {Format(item.gianhap)}</Text>
+                            <Text>/</Text>
+                            <Text>{item.donvi}</Text>
+                          </View>
+                          <View
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'row',
+                              marginRight: 20,
+                            }}>
+                            <Text>Giá Xuất : {Format(item.giaxuat)}</Text>
+                            <Text>/</Text>
+                            <Text>{item.donvi}</Text>
+                          </View>
                         </View>
                       </View>
                     </View>
                   </View>
                 </View>
+              ))
+            ) : (
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  textAlign: 'center',
+                  justifyContent: 'center',
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 20,
+                  }}>
+                  Kho không có vật tư tồn
+                </Text>
               </View>
-            ))}
+            )}
           </View>
         </ScrollView>
       </View>

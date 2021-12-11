@@ -46,7 +46,6 @@ export default function ThongKeVatTuTon({navigation, route}) {
   };
 
 
-
   if (route.params !== undefined) {
     console.log('route.params.daily : ', route.params.daily);
     console.log('route.params.daily_id : ', route.params.daily._id);

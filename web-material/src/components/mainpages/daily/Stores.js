@@ -31,6 +31,7 @@ function Stores() {
   const param = useParams();
 
   const [stores] = state.storeAPI.stores;
+  const [listStoreSearch, setListStoreSearch] = useState(stores);
   const [searchTerm, setSearchTerm] = useState("");
   const [onEdit, setOnEdit] = useState(false);
   const [callback, setCallback] = state.storeAPI.callback;
@@ -38,6 +39,42 @@ function Stores() {
   const [openalert, setOpenAlert] = useState(false);
 
   const [message, setMessage] = useState("");
+
+  //-------------- Phân trang ----------------
+  const [currentPage, setCurrentPage] = useState(1);
+  const [storesPerPage] = useState(5);
+
+  // Get current posts
+  const indexOfLastStore = currentPage * storesPerPage;
+  const indexOfFirstStore = indexOfLastStore - storesPerPage;
+
+  // Lấy ra danh sách kho có trong từ khóa search
+  useEffect(() => {
+    setListStoreSearch(
+      stores?.filter((store) => {
+        if (searchTerm === "") {
+          return store;
+        } else if (
+          store._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          store.tendl.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          store.diachi.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          store.sodienthoai.toLowerCase().includes(searchTerm.toLowerCase())
+        ) {
+          return store;
+        }
+      })
+    );
+    setCurrentPage(1); //Khởi tạo lại trang hiện tại là 1
+  }, [searchTerm, stores]);
+
+  //Gán list vào trang hiện tại
+  const currentStores = listStoreSearch?.slice(
+    indexOfFirstStore,
+    indexOfLastStore
+  );
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   useEffect(() => {
     if (param.id) {
@@ -223,17 +260,6 @@ function Stores() {
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [storesPerPage] = useState(5);
-
-  // Get current posts
-  const indexOfLastStore = currentPage * storesPerPage;
-  const indexOfFirstStore = indexOfLastStore - storesPerPage;
-  const currentStores = stores?.slice(indexOfFirstStore, indexOfLastStore);
-
-  // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
   return (
     <>
       <div className="layout">
@@ -282,40 +308,21 @@ function Stores() {
               <p style={{ flex: 1 }}>Trạng thái</p>
               <p style={{ flex: 1 }}>Chức năng</p>
             </div>
-            {currentStores
-              ?.filter((store) => {
-                if (searchTerm === "") {
-                  return store;
-                } else if (
-                  store._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                  store.tendl
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  store.diachi
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  store.sodienthoai
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                ) {
-                  return store;
-                }
-              })
-              .map((store, index) => {
-                return (
-                  <StoreItem
-                    key={store._id}
-                    store={store}
-                    stt={(currentPage - 1) * storesPerPage + index}
-                    EditStore={EditStore}
-                    DeleteStore={DeleteStore}
-                  />
-                );
-              })}
+            {currentStores.map((store, index) => {
+              return (
+                <StoreItem
+                  key={store._id}
+                  store={store}
+                  stt={(currentPage - 1) * storesPerPage + index}
+                  EditStore={EditStore}
+                  DeleteStore={DeleteStore}
+                />
+              );
+            })}
 
             <Pagination
               itemsPerpage={storesPerPage}
-              totalItems={stores?.length}
+              totalItems={listStoreSearch?.length}
               paginate={paginate}
               currentPage={currentPage}
             />

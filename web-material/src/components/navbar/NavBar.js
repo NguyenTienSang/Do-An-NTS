@@ -47,12 +47,14 @@ function NavBar() {
 
   return (
     <div className="navbar">
-      <div className="item-navbar">
-        <NavLink to="/trangchu">
-          <FaHome />
-          Trang chủ
-        </NavLink>
-      </div>
+      {isAdmin ? (
+        <div className="item-navbar">
+          <NavLink to="/trangchu">
+            <FaHome />
+            Trang chủ
+          </NavLink>
+        </div>
+      ) : null}
 
       <div className="item-navbar">
         <NavLink to="/nhanvien">

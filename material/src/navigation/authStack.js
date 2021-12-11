@@ -19,9 +19,11 @@ import MyOrdersScreen from '../screens/MyOrdersScreen';
 import AddStore from '../store/AddStore';
 import EditStore from '../store/EditStore';
 
+// Kho
 import Kho from './../screens/Kho';
 import AddKho from '../kho/AddKho';
 import EditKho from '../kho/EditKho';
+import KhoUser from '../kho/KhoUser';
 
 // Nhân Viên
 import NhanVien from './../screens/NhanVien';
@@ -140,6 +142,15 @@ export function AuthStack() {
       <Stack.Screen
         name="Kho"
         component={Kho}
+        options={{
+          headerShown: false,
+          ...TransitionPresets.RevealFromBottomAndroid,
+        }}
+      />
+
+      <Stack.Screen
+        name="KhoUser"
+        component={KhoUser}
         options={{
           headerShown: false,
           ...TransitionPresets.RevealFromBottomAndroid,

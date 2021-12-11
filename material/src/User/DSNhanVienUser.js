@@ -31,23 +31,19 @@ export default function DSNhanVienUser({navigation}) {
 
   const [textInput2Focussed, setTeInput2Focussed] = useState(false);
   const [employees] = state.employeeAPI.employees;
-  const [employee, setEmployee] = useState(employees);
-  const [data, setData] = useState([]);
-  const [search, setSearch] = useState('');
-  const [token] = state.token;
-  const [callback, setCallback] = state.employeeAPI.callback;
 
-  console.log('inforuser : ', inforuser);
+  const [search, setSearch] = useState('');
+  
   useEffect(() => {
     AsyncStorage.getItem('inforuser').then(async dataUser => {
       setInforUser(JSON.parse(dataUser));
-      console.log('dataUser : ', dataUser);
     });
-  }, [employees]);
+  }, []);
 
   return (
     <View style={{flex: 1}}>
-      <View style={styles.header}>
+      <Header title="Trở về" type="arrow-left" navigation={navigation} />
+      {/* <View style={styles.header}>
         <View style={{marginLeft: 20}}>
           <Icon
             type="material-community"
@@ -62,7 +58,8 @@ export default function DSNhanVienUser({navigation}) {
         <View>
           <Text style={styles.headerText}>Trở về</Text>
         </View>
-      </View>
+      </View> */}
+
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
         <Text style={styles.title}>Danh Sách Nhân Viên</Text>
         <View style={styles.optionsSelect}>
@@ -111,11 +108,6 @@ export default function DSNhanVienUser({navigation}) {
                     inforuser.madaily._id.toString() ===
                       item.madaily._id.toString()
                   ) {
-                    console.log(
-                      'inforuser.madaily._id.toString() : ',
-                      inforuser.madaily._id.toString(),
-                    );
-                    console.log('item._id.toString() : ', item._id.toString());
                     return item;
                   } else if (
                     (item._id.toLowerCase().includes(search.toLowerCase()) ||

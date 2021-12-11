@@ -17,19 +17,14 @@ import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 // import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {colors} from './../global/styles';
-// import { APIGetUser } from '../api/API';
-
 import {GlobalState} from '../GlobalState';
 
 export function DrawerContent({navigation, props}) {
   const state = useContext(GlobalState);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState();
-  // const [manv,setMaNV] = useState('');
-  //   var inforuser = '';
   const [inforuser, setInforUser] = useState('');
 
-  //   const inforuser = '';
 
   AsyncStorage.getItem('inforuser').then(async dataUser => {
     // inforuser = await JSON.parse(dataUser);

@@ -19,10 +19,9 @@ export const DataProvider = ({children}) => {
   const [token, setToken] = useState(false);
 
   useEffect(() => {
-    // const firstLogin = localStorage.getItem('firstLogin');
+  
 
     const firstLogin = AsyncStorage.getItem('firstLogin');
-    console.log('firstLogin : ', firstLogin);
     if (firstLogin) {
       console.log('test');
       const refreshToken = async () => {

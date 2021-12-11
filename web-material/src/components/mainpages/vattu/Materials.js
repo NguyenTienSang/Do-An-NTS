@@ -32,6 +32,7 @@ function Materials() {
   const param = useParams();
 
   const [materials] = state.materialAPI.materials;
+  const [listMaterialSearch, setListMaterialSearch] = useState(materials);
   const [searchTerm, setSearchTerm] = useState("");
   const [onEdit, setOnEdit] = useState(false);
   const [callback, setCallback] = state.materialAPI.callback;
@@ -40,9 +41,42 @@ function Materials() {
 
   const [message, setMessage] = useState("");
 
-  // useEffect(() => {
-  //   setCallback(!callback);
-  // }, []);
+  //-------------- Phân trang ----------------
+  const [currentPage, setCurrentPage] = useState(1);
+  const [materialsPerPage] = useState(10);
+
+  // Get current
+  const indexOfLastMaterial = currentPage * materialsPerPage;
+  const indexOfFirstMaterial = indexOfLastMaterial - materialsPerPage;
+
+  // Lấy ra danh sách vật tư có trong từ khóa search
+  useEffect(() => {
+    setListMaterialSearch(
+      materials?.filter((material) => {
+        if (searchTerm === "") {
+          return material;
+        } else if (
+          material._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          material.tenvt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          material.trangthai.toLowerCase().includes(searchTerm.toLowerCase())
+        ) {
+          return material;
+        }
+      })
+    );
+    setCurrentPage(1); //Khởi tạo lại trang hiện tại là 1
+  }, [searchTerm, materials]);
+
+
+  //Gán list vào trang hiện tại
+  const currentMaterials = listMaterialSearch?.slice(
+    indexOfFirstMaterial,
+    indexOfLastMaterial
+  );
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  //----------------------
 
   useEffect(() => {
     if (param.id) {
@@ -148,6 +182,7 @@ function Materials() {
             headers: { Authorization: token },
           }
         );
+        //  alert(res.data.message);
 
         setMessage(res.data.message);
         setOpenAlert(true);
@@ -158,6 +193,8 @@ function Materials() {
         setCallback(!callback);
         //  history.push("/vattu");
       } catch (err) {
+        //  alert(err.response.data.message);
+
         setMessage(err.response.data.message);
         setOpenAlert(true);
       }
@@ -221,37 +258,6 @@ function Materials() {
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [materialsPerPage] = useState(10);
-
-  // Get current posts
-  const indexOfLastMaterial = currentPage * materialsPerPage;
-  const indexOfFirstMaterial = indexOfLastMaterial - materialsPerPage;
-  let currentMaterials = [];
-  // let currentMaterials = materials?.slice(
-  //   indexOfFirstMaterial,
-  //   indexOfLastMaterial
-  // );
-
-  useEffect(() => {
-    currentMaterials = materials
-      ?.filter((material) => {
-        if (searchTerm === "") {
-          return material;
-        } else if (
-          material._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          material.tenvt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          material.trangthai.toLowerCase().includes(searchTerm.toLowerCase())
-        ) {
-          return material;
-        }
-      })
-      .slice(indexOfFirstMaterial, indexOfLastMaterial);
-  }, [searchTerm]);
-
-  // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
   return (
     <>
       <div className="layout">
@@ -304,40 +310,20 @@ function Materials() {
                 </>
               ) : null}
             </div>
-            {
-              // currentMaterials
-              //   ?.filter((material) => {
-              //     if (searchTerm === "") {
-              //       return material;
-              //     } else if (
-              //       material._id
-              //         .toLowerCase()
-              //         .includes(searchTerm.toLowerCase()) ||
-              //       material.tenvt
-              //         .toLowerCase()
-              //         .includes(searchTerm.toLowerCase()) ||
-              //       material.trangthai
-              //         .toLowerCase()
-              //         .includes(searchTerm.toLowerCase())
-              //     ) {
-              //       return material;
-              //     }
-              //   })
-              currentMaterials?.map((material, index) => {
-                return (
-                  <MaterialItem
-                    material={material}
-                    stt={(currentPage - 1) * materialsPerPage + index}
-                    EditMaterial={EditMaterial}
-                    DeleteMaterial={DeleteMaterial}
-                  />
-                );
-              })
-            }
+            {currentMaterials?.map((material, index) => {
+              return (
+                <MaterialItem
+                  material={material}
+                  stt={(currentPage - 1) * materialsPerPage + index}
+                  EditMaterial={EditMaterial}
+                  DeleteMaterial={DeleteMaterial}
+                />
+              );
+            })}
 
             <Pagination
               itemsPerpage={materialsPerPage}
-              totalItems={materials?.length}
+              totalItems={listMaterialSearch?.length}
               paginate={paginate}
               currentPage={currentPage}
             />
@@ -442,21 +428,6 @@ function Materials() {
               id="file_up"
               onChange={handleUpload}
             />
-            {/* {
-                onEdit ? (
-                  <div id="file_img" style={styleUpload}>
-                  <img src={material.images.url} alt=""></img>
-                  <span onClick={handleDestroy}>X</span>
-                </div>
-                )
-                :
-                  (
-                    <div id="file_img" style={styleUpload}>
-                    <img src={images ? images.url : ""} alt=""></img>
-                    <span onClick={handleDestroy}>X</span>
-                    </div>
-                  )
-              } */}
 
             {loading ? (
               <div id="file_img">

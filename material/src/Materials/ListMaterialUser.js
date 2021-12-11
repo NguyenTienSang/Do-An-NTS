@@ -21,23 +21,23 @@ import * as Animatable from 'react-native-animatable';
 import {APITKVTT} from '../api/API';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-export default function ListMaterialUser({navigation, route}) {
+export default function ListMaterialUser({navigation}) {
   const [daily, setDaiLy] = useState();
   const [kho, setKho] = useState();
   const [materialstatistic, setMaterialStatistic] = useState([]);
-  const [inforuser, setInforUser] = useState('');
+  // const [inforuser, setInforUser] = useState('');
   const [search, setSearch] = useState('');
   const [textInputFocussed, setTeInputFocussed] = useState(false);
 
   useEffect(async () => {
     AsyncStorage.getItem('inforuser').then(async dataUser => {
-      setInforUser(JSON.parse(dataUser));
+      // setInforUser(JSON.parse(dataUser));
 
       const res = await axios.post(`${APITKVTT}`, {
         madailyfilter: JSON.parse(dataUser).madaily._id,
         makhofilter: 'allwarehouses',
       });
-
+      console.log('res.data : ', res.data);
       setMaterialStatistic(res.data);
     });
   }, []);
@@ -92,100 +92,123 @@ export default function ListMaterialUser({navigation, route}) {
         </View>
         <ScrollView>
           <View style={styles.listPrice}>
-            {materialstatistic
-              ?.filter(item => {
-                if (search == '') {
-                  return item;
-                } else if (
-                  item._id.toLowerCase().includes(search.toLowerCase()) ||
-                  item.tenvt.toLowerCase().includes(search.toLowerCase()) ||
-                  item.soluong
-                    .toString()
-                    .toLowerCase()
-                    .includes(search.toLowerCase()) ||
-                  item.trangthai.toLowerCase().includes(search.toLowerCase())
-                ) {
-                  return item;
-                }
-              })
-              .map(item => (
-                <View key={item._id}>
-                  <View
-                    style={{
-                      borderWidth: 1,
-                      borderStyle: 'solid',
-                      borderColor: '#999',
-                      borderRadius: 5,
-                      marginBottom: 20,
-                    }}>
+            {materialstatistic.length > 0 ? (
+              materialstatistic
+                ?.filter(item => {
+                  if (search == '') {
+                    return item;
+                  } else if (
+                    item._id.toLowerCase().includes(search.toLowerCase()) ||
+                    item.tenvt.toLowerCase().includes(search.toLowerCase()) ||
+                    item.soluong
+                      .toString()
+                      .toLowerCase()
+                      .includes(search.toLowerCase()) ||
+                    item.trangthai.toLowerCase().includes(search.toLowerCase())
+                  ) {
+                    return item;
+                  }
+                })
+                .map(item => (
+                  <View key={item._id}>
                     <View
-                      style={{display: 'flex', flex: 1, flexDirection: 'row'}}>
-                      <Image
-                        style={styles.image}
-                        source={{uri: item.images.url}}
-                      />
-                    </View>
-                    <View style={styles.thongTinSP}>
-                      <View>
-                        <Text
-                          style={{
-                            color: '#000',
-                            marginLeft: 'auto',
-                            marginRight: 'auto',
-                          }}>
-                          ID: {item._id}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.thongTinSP}>
-                      <View>
-                        <Text
-                          style={{
-                            color: '#000',
-                            marginLeft: 'auto',
-                            marginRight: 'auto',
-                          }}>
-                          Tên: {item.tenvt}
-                        </Text>
-                      </View>
-                      <View>
-                        <Text
-                          style={{
-                            color: '#000',
-                            marginLeft: 'auto',
-                            marginRight: 'auto',
-                          }}>
-                          SL Tồn: {item.soluong} {item.donvi}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.thongTinSP}>
+                      style={{
+                        borderWidth: 1,
+                        borderStyle: 'solid',
+                        borderColor: '#999',
+                        borderRadius: 5,
+                        marginBottom: 20,
+                      }}>
                       <View
                         style={{
                           display: 'flex',
+                          flex: 1,
                           flexDirection: 'row',
-                          marginRight: 20,
                         }}>
-                        <Text>Giá Nhập : {Format(item.gianhap)}</Text>
-                        <Text>/</Text>
-                        <Text>{item.donvi}</Text>
+                        <Image
+                          style={styles.image}
+                          source={{uri: item.images.url}}
+                        />
                       </View>
-                    </View>
-                    <View style={styles.thongTinSP}>
-                      <View
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          marginRight: 20,
-                        }}>
-                        <Text>Giá Xuất : {Format(item.giaxuat)}</Text>
-                        <Text>/</Text>
-                        <Text>{item.donvi}</Text>
+                      <View style={styles.thongTinSP}>
+                        <View>
+                          <Text
+                            style={{
+                              color: '#000',
+                              marginLeft: 'auto',
+                              marginRight: 'auto',
+                            }}>
+                            ID: {item._id}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={styles.thongTinSP}>
+                        <View>
+                          <Text
+                            style={{
+                              color: '#000',
+                              marginLeft: 'auto',
+                              marginRight: 'auto',
+                            }}>
+                            Tên: {item.tenvt}
+                          </Text>
+                        </View>
+                        <View>
+                          <Text
+                            style={{
+                              color: '#000',
+                              marginLeft: 'auto',
+                              marginRight: 'auto',
+                            }}>
+                            SL Tồn: {item.soluong} {item.donvi}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={styles.thongTinSP}>
+                        <View
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            marginRight: 20,
+                          }}>
+                          <Text>Giá Nhập : {Format(item.gianhap)}</Text>
+                          <Text>/</Text>
+                          <Text>{item.donvi}</Text>
+                        </View>
+                      </View>
+                      <View style={styles.thongTinSP}>
+                        <View
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            marginRight: 20,
+                          }}>
+                          <Text>Giá Xuất : {Format(item.giaxuat)}</Text>
+                          <Text>/</Text>
+                          <Text>{item.donvi}</Text>
+                        </View>
                       </View>
                     </View>
                   </View>
-                </View>
-              ))}
+                ))
+            ) : (
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  textAlign: 'center',
+                  justifyContent: 'center',
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 20,
+                  }}>
+                  Đại lý chưa có vật tư
+                </Text>
+              </View>
+            )}
           </View>
         </ScrollView>
       </View>

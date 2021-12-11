@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { GlobalState } from "../../../../GlobalState";
 import ExportBillItem from "./ExportBillItem";
@@ -11,8 +11,10 @@ import Pagination from "../../../common/Pagination";
 
 function ExporttBill() {
   const state = useContext(GlobalState);
-  const [searchTerm, setSearchTerm] = useState("");
+  const inforuser = JSON.parse(localStorage.getItem("inforuser"));
   const [exportbills] = state.exportbillAPI.exportbills;
+  const [listExportBillSearch, setListExportBillSearch] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [exportbillsPerPage] = useState(10);
@@ -20,7 +22,66 @@ function ExporttBill() {
   // Get current posts
   const indexOfLastExportbill = currentPage * exportbillsPerPage;
   const indexOfFirstExportbill = indexOfLastExportbill - exportbillsPerPage;
-  const currentExportbills = exportbills?.slice(
+
+  // Lấy ra danh sách kho có trong từ khóa search
+  useEffect(() => {
+    if (inforuser.role === "user") {
+      setListExportBillSearch(
+        exportbills?.filter((exportbill) => {
+          if (
+            searchTerm === "" &&
+            inforuser.madaily._id.toString() ===
+              exportbill.manv.madaily._id.toString()
+          ) {
+            return exportbill;
+          } else if (
+            (exportbill._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              exportbill.manv._id
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              exportbill.manv.madaily.tendl
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              exportbill.makho.tenkho
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())) &&
+            inforuser.madaily._id.toString() ===
+              exportbill.manv.madaily._id.toString()
+          ) {
+            return exportbill;
+          }
+        })
+      );
+    } else {
+      setListExportBillSearch(
+        exportbills?.filter((exportbill) => {
+          if (searchTerm === "") {
+            return exportbill;
+          } else if (
+            (exportbill._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              exportbill.manv._id
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              exportbill.manv.madaily.tendl
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              exportbill.makho.tenkho
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())) &&
+            inforuser.madaily._id.toString() ===
+              exportbill.manv.madaily._id.toString()
+          ) {
+            return exportbill;
+          }
+        })
+      );
+    }
+
+    setCurrentPage(1); //Khởi tạo lại trang hiện tại là 1
+  }, [searchTerm, exportbills]);
+
+  //Gán list vào trang hiện tại
+  const currentExportbills = listExportBillSearch?.slice(
     indexOfFirstExportbill,
     indexOfLastExportbill
   );
@@ -75,45 +136,37 @@ function ExporttBill() {
             <p style={{ flex: 1 }}>Tổng Tiền</p>
             <p style={{ flex: 1 }}>Chi tiết</p>
           </div>
-          {currentExportbills
-            .filter((exportbill) => {
-              if (searchTerm === "") {
-                return exportbill;
-              } else if (
-                exportbill._id
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase()) ||
-                exportbill.manv._id
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase()) ||
-                exportbill.manv.madaily.tendl
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase()) ||
-                exportbill.makho.tenkho
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              ) {
-                return exportbill;
-              }
-            })
-            .map((exportbill, index) => {
-              return (
-                <>
-                  <ExportBillItem
-                    key={exportbill._id}
-                    exportbill={exportbill}
-                    stt={(currentPage - 1) * exportbillsPerPage + index}
-                  />
-                </>
-              );
-            })}
-
-          <Pagination
-            itemsPerpage={exportbillsPerPage}
-            totalItems={exportbills?.length}
-            paginate={paginate}
-            currentPage={currentPage}
-          />
+          {currentExportbills.map((exportbill, index) => {
+            return (
+              <>
+                <ExportBillItem
+                  key={exportbill._id}
+                  exportbill={exportbill}
+                  stt={(currentPage - 1) * exportbillsPerPage + index}
+                />
+              </>
+            );
+          })}{" "}
+          {listExportBillSearch.length > 0 ? (
+            <Pagination
+              itemsPerpage={exportbillsPerPage}
+              totalItems={listExportBillSearch?.length}
+              paginate={paginate}
+              currentPage={currentPage}
+            />
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                fontSize: "18px",
+                border: "1px solid #999",
+                borderTop: "none",
+              }}
+            >
+              Chưa có phiếu xuất
+            </div>
+          )}
         </div>
       </div>
     </div>
