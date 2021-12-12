@@ -178,7 +178,10 @@ const authCtrl = {
         return res.status(400).json({ message: "Password không được trống" });
 
       //Kiểm tra tài khoản username
-      const user = await NhanVien.findOne({ username }).populate("madaily");
+      const user = await NhanVien.findOne({
+        username,
+        trangthai: "Đang làm",
+      }).populate("madaily");
       if (!user)
         return res.status(400).json({ message: "Username không tồn tại " });
 

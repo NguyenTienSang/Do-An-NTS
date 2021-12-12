@@ -357,10 +357,14 @@ const statisticCtrl = {
           filterpn?.map((pn) => {
             pn.ctpn?.map((ctpn) => {
               const timvattu = listmaterialfilter.find((listmaterialitem) => {
-                if (ctpn.mavt._id.toString() === listmaterialitem._id.toString()) {
+                if (
+                  ctpn.mavt._id.toString() === listmaterialitem._id.toString()
+                ) {
                   listmaterialitem.soluong += ctpn.soluong; //Nếu vật tư trong phiếu xuất tìm thấy trong listmaterialfilter thì trừ ra
                 }
-                return ctpn.mavt._id.toString() === listmaterialitem._id.toString();
+                return (
+                  ctpn.mavt._id.toString() === listmaterialitem._id.toString()
+                );
               });
 
               if (timvattu === undefined) {
@@ -377,8 +381,7 @@ const statisticCtrl = {
               }
             });
           });
-       
-         
+
           filterpx?.map((px) => {
             px.ctpx?.map((ctpx) => {
               listmaterialfilter.find((listmaterialitem) => {
@@ -436,6 +439,8 @@ const statisticCtrl = {
           .populate("ctpn")
           .populate({ path: "ctpn", populate: { path: "mavt" } });
         // const phieunhap = await PhieuNhap.find({"manv" : manv, "ngay":{$gte:startDateFilter,$lt:endDateFilter}})
+
+        console.log("phieunhap : ", phieunhap);
 
         return res.json(phieunhap);
       } else if (optionbill === "PhieuXuat") {

@@ -48,9 +48,6 @@ function StatisticMaterial() {
   };
 
   const handlechangestore = (e) => {
-    // console.log('materials thay đổi đại lý : ',materials);
-    console.log("materialsfilter thay đổi đại lý : ", materialsfilter);
-    console.log("e.target.value : ", e.target.value);
     setMaDaiLyFilter(e.target.value);
     setMaKhoFilter("allwarehouses"); //Nếu mà thay đổi đại lý thì kho sẽ trở về là 'Tất cả kho'
   };
@@ -59,9 +56,6 @@ function StatisticMaterial() {
   };
 
   useEffect(async () => {
-    console.log("madailyfilter : ", madailyfilter);
-    console.log("makhofilter : ", makhofilter);
-
     const res = await axios.post("/api/thongke/vattu", {
       madailyfilter,
       makhofilter,
@@ -150,63 +144,79 @@ function StatisticMaterial() {
             <p style={{ flex: 1 }}>Giá xuất</p>
             <p style={{ flex: 1 }}>Trạng thái</p>
           </div>
-          {materialsfilter
-            .filter((material) => {
-              if (searchTerm === "") {
-                return material;
-              } else if (
-                material._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                material.tenvt
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase()) ||
-                material.trangthai
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              ) {
-                return material;
-              }
-            })
-            .map((material, index) => {
-              return (
-                <div className="material_item">
-                  <div
-                    style={{ width: "70px" }}
-                    className="material_item_element"
-                  >
-                    {index + 1}
-                  </div>
-                  <div
-                    style={{ width: "160px" }}
-                    className="material_item_element id_material"
-                  >
-                    <p>{material._id}</p>
-                  </div>
-                  <div style={{ flex: 1 }} className="material_item_element">
-                    <p>{material.tenvt}</p>
-                  </div>
-                  <div
-                    style={{ width: "160px" }}
-                    className="material_item_element"
-                  >
-                    <img src={material.images.url} alt="" />
-                  </div>
+          {materialsfilter.length > 0 ? (
+            materialsfilter
+              .filter((material) => {
+                if (searchTerm === "") {
+                  return material;
+                } else if (
+                  material._id
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase()) ||
+                  material.tenvt
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase()) ||
+                  material.trangthai
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ) {
+                  return material;
+                }
+              })
+              .map((material, index) => {
+                return (
+                  <div className="material_item">
+                    <div
+                      style={{ width: "70px" }}
+                      className="material_item_element"
+                    >
+                      {index + 1}
+                    </div>
+                    <div
+                      style={{ width: "160px" }}
+                      className="material_item_element id_material"
+                    >
+                      <p>{material._id}</p>
+                    </div>
+                    <div style={{ flex: 1 }} className="material_item_element">
+                      <p>{material.tenvt}</p>
+                    </div>
+                    <div
+                      style={{ width: "160px" }}
+                      className="material_item_element"
+                    >
+                      <img src={material.images.url} alt="" />
+                    </div>
 
-                  <div style={{ flex: 1 }} className="material_item_element">
-                    {material.soluong} {material.donvi}
-                  </div>
+                    <div style={{ flex: 1 }} className="material_item_element">
+                      {material.soluong} {material.donvi}
+                    </div>
 
-                  <div style={{ flex: 1 }} className="material_item_element">
-                    {Format(material.gianhap)}
+                    <div style={{ flex: 1 }} className="material_item_element">
+                      {Format(material.gianhap)}
+                    </div>
+                    <div style={{ flex: 1 }} className="material_item_element">
+                      {Format(material.giaxuat)}
+                    </div>
+                    <div style={{ flex: 1 }} className="material_item_element">
+                      {material.trangthai}
+                    </div>
                   </div>
-                  <div style={{ flex: 1 }} className="material_item_element">
-                    {Format(material.giaxuat)}
-                  </div>
-                  <div style={{ flex: 1 }} className="material_item_element">
-                    {material.trangthai}
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                fontSize: "18px",
+                border: "1px solid #999",
+                borderTop: "none",
+              }}
+            >
+              Kho có vật tư tồn kho
+            </div>
+          )}
         </div>
       </div>
     </div>

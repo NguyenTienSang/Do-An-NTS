@@ -93,21 +93,15 @@ function WareHouses() {
             return warehouse;
           } else if (
             warehouse._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              warehouse.tenkho
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase()) ||
-              warehouse.madaily.tendl
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase()) ||
-              warehouse.diachi
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase()) ||
-              warehouse.sodienthoai
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase()) ||
-              warehouse.trangthai
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase())
+            warehouse.tenkho.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            warehouse.madaily.tendl
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            warehouse.diachi.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            warehouse.sodienthoai
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            warehouse.trangthai.toLowerCase().includes(searchTerm.toLowerCase())
           ) {
             return warehouse;
           }
@@ -453,7 +447,7 @@ function WareHouses() {
             <select
               className="select_daily__kho"
               name="madaily"
-              value={warehouse.madaily}
+              value={warehouse.madaily._id}
               onChange={handleChangeInput}
             >
               <option value="" disabled selected hidden>

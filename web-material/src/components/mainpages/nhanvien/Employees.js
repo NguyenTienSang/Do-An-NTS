@@ -28,7 +28,7 @@ const initialEmployee = {
 function Employees() {
   const state = useContext(GlobalState);
   const [employee, setEmployee] = useState(initialEmployee);
-
+  const [storageemployee, setStorageEmployee] = useState([]);
   const [images, setImages] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isAdmin] = state.userAPI.isAdmin;
@@ -116,21 +116,22 @@ function Employees() {
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  useEffect(() => {
-    if (param.id) {
-      setOnEdit(true);
-      employees.forEach((employee) => {
-        if (employee._id === param.id) {
-          setEmployee(employee);
-          setImages(employee.images);
-        }
-      });
-    } else {
-      setOnEdit(false);
-      setEmployee(initialEmployee);
-      setImages(false);
-    }
-  }, [param.id, employees]);
+  // useEffect(() => {
+  //   console.log("param.id : ", param.id);
+  //   if (param.id) {
+  //     setOnEdit(true);
+  //     employees.forEach((employee) => {
+  //       if (employee._id === param.id) {
+  //         setEmployee(employee);
+  //         setImages(employee.images);
+  //       }
+  //     });
+  //   } else {
+  //     setOnEdit(false);
+  //     setEmployee(initialEmployee);
+  //     setImages(false);
+  //   }
+  // }, [param.id, employees]);
 
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -206,8 +207,10 @@ function Employees() {
   };
 
   const EditEmployee = (data_employee_edit) => {
+    console.log("data_employee_edit : ", data_employee_edit);
     setOnEdit(true);
     setEmployee(data_employee_edit);
+    setStorageEmployee(data_employee_edit);
     setImages(data_employee_edit.images);
     document
       .getElementById("modal_container__employee")
@@ -251,28 +254,54 @@ function Employees() {
     }
     //Cập nhật thông tin nhân viên
     if (onEdit) {
-      try {
-        const res = await axios.put(
-          `/api/nhanvien/${employee._id}`,
-          { ...employee, images },
-          {
-            headers: { Authorization: token },
-          }
-        );
-        //  alert(res.data.message);
-
-        setMessage(res.data.message);
+      // console.log("employee : ", employee);
+      // console.log("employee.trangthai : ", employee.trangthai);
+      // console.log("storageemployee.trangthai : ", storageemployee.trangthai);
+      // console.log("employee.madaily._id : ", employee.madaily);
+      // console.log(
+      //   "storageemployee.madaily._id : ",
+      //   storageemployee.madaily._id
+      // );
+      if (
+        employee.trangthai === "Chuyển công tác" &&
+        storageemployee.madaily._id === employee.madaily._id
+      ) {
+        setMessage("Vui lòng chọn đại lý mới");
         setOpenAlert(true);
-
-        document
-          .getElementById("modal_container__employee")
-          .classList.remove("modal_active");
-        setCallback(!callback);
-      } catch (err) {
-        //  alert(err.response.data.message);
-
-        setMessage(err.response.data.message);
+      } else if (
+        storageemployee.madaily._id !== employee.madaily._id &&
+        employee.trangthai !== "Chuyển công tác"
+      ) {
+        setMessage("Vui lòng chọn trạng thái chuyển công tác");
         setOpenAlert(true);
+      } else {
+        // setMessage("Chuyển thành công");
+        // setOpenAlert(true);
+        try {
+          const res = await axios.put(
+            `/api/nhanvien/${employee._id}`,
+            {
+              ...employee,
+              images,
+              oldstore: storageemployee.madaily._id,
+              oldtrangthai: storageemployee.trangthai,
+            },
+            {
+              headers: { Authorization: token },
+            }
+          );
+
+          setMessage(res.data.message);
+          setOpenAlert(true);
+
+          document
+            .getElementById("modal_container__employee")
+            .classList.remove("modal_active");
+          setCallback(!callback);
+        } catch (err) {
+          setMessage(err.response.data.message);
+          setOpenAlert(true);
+        }
       }
     }
   };
@@ -419,13 +448,15 @@ function Employees() {
               onChange={handleChangeInput}
             />
           </div>
+          {/* <div className="row">{employee.madaily.tendl}</div> */}
 
           <div className="row">
             <label htmlFor="stores">Đại lý</label>
             <select
               className="select-daily-nhanvien"
               name="madaily"
-              value={employee.madaily}
+              value={employee.madaily._id}
+              // value={employee.role}
               onChange={handleChangeInput}
             >
               <option value="" disabled selected hidden>
@@ -514,7 +545,7 @@ function Employees() {
           </div>
 
           <div className="row">
-            <label htmlFor="price">Số điện thoại</label>
+            <label htmlFor="sodienthoai">Số điện thoại</label>
             <input
               name="sodienthoai"
               autocomplete="off"

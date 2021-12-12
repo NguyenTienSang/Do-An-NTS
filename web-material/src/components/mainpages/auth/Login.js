@@ -23,12 +23,13 @@ const Login = () => {
       const res = await axios.post("/api/auth/login", { ...user });
       localStorage.setItem("inforuser", JSON.stringify(res.data.user));
       localStorage.setItem("firstLogin", true);
-
-      if (res.data.user.role === "admin") {
-        window.location.href = "/trangchu";
-      } else if (res.data.user.role === "user") {
-        window.location.href = "/nhanvien";
-      }
+      
+        if (res.data.user.role === "admin") {
+          window.location.href = "/trangchu";
+        } else if (res.data.user.role === "user") {
+          window.location.href = "/nhanvien";
+        }
+      
     } catch (error) {
       // alert(error.response.data.message);
       setMessage(error.response.data.message);
