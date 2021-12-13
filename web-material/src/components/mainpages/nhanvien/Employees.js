@@ -48,7 +48,7 @@ function Employees() {
 
   const [message, setMessage] = useState("");
 
-  const inforuser = JSON.parse(localStorage.getItem("inforuser"));
+  let inforuser = JSON.parse(localStorage.getItem("inforuser"));
 
   //-------------- Phân trang ----------------
   const [currentPage, setCurrentPage] = useState(1);
@@ -116,23 +116,6 @@ function Employees() {
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // useEffect(() => {
-  //   console.log("param.id : ", param.id);
-  //   if (param.id) {
-  //     setOnEdit(true);
-  //     employees.forEach((employee) => {
-  //       if (employee._id === param.id) {
-  //         setEmployee(employee);
-  //         setImages(employee.images);
-  //       }
-  //     });
-  //   } else {
-  //     setOnEdit(false);
-  //     setEmployee(initialEmployee);
-  //     setImages(false);
-  //   }
-  // }, [param.id, employees]);
-
   const handleUpload = async (e) => {
     e.preventDefault();
     try {
@@ -161,8 +144,6 @@ function Employees() {
       console.log("dữ liệu ảnh url : ", res.data.url);
       setImages(res.data);
     } catch (error) {
-      // alert(err.response.data.message);
-
       setMessage(error.response.data.message);
       setOpenAlert(true);
     }
@@ -181,9 +162,8 @@ function Employees() {
       );
       setLoading(false);
       setImages(false);
-    } catch (err) {
-      // alert(err.response.data.message);
-      setMessage(err.response.data.message);
+    } catch (error) {
+      setMessage(error.response.data.message);
       setOpenAlert(true);
     }
   };
@@ -234,9 +214,6 @@ function Employees() {
             headers: { Authorization: token },
           }
         );
-
-        //  alert(res.data.message);
-
         setMessage(res.data.message);
         setOpenAlert(true);
 
@@ -245,23 +222,13 @@ function Employees() {
           .classList.remove("modal_active");
         setCallback(!callback);
         //  history.push("/vattu");
-      } catch (err) {
-        //  alert(err.response.data.message);
-
-        setMessage(err.response.data.message);
+      } catch (error) {
+        setMessage(error.response.data.message);
         setOpenAlert(true);
       }
     }
     //Cập nhật thông tin nhân viên
     if (onEdit) {
-      // console.log("employee : ", employee);
-      // console.log("employee.trangthai : ", employee.trangthai);
-      // console.log("storageemployee.trangthai : ", storageemployee.trangthai);
-      // console.log("employee.madaily._id : ", employee.madaily);
-      // console.log(
-      //   "storageemployee.madaily._id : ",
-      //   storageemployee.madaily._id
-      // );
       if (
         employee.trangthai === "Chuyển công tác" &&
         storageemployee.madaily._id === employee.madaily._id
@@ -274,9 +241,27 @@ function Employees() {
       ) {
         setMessage("Vui lòng chọn trạng thái chuyển công tác");
         setOpenAlert(true);
+      } else if (
+        employee.trangthai === "Chuyển công tác" &&
+        storageemployee.trangthai === "Nghỉ việc"
+      ) {
+        setMessage("Trạng thái không phù hợp");
+        setOpenAlert(true);
       } else {
-        // setMessage("Chuyển thành công");
-        // setOpenAlert(true);
+        if (
+          inforuser.username === employee.username &&
+          inforuser.trangthai !== employee.trangthai &&
+          inforuser.madaily._id !== employee.madaily._id
+        ) {
+          const infordaily = stores.find((storeitem) => {
+            return storeitem._id.toString() === employee.madaily.toString();
+          });
+
+          inforuser.madaily = infordaily;
+          console.log("inforuser : ", inforuser);
+          localStorage.setItem("inforuser", JSON.stringify(inforuser));
+        }
+
         try {
           const res = await axios.put(
             `/api/nhanvien/${employee._id}`,
@@ -455,8 +440,7 @@ function Employees() {
             <select
               className="select-daily-nhanvien"
               name="madaily"
-              value={employee.madaily._id}
-              // value={employee.role}
+              value={onEdit ? employee.madaily._id : employee.madaily}
               onChange={handleChangeInput}
             >
               <option value="" disabled selected hidden>

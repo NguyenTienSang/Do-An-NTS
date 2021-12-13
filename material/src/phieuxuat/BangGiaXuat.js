@@ -28,7 +28,12 @@ export default function BangGiaXuat({navigation, route}) {
   const [materialsfilter, setMaterialsFilter] = useState(null);
 
   const Format = number => {
-    return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND';
+    if (number >= 0) {
+      return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND';
+    } else
+      return (
+        '-' + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND'
+      );
   };
 
   function onClickAddCart(data) {
@@ -66,10 +71,10 @@ export default function BangGiaXuat({navigation, route}) {
   }
 
   useEffect(async () => {
-    const res = await axios.post(
-      `${APISTISTICWAREHOUSE}`,
-      {madailyfilter: route.params.madaily, makhofilter: route.params.makho},
-    );
+    const res = await axios.post(`${APISTISTICWAREHOUSE}`, {
+      madailyfilter: route.params.madaily,
+      makhofilter: route.params.makho,
+    });
     setMaterialsFilter(res.data);
   }, []);
 

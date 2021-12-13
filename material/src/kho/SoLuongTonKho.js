@@ -30,8 +30,13 @@ export default function SoLuongTonKho({navigation, route}) {
   // const [token] = state.token;
   const [materialsfilter, setMaterialsFilter] = useState([]);
 
-  const Format = number => {
-    return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND';
+  const Format = (number) => {
+    if (number >= 0) {
+      return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
+    } else
+      return (
+        "-" + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND"
+      );
   };
 
   // useEffect(async () => {

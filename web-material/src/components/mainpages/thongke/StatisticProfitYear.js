@@ -28,11 +28,7 @@ function StatisticProfitYear() {
       return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
     } else
       return (
-        "-" +
-        String(number)
-          .replace(/(.)(?=(\d{3})+$)/g, "$1.")
-          .slice(2) +
-        " VND"
+        "-" + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND"
       );
   };
 
@@ -118,7 +114,7 @@ function StatisticProfitYear() {
             <p style={{ flex: 1 }}>Tổng Tiền Nhập</p>
             <p style={{ width: "130px" }}>Số Phiếu Xuất</p>
             <p style={{ flex: 1 }}>Tổng Tiền Xuất</p>
-            <p style={{ flex: 1 }}>Doanh Thu Tháng</p>
+            <p style={{ flex: 1 }}>Lợi Nhuận Tháng</p>
           </div>
           {dataStatistic?.map((item, index) => (
             <div className="material_item">
@@ -145,7 +141,7 @@ function StatisticProfitYear() {
             </div>
           ))}
           <div className="statistic_profit__year">
-            Doanh thu cả năm {parseInt(moment(yearstatistic).format("YYYY"))} :{" "}
+            Lợi nhuận cả năm {parseInt(moment(yearstatistic).format("YYYY"))} :{" "}
             {Format(onLoadTotal())}
           </div>
         </div>

@@ -38,10 +38,10 @@ function CreateExportBill() {
   const [makhofilter, setMaKhoFilter] = useState("allwarehouses");
 
   const [exportbill, setExportBill] = useState({
-    // tenpx: "",
     ngay: "",
     manv: "",
     makho: "",
+    ctpx: [],
   });
 
   const [openalert, setOpenAlert] = useState(false);
@@ -53,11 +53,7 @@ function CreateExportBill() {
       return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
     } else
       return (
-        "-" +
-        String(number)
-          .replace(/(.)(?=(\d{3})+$)/g, "$1.")
-          .slice(2) +
-        " VND"
+        "-" + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND"
       );
   };
 
@@ -77,6 +73,7 @@ function CreateExportBill() {
     // console.log('makhofilter : ',makhofilter);
 
     setMaterialsFilter(res.data);
+    setDetailExportBill([]);
   }, [exportbill.makho]);
 
   useEffect(() => {
@@ -94,14 +91,16 @@ function CreateExportBill() {
   );
 
   const AddToExportBill = (material, soluong, typing) => {
+    setSearchTerm("");
     if (!onSearch) {
       document.getElementById("list-material").style.display = "none";
       document.getElementById("inputsearch").value = "";
     }
     const exist = detailexportbill.find((x) => x._id === material._id);
+    console.log("soluong : ", soluong);
     if (exist) {
       setDetailExportBill(
-        detailexportbill.map((x) =>
+        detailexportbill?.map((x) =>
           x._id === material._id
             ? {
                 ...exist,
@@ -123,7 +122,7 @@ function CreateExportBill() {
       );
     } else {
       setDetailExportBill(
-        detailexportbill.map((x) =>
+        detailexportbill?.map((x) =>
           x._id === material._id
             ? { ...exist, quantity: exist.quantity - 1 }
             : x
@@ -204,8 +203,7 @@ function CreateExportBill() {
                   <div
                     className="item-material"
                     onClick={() => {
-                      setOnSearch(false);
-                      AddToExportBill(material);
+                      AddToExportBill(material, 1, false);
                     }}
                   >
                     <p>{material._id}</p>
@@ -330,7 +328,7 @@ function CreateExportBill() {
                             type="text"
                             required
                             autocomplete="off"
-                            maxlength="3"
+                            maxLength="3"
                             onChange={(event) => {
                               if (
                                 event.target.value.length > 0 &&
@@ -442,7 +440,7 @@ function CreateExportBill() {
                           "/api/phieuxuat",
                           {
                             ...exportbill,
-                            ctpx: detailexportbill.map((item) => ({
+                            ctpx: detailexportbill?.map((item) => ({
                               mavt: item._id,
                               giaxuat: item.giaxuat,
                               soluong: item.quantity,
@@ -512,7 +510,7 @@ function CreateExportBill() {
 
   function onLoadTotal() {
     var totalcost = 0;
-    detailexportbill.map((ipbill) => {
+    detailexportbill?.map((ipbill) => {
       totalcost += ipbill.giaxuat * ipbill.quantity;
     });
     return totalcost;

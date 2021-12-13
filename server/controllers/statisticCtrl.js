@@ -251,51 +251,66 @@ const statisticCtrl = {
   },
 
   statisticMaterials: async (req, res) => {
-    //Chưa trừ số lượng xuất -> SAI (NHỚ BỔ SUNG)
     try {
       const { madailyfilter, makhofilter } = req.body;
 
-      console.log("Mã đại lý thực hiện thống kê : ", madailyfilter);
-      console.log("Mã kho thực hiện thống kê : ", makhofilter);
       if (madailyfilter === "allstores") {
         console.log("Chọn toàn đại lý");
         const vattu = await VatTu.find();
         return res.json(vattu);
       } else {
         if (makhofilter === "allwarehouses") {
-          console.log("Chọn đại lý cụ thể và tất cả kho");
+          console.log("Chọn đại lý cụ thể, chọn toàn kho");
           const listmaterialfilter = [];
           const phieunhap = await PhieuNhap.find()
             .populate("manv")
+            .populate("makho")
             .populate({ path: "ctpn", populate: { path: "mavt" } });
           const phieuxuat = await PhieuXuat.find()
             .populate("manv")
+            .populate("makho")
             .populate({ path: "ctpx", populate: { path: "mavt" } });
 
-          //Lấy danh sách phiếu nhập trong đại lý
+          // console.log("phieunhap : ", phieunhap);
+
+          //Lấy danh sách phiếu nhập trong đại lý và kho còn hoạt động
+          // console.log("madailyfilter : ", madailyfilter);
+          // console.log("typeof(madailyfilter) : ", typeof madailyfilter);
           const filterpn = phieunhap.filter((pn) => {
-            return madailyfilter == pn.manv.madaily;
+            return (
+              madailyfilter === pn.manv.madaily.toString() &&
+              pn.makho.trangthai === "Đang hoạt động"
+            );
           });
 
+          //Lấy danh sách phiếu xuất trong đại lý và kho còn hoạt động
           const filterpx = phieuxuat.filter((px) => {
-            return madailyfilter == px.manv.madaily;
+            return (
+              madailyfilter === px.manv.madaily.toString() &&
+              px.makho.trangthai === "Đang hoạt động"
+            );
           });
 
           //Lọc phiếu nhập
+          console.log("Lọc phiếu nhập");
           filterpn?.map((pn) => {
+            console.log("pn.makho.tenkho : ", pn.makho.tenkho);
+            console.log("pn._id : ", pn._id);
             pn.ctpn?.map((ctpn) => {
+              if (ctpn.mavt.tenvt === "Đồng đỏ") {
+                console.log("ctpn.soluong : ", ctpn.soluong);
+              }
               const timvattu = listmaterialfilter.find((listmaterialitem) => {
                 if (
                   ctpn.mavt._id.toString() === listmaterialitem._id.toString()
                 ) {
-                  console.log("---------- Tìm Thấy PN -----------");
                   listmaterialitem.soluong += ctpn.soluong;
                 }
                 return (
                   ctpn.mavt._id.toString() === listmaterialitem._id.toString()
                 );
               });
-              console.log("timvattu : ", timvattu);
+
               if (timvattu === undefined) {
                 listmaterialfilter.push({
                   _id: ctpn.mavt._id,
@@ -311,15 +326,18 @@ const statisticCtrl = {
             });
           });
           //Lọc phiếu xuất
+          console.log("Lọc phiếu xuất");
           filterpx?.map((px) => {
-            console.log("px : ", px);
+            console.log("px.makho.tenkho : ", px.makho.tenkho);
+            console.log("px._id : ", px._id);
             px.ctpx?.map((ctpx) => {
+              if (ctpx.mavt.tenvt === "Đồng đỏ") {
+                console.log("ctpx.soluong : ", ctpx.soluong);
+              }
               listmaterialfilter.find((listmaterialitem) => {
                 if (
-                  ctpx.mavt._id.toString() ===
-                  listmaterialitem._id._id.toString()
+                  ctpx.mavt._id.toString() === listmaterialitem._id.toString()
                 ) {
-                  console.log("Tìm thấy vật tư trong phiếu xuất");
                   listmaterialitem.soluong -= ctpx.soluong; //Nếu vật tư trong phiếu xuất tìm thấy trong listmaterialfilter thì trừ ra
                 }
                 return (
@@ -328,32 +346,33 @@ const statisticCtrl = {
               });
             });
           });
-          res.json(listmaterialfilter);
+          return res.json(listmaterialfilter);
         } //Chọn đại lý, chọn kho cụ thể
-        else {
-          console.log("Chọn kho cụ thể");
+        else if (
+          madailyfilter !== "allstores" &&
+          makhofilter !== "allwarehouses"
+        ) {
+          console.log("Chọn đại lý cụ thể và kho cụ thể");
           const listmaterialfilter = [];
           const phieunhap = await PhieuNhap.find()
             .populate("manv")
+            .populate("makho")
             .populate({ path: "ctpn", populate: { path: "mavt" } });
           const phieuxuat = await PhieuXuat.find()
             .populate("manv")
+            .populate("makho")
             .populate({ path: "ctpx", populate: { path: "mavt" } });
-          console.log("PhieuNhap : ", phieunhap);
-          console.log("PhieuXuat : ", phieuxuat);
           //Lọc phiếu nhập
           const filterpn = phieunhap?.filter((pn) => {
-            return makhofilter == pn.makho;
+            return (makhofilter === pn.makho._id.toString() && madailyfilter === pn.manv.madaily.toString());
           });
 
           //Lọc phiếu xuất
           const filterpx = phieuxuat?.filter((px) => {
-            return makhofilter == px.makho;
+            return (makhofilter == px.makho._id.toString() && madailyfilter === px.manv.madaily.toString());
           });
 
-          console.log("filterpn : ", filterpn.length);
-
-          // try {
+         
           filterpn?.map((pn) => {
             pn.ctpn?.map((ctpn) => {
               const timvattu = listmaterialfilter.find((listmaterialitem) => {
@@ -382,20 +401,13 @@ const statisticCtrl = {
             });
           });
 
+         
           filterpx?.map((px) => {
             px.ctpx?.map((ctpx) => {
               listmaterialfilter.find((listmaterialitem) => {
-                // console.log(ctpx);
-                // console.log('ctpx.mavt._id : ',ctpx.mavt._id);
-                // console.log('listmaterialitem._id : ',listmaterialitem._id);
-                // console.log('typeof(ctpx.mavt._id) : ',typeof(ctpx.mavt._id));
-                // console.log('typeof(listmaterialitem._id) : ',typeof(listmaterialitem._id));
-                // console.log('ctpx.mavt._id.toString() : ',ctpx.mavt._id.toString());
-                // console.log('listmaterialitem._id.toString() : ',listmaterialitem._id.toString());
                 if (
                   ctpx.mavt._id.toString() === listmaterialitem._id.toString()
                 ) {
-                  console.log("Vô nè");
                   listmaterialitem.soluong -= ctpx.soluong;
                 }
                 return (
@@ -404,12 +416,11 @@ const statisticCtrl = {
               });
             });
           });
-          console.log("listmaterialfilter : ", listmaterialfilter);
-          res.json(listmaterialfilter);
+          return res.json(listmaterialfilter);
         }
       }
     } catch (error) {
-      res.status(500).json({ message: "Thống kê thất bại" });
+      return res.status(500).json({ message: "Thống kê thất bại" });
     }
   },
 
@@ -438,9 +449,6 @@ const statisticCtrl = {
           .populate("makho")
           .populate("ctpn")
           .populate({ path: "ctpn", populate: { path: "mavt" } });
-        // const phieunhap = await PhieuNhap.find({"manv" : manv, "ngay":{$gte:startDateFilter,$lt:endDateFilter}})
-
-        console.log("phieunhap : ", phieunhap);
 
         return res.json(phieunhap);
       } else if (optionbill === "PhieuXuat") {
@@ -453,7 +461,6 @@ const statisticCtrl = {
           .populate("makho")
           .populate("ctpx")
           .populate({ path: "ctpx", populate: { path: "mavt" } });
-        console.log("phieuxuat : ", phieuxuat);
 
         return res.json(phieuxuat);
       }
@@ -496,13 +503,6 @@ const statisticCtrl = {
         chiphinhapyear: 0,
         chiphixuatyear: 0,
       };
-
-      console.log("manv : ", manv);
-      console.log("day : ", date.getDate());
-      console.log("month : ", date.getMonth() + 1);
-      console.log("year : ", date.getFullYear());
-
-      //    const phieunhapday = await PhieuNhap.find({ $expr:  { $and: [ { $eq: [{ $dayOfMonth: "$ngay" },3] }, { $eq: [{ $month: "$ngay" },date.getMonth+1] }, { $eq: [{ $year: "$ngay" },date.getFullYear()] }]   }  }).select({ctpn : 1, ngay: 1, _id: 0})
 
       const phieunhapday = await PhieuNhap.find({
         $and: [
@@ -636,8 +636,6 @@ const statisticCtrl = {
         });
       });
 
-      //   console.log("statisticProfit : ", statisticProfit);
-
       return res.json({ statisticProfit });
     } catch (error) {
       return res.status(500).json({ message: error.message });
@@ -649,14 +647,6 @@ const statisticCtrl = {
     //Lấy ra danh sách phiếu nhập theo tháng
 
     const { madailyfilter, yearstatistic } = req.body;
-
-    // console.log('test')
-    console.log("madailyfilter : ", madailyfilter);
-    console.log("yearstatistic : ", yearstatistic);
-    console.log("typeof(yearstatistic) 1 : ", typeof yearstatistic);
-    // const test = parseInt(yearstatistic);
-    // console.log('typeof(yearstatistic) 2 : ',typeof(test));
-    // console.log('test : ',test);
 
     if (!madailyfilter) {
       return res.status(400).json({ message: "Vui lòng chọn đại lý" });

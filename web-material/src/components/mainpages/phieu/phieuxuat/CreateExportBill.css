@@ -53,6 +53,9 @@
     margin-top: 2px;
     z-index: 10;
     width: 84%;
+    max-height: 500px;
+    height: 100%;
+    overflow: auto;
 }
 
 .create-exportbill .list-material .header-list-material {

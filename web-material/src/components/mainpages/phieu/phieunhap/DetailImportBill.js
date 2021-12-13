@@ -14,11 +14,7 @@ function DetailImportBill(importbill) {
       return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
     } else
       return (
-        "-" +
-        String(number)
-          .replace(/(.)(?=(\d{3})+$)/g, "$1.")
-          .slice(2) +
-        " VND"
+        "-" + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND"
       );
   };
 

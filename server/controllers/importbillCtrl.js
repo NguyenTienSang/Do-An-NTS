@@ -5,6 +5,7 @@ const importbillCtrl = {
   getImportBill: async (req, res) => {
     try {
       const phieunhap = await PhieuNhap.find()
+        .sort({ ngay: 1 })
         .populate("manv")
         .populate({ path: "manv", populate: { path: "madaily" } })
         .populate("makho")

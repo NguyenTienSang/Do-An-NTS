@@ -50,11 +50,7 @@ function CreateImportBill() {
       return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
     } else
       return (
-        "-" +
-        String(number)
-          .replace(/(.)(?=(\d{3})+$)/g, "$1.")
-          .slice(2) +
-        " VND"
+        "-" + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND"
       );
   };
 
@@ -66,6 +62,7 @@ function CreateImportBill() {
     });
 
     setMaterialsFilter(res.data);
+    setDetailImportBill([]);
   }, [importbill.makho]);
 
   useEffect(() => {
@@ -75,15 +72,16 @@ function CreateImportBill() {
       makho: "",
       ctpn: [],
     });
+    console.log("setDetailImportBill");
     setDetailImportBill([]);
   }, [importbills]);
 
-  console.log("warehouses : ", warehouses);
   const newwarehouses = warehouses.filter((warehouse, index) =>
     user.madaily._id === warehouse.madaily._id ? warehouse : undefined
   );
 
   const AddToImportBill = (material, soluong, typing) => {
+    setSearchTerm("");
     if (!onSearch) {
       document.getElementById("list-material").style.display = "none";
       document.getElementById("inputsearch").value = "";
@@ -91,7 +89,7 @@ function CreateImportBill() {
     const exist = detailimportbill.find((x) => x._id === material._id);
     if (exist) {
       setDetailImportBill(
-        detailimportbill.map((x) =>
+        detailimportbill?.map((x) =>
           x._id === material._id
             ? {
                 ...exist,
@@ -109,11 +107,11 @@ function CreateImportBill() {
     const exist = detailimportbill.find((x) => x._id === material._id);
     if (exist.quantity === 1) {
       setDetailImportBill(
-        detailimportbill.filter((x) => x._id !== material._id)
+        detailimportbill?.filter((x) => x._id !== material._id)
       );
     } else {
       setDetailImportBill(
-        detailimportbill.map((x) =>
+        detailimportbill?.map((x) =>
           x._id === material._id
             ? { ...exist, quantity: exist.quantity - 1 }
             : x
@@ -122,18 +120,10 @@ function CreateImportBill() {
     }
   };
 
-  const [dataDate, setDate] = useState(new Date());
-  // const ExampleCustomInput = ({ value, onClick }) => (
-  //   <button className="button-date-picker" onClick={onClick}>
-  //     {value}
-  //     <IoMdArrowDropdown/>
-  //   </button>
-  // );
-
-  const param = useParams();
-
   const handleChangeInput = (e) => {
+    console.log("setinput");
     const { name, value } = e.target;
+    setLoading(!loading);
     setImportBill({ ...importbill, [name]: value });
   };
 
@@ -156,6 +146,7 @@ function CreateImportBill() {
                 autocomplete="off"
                 disabled={importbill.makho == "" ? true : false}
                 onChange={(event) => {
+                  console.log("event : ", event.target.value);
                   setSearchTerm(event.target.value);
                 }}
               />
@@ -192,8 +183,7 @@ function CreateImportBill() {
                   <div
                     className="item-material"
                     onClick={() => {
-                      setOnSearch(false);
-                      AddToImportBill(material, 1);
+                      AddToImportBill(material, 1, false);
                     }}
                   >
                     <p>{material._id}</p>
@@ -253,9 +243,13 @@ function CreateImportBill() {
                     <option value="" disabled selected hidden>
                       Vui lòng chọn kho
                     </option>
-                    {newwarehouses.map((warehouse) => (
-                      <option value={warehouse._id}>{warehouse.tenkho}</option>
-                    ))}
+                    {newwarehouses.map((warehouse) =>
+                      warehouse.trangthai === "Đang hoạt động" ? (
+                        <option value={warehouse._id}>
+                          {warehouse.tenkho}
+                        </option>
+                      ) : null
+                    )}
                   </select>
                 </div>
               </div>
@@ -284,7 +278,7 @@ function CreateImportBill() {
                     <p style={{ flex: 1 }}>Tổng Tiền</p>
                     <p style={{ width: "70px" }}></p>
                   </div>
-                  {detailimportbill.map((item, index) => {
+                  {detailimportbill?.map((item, index) => {
                     return (
                       <div className="item-bill">
                         <div
@@ -321,9 +315,7 @@ function CreateImportBill() {
                             type="text"
                             required
                             autocomplete="off"
-                            maxlength="3"
-                            // min="1" max="1000"
-                            // value={exportbill.tenpx}
+                            maxLength="3"
                             onChange={(event) => {
                               if (
                                 event.target.value.length > 0 &&
@@ -366,7 +358,7 @@ function CreateImportBill() {
                             style={{ color: "red", fontSize: "36px" }}
                             onClick={() => {
                               setDetailImportBill(
-                                detailimportbill.filter(
+                                detailimportbill?.filter(
                                   (x) => x._id !== item._id
                                 )
                               );
@@ -410,7 +402,7 @@ function CreateImportBill() {
                         "/api/phieunhap",
                         {
                           ...importbill,
-                          ctpn: detailimportbill.map((item) => ({
+                          ctpn: detailimportbill?.map((item) => ({
                             mavt: item._id,
                             gianhap: item.gianhap,
                             soluong: item.quantity,
@@ -476,7 +468,7 @@ function CreateImportBill() {
 
   function onLoadTotal() {
     var totalcost = 0;
-    detailimportbill.map((ipbill) => {
+    detailimportbill?.map((ipbill) => {
       totalcost += ipbill.gianhap * ipbill.quantity;
     });
     return totalcost;

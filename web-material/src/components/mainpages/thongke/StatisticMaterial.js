@@ -39,11 +39,7 @@ function StatisticMaterial() {
       return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
     } else
       return (
-        "-" +
-        String(number)
-          .replace(/(.)(?=(\d{3})+$)/g, "$1.")
-          .slice(2) +
-        " VND"
+        "-" + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND"
       );
   };
 
@@ -118,7 +114,8 @@ function StatisticMaterial() {
                 >
                   (<option value="allwarehouses">Tất cả kho</option>
                   {warehouses.map((warehouse) =>
-                    madailyfilter == warehouse.madaily._id ? (
+                    madailyfilter == warehouse.madaily._id &&
+                    warehouse.trangthai === "Đang hoạt động" ? (
                       <option value={warehouse._id} key={warehouse._id}>
                         {warehouse.tenkho}
                       </option>

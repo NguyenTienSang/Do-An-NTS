@@ -263,7 +263,7 @@ export default function AddEmployee({navigation, route}) {
             <Text style={styles.label}>Email</Text>
             <TextInput
               style={styles.textInput}
-              placeholder="Chứng minh nhân dân"
+              placeholder="Email"
               value={employee.email}
               maxLength={32}
               keyboardType="numeric"

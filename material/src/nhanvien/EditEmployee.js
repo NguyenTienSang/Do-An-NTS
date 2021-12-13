@@ -41,6 +41,8 @@ export default function EditEmployee({navigation, route}) {
     images: route.params.nhanvien.images,
   });
 
+  const [storageemployee, setStorageEmployee] = useState(employee);
+
   const [toggleSex, setToggleSex] = useState(
     route.params.nhanvien.gioitinh === 'nam' ? true : false,
   );
@@ -54,28 +56,54 @@ export default function EditEmployee({navigation, route}) {
   }
 
   const SuaNhanVien = async () => {
-    axios
-      .put(
-        `${APINhanVien}/${employee._id}`,
-        {...employee},
-        {
-          headers: {Authorization: token},
-        },
-      )
-      .then(res => {
-        Alert.alert('Thông báo', res.data.message, [
+    console.log('employee.trangthai : ', employee.trangthai);
+    console.log('storageemployee.trangthai : ', storageemployee.trangthai);
+    console.log('employee.madaily : ', employee.madaily);
+    console.log('storageemployee.madaily : ', storageemployee.madaily);
+    if (
+      employee.trangthai === 'Chuyển công tác' &&
+      storageemployee.madaily === employee.madaily
+    ) {
+      Alert.alert('Thông báo', 'Vui lòng chọn đại lý mới');
+    } else if (
+      storageemployee.madaily !== employee.madaily &&
+      employee.trangthai !== 'Chuyển công tác'
+    ) {
+      Alert.alert('Thông báo', 'Vui lòng chọn trạng thái chuyển công tác');
+    } else if (
+      employee.trangthai === 'Chuyển công tác' &&
+      storageemployee.trangthai === 'Nghỉ việc'
+    ) {
+      Alert.alert('Thông báo', 'Trạng thái không phù hợp');
+    } else {
+      console.log('employee : ', employee);
+      await axios
+        .put(
+          `${APINhanVien}/${employee._id}`,
+          {...employee,    
+            oldstore: storageemployee.madaily._id,
+            oldtrangthai: storageemployee.trangthai,},
           {
-            text: 'OK',
-            onPress: () => {
-              setCallback(!callback);
-              navigation.replace('NhanVien');
-            },
+            headers: {Authorization: token},
           },
-        ]);
-      })
-      .catch(error => {
-        Alert.alert('Thông báo', error.response.data.message);
-      });
+        )
+        .then(res => {
+          console.log('employee2');
+          Alert.alert('Thông báo', res.data.message, [
+            {
+              text: 'OK',
+              onPress: () => {
+                setCallback(!callback);
+                navigation.replace('NhanVien');
+              },
+            },
+          ]);
+        })
+        .catch(error => {
+          console.log('employee3');
+          Alert.alert('Thông báo', error.response.data.message);
+        });
+    }
   };
 
   const openGallery = async () => {

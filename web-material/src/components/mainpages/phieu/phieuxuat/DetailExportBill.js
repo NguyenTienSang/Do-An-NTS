@@ -11,10 +11,13 @@ import {BiBookAdd} from 'react-icons/bi';
 function DetailExportBill(exportbill) {
   
   const Format = (number) => {
-    return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + " VND"
-}
-
-
+    if (number >= 0) {
+      return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
+    } else
+      return (
+        "-" + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND"
+      );
+  };
 
   return (
     <div className="detail-exportbill">

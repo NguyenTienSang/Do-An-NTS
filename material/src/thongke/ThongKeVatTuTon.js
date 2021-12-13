@@ -37,14 +37,9 @@ export default function ThongKeVatTuTon({navigation, route}) {
       return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND';
     } else
       return (
-        '-' +
-        String(number)
-          .replace(/(.)(?=(\d{3})+$)/g, '$1.')
-          .slice(2) +
-        ' VND'
+        '-' + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND'
       );
   };
-
 
   if (route.params !== undefined) {
     console.log('route.params.daily : ', route.params.daily);
@@ -56,7 +51,7 @@ export default function ThongKeVatTuTon({navigation, route}) {
     }
     route.params = undefined;
   }
-  
+
   const StatisticMaterial = async () => {
     const res = await axios.post(`${APITKVTT}`, {
       madailyfilter: daily._id,

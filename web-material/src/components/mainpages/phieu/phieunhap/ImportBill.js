@@ -165,7 +165,7 @@ function ImportBill() {
                 borderTop: "none",
               }}
             >
-              Chưa có phiếu xuất
+              Chưa có phiếu nhập
             </div>
           )}
         </div>

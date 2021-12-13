@@ -41,7 +41,6 @@ export default function LapPhieuNhap({navigation, route}) {
   const [datehdn, setDateHDN] = useState(new Date());
   const [onSearch, setOnSearch] = useState(false);
   const [importbill, setImportBill] = useState({
-    // tenpn: "",
     ngay: moment(),
     manv: inforuser._id,
     makho: '',
@@ -83,7 +82,12 @@ export default function LapPhieuNhap({navigation, route}) {
   });
 
   const Format = number => {
-    return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND';
+    if (number >= 0) {
+      return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND';
+    } else
+      return (
+        '-' + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND'
+      );
   };
 
   useEffect(() => {

@@ -5,7 +5,7 @@ const PhieuXuat = require('../models/PhieuXuat');
 const exportbillCtrl = {
     getExportBill: async (req, res) => {
         try{
-            const phieuxuat = await PhieuXuat.find().populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpx').populate({path :'ctpx',populate: {path: 'mavt'}});
+            const phieuxuat = await PhieuXuat.find().sort({ ngay: 1 }).populate('manv').populate({path :'manv',populate: {path: 'madaily'}}).populate('makho').populate('ctpx').populate({path :'ctpx',populate: {path: 'mavt'}});
             console.log('phieuxuat : ',phieuxuat)
             return res.json(phieuxuat)
         } catch(error) {

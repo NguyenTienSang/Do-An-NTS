@@ -33,7 +33,12 @@ export default function ListMaterial({navigation}) {
   const [textInputFocussed, setTeInputFocussed] = useState(false);
 
   const Format = number => {
-    return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND';
+    if (number >= 0) {
+      return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND';
+    } else
+      return (
+        '-' + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND'
+      );
   };
 
   const DeleteMaterial = async (id, public_id) => {
@@ -245,16 +250,16 @@ export default function ListMaterial({navigation}) {
                       </View>
                     </View>
                     <View style={styles.thonTinSP}>
-                        <View
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            marginRight: 20,
-                          }}>
-                          <Text>Giá Nhập : {Format(item.gianhap)}</Text>
-                          <Text>/</Text>
-                          <Text>{item.donvi}</Text>
-                        </View>
+                      <View
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          marginRight: 20,
+                        }}>
+                        <Text>Giá Nhập : {Format(item.gianhap)}</Text>
+                        <Text>/</Text>
+                        <Text>{item.donvi}</Text>
+                      </View>
                     </View>
 
                     <View style={styles.thonTinSP}>

@@ -33,11 +33,7 @@ function StatisticProfitStage() {
       return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
     } else
       return (
-        "-" +
-        String(number)
-          .replace(/(.)(?=(\d{3})+$)/g, "$1.")
-          .slice(2) +
-        " VND"
+        "-" + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND"
       );
   };
 
@@ -157,7 +153,7 @@ function StatisticProfitStage() {
               <p style={{ flex: 1 }}>Tổng Tiền Nhập</p>
               <p style={{ width: "130px" }}>Số Phiếu Xuất</p>
               <p style={{ flex: 1 }}>Tổng Tiền Xuất</p>
-              <p style={{ flex: 1 }}>Lợi Nhuận Tháng</p>
+              <p style={{ flex: 1 }}>Lợi Nhuận Năm</p>
             </div>
             {dataStatistic?.map((item, index) => (
               <div className="material_item">

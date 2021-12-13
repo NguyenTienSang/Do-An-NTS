@@ -22,6 +22,7 @@ const initialWareHouse = {
 function WareHouses() {
   const state = useContext(GlobalState);
   const [warehouse, setWareHouse] = useState(initialWareHouse);
+  const [storagewarehouse, setStorageWarehouse] = useState([]);
   const [images, setImages] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -214,6 +215,7 @@ function WareHouses() {
     console.log("dữ liệu vật tư edit : ", data_warehouse_edit);
     setOnEdit(true);
     setWareHouse(data_warehouse_edit);
+    setStorageWarehouse(data_warehouse_edit);
     setImages(data_warehouse_edit.images);
     document
       .getElementById("modal_container__warehouse")
@@ -255,28 +257,51 @@ function WareHouses() {
     }
     //Cập nhật thông tin đại lý
     if (onEdit) {
-      try {
-        const res = await axios.put(
-          `/api/kho/${warehouse._id}`,
-          { ...warehouse, images },
-          {
-            headers: { Authorization: token },
-          }
-        );
-        //  alert(res.data.message);
-
-        setMessage(res.data.message);
+      //=============== NEW ===========
+      if (
+        warehouse.trangthai === "Chuyển kho" &&
+        storagewarehouse.madaily._id === warehouse.madaily._id
+      ) {
+        setMessage("Vui lòng chọn đại lý mới");
         setOpenAlert(true);
-
-        document
-          .getElementById("modal_container__warehouse")
-          .classList.remove("modal_active");
-        setCallback(!callback);
-      } catch (err) {
-        //  alert(err.response.data.message);
-
-        setMessage(err.response.data.message);
+      } else if (
+        storagewarehouse.madaily._id !== warehouse.madaily._id &&
+        warehouse.trangthai !== "Chuyển kho"
+      ) {
+        setMessage("Vui lòng chọn trạng thái chuyển kho");
         setOpenAlert(true);
+      } else if (
+        warehouse.trangthai === "Chuyển kho" &&
+        storagewarehouse.trangthai === "Ngừng hoạt động"
+      ) {
+        setMessage("Trạng thái không phù hợp");
+        setOpenAlert(true);
+      } else {
+        try {
+          const res = await axios.put(
+            `/api/kho/${warehouse._id}`,
+            {
+              ...warehouse,
+              images,
+              oldstore: storagewarehouse.madaily._id,
+              oldtrangthai: storagewarehouse.trangthai,
+              warehouse: storagewarehouse._id,
+            },
+            {
+              headers: { Authorization: token },
+            }
+          );
+          setMessage(res.data.message);
+          setOpenAlert(true);
+
+          document
+            .getElementById("modal_container__warehouse")
+            .classList.remove("modal_active");
+          setCallback(!callback);
+        } catch (err) {
+          setMessage(err.response.data.message);
+          setOpenAlert(true);
+        }
       }
     }
   };
@@ -447,7 +472,7 @@ function WareHouses() {
             <select
               className="select_daily__kho"
               name="madaily"
-              value={warehouse.madaily._id}
+              value={onEdit ? warehouse.madaily._id : warehouse.madaily}
               onChange={handleChangeInput}
             >
               <option value="" disabled selected hidden>
@@ -468,8 +493,8 @@ function WareHouses() {
                 value={warehouse.trangthai}
                 onChange={handleChangeInput}
               >
-                <option value="Đang kinh doanh">Đang hoạt động</option>
-                <option value="Ngừng kinh doanh">Ngừng hoạt động</option>
+                <option value="Đang hoạt động">Đang hoạt động</option>
+                <option value="Ngừng hoạt động">Ngừng hoạt động</option>
               </select>
             ) : (
               <select
@@ -479,10 +504,10 @@ function WareHouses() {
                 onChange={handleChangeInput}
                 disabled="disabled"
               >
-                <option value="Đang kinh doanh" selected>
-                  Đang kinh doanh
+                <option value="Đang hoạt động" selected>
+                  Đang hoạt động
                 </option>
-                <option value="Ngừng kinh doanh">Ngừng kinh doanh</option>
+                <option value="Ngừng hoạt động">Ngừng hoạt động</option>
               </select>
             )}
           </div>

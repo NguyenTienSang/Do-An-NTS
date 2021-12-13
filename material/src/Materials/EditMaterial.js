@@ -37,7 +37,12 @@ export default function EditMaterial({navigation, route}) {
   });
 
   const Format = number => {
-    return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND';
+    if (number >= 0) {
+      return String(number).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND';
+    } else
+      return (
+        '-' + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, '$1.') + ' VND'
+      );
   };
 
   const openGallery = async () => {

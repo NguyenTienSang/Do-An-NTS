@@ -366,7 +366,6 @@ function Stores() {
           <div className="row">
             <label htmlFor="sodienthoai">Số điện thoại</label>
             <input
-              // type="number"
               name="sodienthoai"
               placeholder="Nhập số điện thoại"
               autoComplete="off"
@@ -388,8 +387,8 @@ function Stores() {
                 onChange={handleChangeInput}
               >
                 {/* <option value="" hidden>Vui lòng chọn trạng thái</option> */}
-                <option value="Đang kinh doanh">Đang hoạt động</option>
-                <option value="Ngừng kinh doanh">Ngừng hoạt động</option>
+                <option value="Đang hoạt động">Đang hoạt động</option>
+                <option value="Ngừng hoạt động">Ngừng hoạt động</option>
               </select>
             ) : (
               <select
@@ -400,10 +399,10 @@ function Stores() {
                 disabled="disabled"
               >
                 {/* <option value="" hidden>Vui lòng chọn trạng thái</option> */}
-                <option value="Đang kinh doanh" selected>
-                  Đang kinh doanh
+                <option value="Đang hoạt động" selected>
+                  Đang hoạt động
                 </option>
-                <option value="Ngừng kinh doanh">Ngừng kinh doanh</option>
+                <option value="Ngừng hoạt động">Ngừng hoạt động</option>
               </select>
             )}
           </div>
