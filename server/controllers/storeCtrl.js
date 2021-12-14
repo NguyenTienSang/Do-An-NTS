@@ -27,7 +27,7 @@ const storeCtrl = {
 
   createStore: async (req, res) => {
     try {
-      const { tendl, diachi, sodienthoai,trangthai ,images } = req.body;
+      const { tendl, diachi, sodienthoai, trangthai, images } = req.body;
       console.log("data input : ", req.body);
       if (!tendl) {
         return res
@@ -52,9 +52,7 @@ const storeCtrl = {
       }
 
       if (!trangthai) {
-        return res
-          .status(400)
-          .json({message: "Trạng thái không được trống" });
+        return res.status(400).json({ message: "Trạng thái không được trống" });
       }
 
       if (!images.public_id) {
@@ -71,7 +69,13 @@ const storeCtrl = {
         console.log("Đại lý đã tồn tại");
         return res.status(400).json({ message: "Tên đại lý đã tồn tại" });
       }
-      const newDaiLy = new DaiLy({ tendl, diachi, sodienthoai,trangthai, images });
+      const newDaiLy = new DaiLy({
+        tendl,
+        diachi,
+        sodienthoai,
+        trangthai,
+        images,
+      });
       await newDaiLy.save();
 
       res.json({
@@ -101,7 +105,7 @@ const storeCtrl = {
           .status(401)
           .json({ message: "Đại lý đã có kho. Không thể xóa !" });
       }
-      console.log("test");
+
       if (!ktnhanvien > 0 && !ktkho > 0) {
         const deleteDaiLy = await DaiLy.findOneAndDelete({
           _id: req.params.id,
@@ -120,7 +124,7 @@ const storeCtrl = {
 
   updateStore: async (req, res) => {
     try {
-      const { tendl, diachi, sodienthoai,trangthai ,images, tendlcheck } = req.body;
+      const { tendl, diachi, sodienthoai, trangthai, images } = req.body;
 
       if (!tendl) {
         return res.status(400).json({ message: "Tên đại lý không được trống" });
@@ -134,23 +138,53 @@ const storeCtrl = {
           .json({ message: "Số điện thoại không được trống" });
       }
       if (!trangthai) {
-        return res
-          .status(400)
-          .json({message: "Trạng thái không được trống" });
+        return res.status(400).json({ message: "Trạng thái không được trống" });
       }
       if (!images) {
         return res.status(400).json({ message: "Ảnh không được trống" });
       }
 
-      const daily = await DaiLy.findOne({ tendl });
+      // const daily = await DaiLy.findOne({ tendl });
+      console.log("req.params.id : ", req.params.id);
+      const daily = await DaiLy.findById(req.params.id);
 
-      console.log("đại lý : ", daily);
+      const kttendl = await DaiLy.findOne({ tendl });
 
-      if (daily !== null && daily.tendl != tendlcheck) {
-        return res.status(400).json({ message: "Tên đại lý đã tồn tại" });
+      if (kttendl && tendl !== daily.tendl) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Tên kho đã tồn tại" });
       }
 
-      let updatedDaiLy = { tendl, diachi, sodienthoai,trangthai, images };
+      const ktsodienthoai = await DaiLy.findOne({ sodienthoai });
+      if (ktsodienthoai && sodienthoai !== daily.sodienthoai) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Số điện thoại đã tồn tại" });
+      }
+
+      if (trangthai === "Ngừng hoạt động") {
+        const ktnhanvien = await NhanVien.findOne({ madaily: req.params.id });
+
+        if (ktnhanvien) {
+          return res
+            .status(401)
+            .json({
+              message: "Đại lý đang có nhân viên. Không thể ngừng hoạt động !",
+            });
+        }
+
+        const ktkho = await Kho.findOne({ madaily: req.params.id });
+        if (ktkho) {
+          return res
+            .status(401)
+            .json({
+              message: "Đại lý đang có kho. Không thể ngừng hoạt động !",
+            });
+        }
+      }
+
+      let updatedDaiLy = { tendl, diachi, sodienthoai, trangthai, images };
 
       updatedDaiLy = await DaiLy.findOneAndUpdate(
         { _id: req.params.id },
@@ -160,19 +194,16 @@ const storeCtrl = {
 
       // User not authorised to update vattu
       if (!updatedDaiLy)
-        return res
-          .status(401)
-          .json({
-            message: "Đại lý không tìm thấy hoặc user không được quyền",
-          });
+        return res.status(401).json({
+          message: "Đại lý không tìm thấy hoặc user không được quyền",
+        });
 
-      res.json({
+      return res.json({
         message: "Cập nhật thành công",
         daily: updatedDaiLy,
       });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Internal server error 1" });
+      return res.status(500).json({ message: "Lỗi cập nhật" });
     }
   },
 };

@@ -25,6 +25,7 @@ export default function EditEmployee({navigation, route}) {
   const state = useContext(GlobalState);
   const [token] = state.token;
   const [callback, setCallback] = state.employeeAPI.callback;
+  let [inforuser, setInforUser] = useState('');
   const [employee, setEmployee] = useState({
     _id: route.params.nhanvien._id,
     hoten: route.params.nhanvien.hoten,
@@ -39,6 +40,10 @@ export default function EditEmployee({navigation, route}) {
     email: route.params.nhanvien.email,
     trangthai: route.params.nhanvien.trangthai,
     images: route.params.nhanvien.images,
+  });
+
+  AsyncStorage.getItem('inforuser').then(async dataUser => {
+    setInforUser(JSON.parse(dataUser));
   });
 
   const [storageemployee, setStorageEmployee] = useState(employee);
@@ -60,50 +65,52 @@ export default function EditEmployee({navigation, route}) {
     console.log('storageemployee.trangthai : ', storageemployee.trangthai);
     console.log('employee.madaily : ', employee.madaily);
     console.log('storageemployee.madaily : ', storageemployee.madaily);
-    if (
-      employee.trangthai === 'Chuyển công tác' &&
-      storageemployee.madaily === employee.madaily
-    ) {
-      Alert.alert('Thông báo', 'Vui lòng chọn đại lý mới');
-    } else if (
-      storageemployee.madaily !== employee.madaily &&
-      employee.trangthai !== 'Chuyển công tác'
-    ) {
-      Alert.alert('Thông báo', 'Vui lòng chọn trạng thái chuyển công tác');
-    } else if (
-      employee.trangthai === 'Chuyển công tác' &&
-      storageemployee.trangthai === 'Nghỉ việc'
-    ) {
-      Alert.alert('Thông báo', 'Trạng thái không phù hợp');
-    } else {
-      console.log('employee : ', employee);
-      await axios
-        .put(
-          `${APINhanVien}/${employee._id}`,
-          {...employee,    
-            oldstore: storageemployee.madaily._id,
-            oldtrangthai: storageemployee.trangthai,},
+
+    await axios
+      .put(
+        `${APINhanVien}/${employee._id}`,
+        {
+          ...employee,
+          // oldstore: storageemployee.madaily._id,
+          // oldtrangthai: storageemployee.trangthai,
+        },
+        {
+          headers: {Authorization: token},
+        },
+      )
+      .then(res => {
+        Alert.alert('Thông báo', res.data.message, [
           {
-            headers: {Authorization: token},
-          },
-        )
-        .then(res => {
-          console.log('employee2');
-          Alert.alert('Thông báo', res.data.message, [
-            {
-              text: 'OK',
-              onPress: () => {
-                setCallback(!callback);
-                navigation.replace('NhanVien');
-              },
+            text: 'OK',
+            onPress: () => {
+              setCallback(!callback);
+              navigation.replace('NhanVien');
             },
-          ]);
-        })
-        .catch(error => {
-          console.log('employee3');
-          Alert.alert('Thông báo', error.response.data.message);
-        });
-    }
+          },
+        ]);
+      })
+      .catch(error => {
+        Alert.alert('Thông báo', error.response.data.message);
+      });
+
+    // if (
+    //   employee.trangthai === 'Chuyển công tác' &&
+    //   storageemployee.madaily === employee.madaily
+    // ) {
+    //   Alert.alert('Thông báo', 'Vui lòng chọn đại lý mới');
+    // } else if (
+    //   storageemployee.madaily !== employee.madaily &&
+    //   employee.trangthai !== 'Chuyển công tác'
+    // ) {
+    //   Alert.alert('Thông báo', 'Vui lòng chọn trạng thái chuyển công tác');
+    // } else if (
+    //   employee.trangthai === 'Chuyển công tác' &&
+    //   storageemployee.trangthai === 'Nghỉ việc'
+    // ) {
+    //   Alert.alert('Thông báo', 'Trạng thái không phù hợp');
+    // } else {
+
+    // }
   };
 
   const openGallery = async () => {

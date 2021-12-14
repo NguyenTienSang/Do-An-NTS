@@ -37,11 +37,9 @@ const employeeCtrl = {
         email,
         trangthai,
         images,
-        oldstore,
-        oldtrangthai,
+        // oldstore,
+        // oldtrangthai,
       } = req.body;
-
-      console.log("req.body : ", req.body);
 
       if (!hoten) {
         return res
@@ -110,35 +108,79 @@ const employeeCtrl = {
       if (!images.public_id) {
         return res.status(400).json({ message: "Ảnh trống" });
       }
-
+   
+      const nhanvien = await NhanVien.findById(req.body._id);
+     
+     
       //======================= New ========================
       //Th không thay đổi trạng thái
-      if (oldtrangthai === trangthai) {
-        let updatedNhanVien = {
-          hoten,
-          madaily,
-          diachi,
-          username,
-          password,
-          gioitinh,
-          role,
-          sodienthoai,
-          cmnd,
-          email,
-          trangthai,
-          images,
-        };
 
-        console.log("req.params.id : ", req.params.id);
-        updatedNhanVien = await NhanVien.findOneAndUpdate(
-          { _id: req.params.id },
-          updatedNhanVien,
-          { new: true }
+      //Đổi đại lý mà không đổi trạng thái chuyển công tác
+      if (
+        nhanvien.madaily.toString() !== madaily.toString() &&
+        trangthai !== "Chuyển công tác"
+      ) {
+        console.log(
+          "nhanvien.madaily.toString() : ",
+          nhanvien.madaily.toString()
         );
-        console.log("trạng thái không thay đổi");
-        // User not authorised to update vattu
-        if (!updatedNhanVien)
-          return res.status(401).json({ message: "Nhân viên không tìm thấy" });
+        console.log("madaily : ", madaily);
+        return res
+          .status(400)
+          .json({ message: "Vui lòng chọn trạng thái chuyển công tác" });
+      }
+
+      let updatedNhanVien = {
+        hoten,
+        madaily,
+        diachi,
+        username,
+        password,
+        gioitinh,
+        role,
+        sodienthoai,
+        cmnd,
+        email,
+        images,
+      };
+
+      if (nhanvien.trangthai === trangthai) {
+        //Kiểm tra username không trùng
+
+        //Kierm tra số điện thoại không trùng
+        const ktsodienthoai = await NhanVien.findOne({ sodienthoai });
+        if (ktsodienthoai && sodienthoai !== nhanvien.sodienthoai) {
+          return res
+            .status(400)
+            .json({ success: false, message: "Số điện thoại đã tồn tại" });
+        }
+
+        const ktemail = await NhanVien.findOne({ email });
+        if (ktemail && email !== nhanvien.email) {
+          return res
+            .status(400)
+            .json({ success: false, message: "Email đã tồn tại" });
+        }
+
+        //Kiểm tra cmnd không trùng
+        const ktcmnd = await NhanVien.findOne({ cmnd });
+        if (ktcmnd && cmnd !== nhanvien.cmnd) {
+          return res.status(400).json({
+            success: false,
+            message: "Chứng minh nhân dân đã tồn tại",
+          });
+        }
+
+        const update = await NhanVien.updateMany(
+          { username: nhanvien.username },
+          {
+            $set: updatedNhanVien,
+          }
+        );
+
+        if (!update.n) {
+          return res.status(401).json({ message: "Cập nhật thất bại" });
+        }
 
         return res.json({
           message: "Cập nhật thành công",
@@ -147,8 +189,19 @@ const employeeCtrl = {
       //Trường hợp thay đổi trạng thái
       else {
         //========== Trường hợp đang làm ===========
+        //Đổi trạng thái chuyển công tác mà không đổi đại lý
+        if (
+          trangthai === "Chuyển công tác" &&
+          nhanvien.madaily.toString() === madaily.toString()
+        ) {
+          return res.status(400).json({ message: "Vui lòng chọn đại lý mới" });
+        }
+
         //Đang làm -> Chuyển công tác
-        if (oldtrangthai === "Đang làm" && trangthai === "Chuyển công tác") {
+        if (
+          nhanvien.trangthai === "Đang làm" &&
+          trangthai === "Chuyển công tác"
+        ) {
           //Kiểm tra xem đã có nhân viên trong đại lý chưa
           const kttontainvdaily = await NhanVien.findOne({
             username: username,
@@ -168,7 +221,7 @@ const employeeCtrl = {
               sodienthoai,
               cmnd,
               email,
-              trangthai: oldtrangthai,
+              trangthai: nhanvien.trangthai,
               images,
             });
             //Lưu vào mongodb
@@ -176,7 +229,7 @@ const employeeCtrl = {
           } else {
             await NhanVien.findOneAndUpdate(
               { username: username, madaily: madaily },
-              { trangthai: oldtrangthai },
+              { trangthai: nhanvien.trangthai },
               { new: true }
             );
           }
@@ -244,7 +297,10 @@ const employeeCtrl = {
           }
         }
         //Đang làm -> Nghỉ việc -> Tài khoản sẽ bị khóa không đăng nhập được nữa -> Thông tin vẫn còn
-        else if (oldtrangthai === "Đang làm" && trangthai === "Nghỉ việc") {
+        else if (
+          nhanvien.trangthai === "Đang làm" &&
+          trangthai === "Nghỉ việc"
+        ) {
           await NhanVien.updateMany(
             { username: username },
             { $set: { trangthai: "Nghỉ việc" } }
@@ -256,22 +312,22 @@ const employeeCtrl = {
         //========== Trường hợp chuyển công tác ===========
         // Chuyển công tác -> Đang làm
         else if (
-          oldtrangthai === "Chuyển công tác" &&
+          nhanvien.trangthai === "Chuyển công tác" &&
           trangthai === "Đang làm"
         ) {
           //Tìm nhân viên có trạng thái đang làm -> Chuyển công tác
           const updatetrangthainvcurrent = await NhanVien.findOneAndUpdate(
             { username: username, trangthai: trangthai },
-            { trangthai: oldtrangthai },
+            { trangthai: nhanvien.trangthai },
             { new: true }
           );
 
-          console.log("updatetrangthainvcurrent : ", updatetrangthainvcurrent);
-          if (!updatetrangthainvcurrent) {
-            return res.status(401).json({
-              message: "Chuyển trạng thái thất bại1",
-            });
-          }
+          // console.log("updatetrangthainvcurrent : ", updatetrangthainvcurrent);
+          // if (!updatetrangthainvcurrent) {
+          //   return res.status(401).json({
+          //     message: "Chuyển trạng thái thất bại",
+          //   });
+          // }
 
           //Chuyển trạng thái đang công tác -> đang làm
           const updatetrangthainvclick = await NhanVien.findOneAndUpdate(
@@ -281,7 +337,7 @@ const employeeCtrl = {
           );
           if (!updatetrangthainvclick) {
             return res.status(401).json({
-              message: "Chuyển trạng thái thất bại2",
+              message: "Chuyển trạng thái thất bại",
             });
           }
 
@@ -293,7 +349,7 @@ const employeeCtrl = {
         //Chuyển công tác -> Nghỉ việc
         //Tài khoản sẽ bị khóa
         else if (
-          oldtrangthai === "Chuyển công tác" &&
+          nhanvien.trangthai === "Chuyển công tác" &&
           trangthai === "Nghỉ việc"
         ) {
           await NhanVien.updateMany(
@@ -307,7 +363,10 @@ const employeeCtrl = {
 
         //Nghỉ việc -> Đang làm
         //Cập nhật tất cả trạng thái về chuyển công tác -> Chuyển trạng thái nhân viên vừa chọn về đang làm
-        else if (oldtrangthai === "Nghỉ việc" && trangthai === "Đang làm") {
+        else if (
+          nhanvien.trangthai === "Nghỉ việc" &&
+          trangthai === "Đang làm"
+        ) {
           await NhanVien.updateMany(
             { username: username },
             { $set: { trangthai: "Chuyển công tác" } }
@@ -327,30 +386,41 @@ const employeeCtrl = {
           return res.json({
             message: "Cập nhật trạng thái thành công",
           });
+        } else if (
+          nhanvien.trangthai === "Nghỉ việc" &&
+          trangthai === "Chuyển công tác"
+        ) {
+          return res.status(401).json({
+            message: "Trạng thái không phù hợp",
+          });
         }
       }
 
       //====================================================
     } catch (error) {
       console.log(error);
-      res
+      return res
         .status(500)
         .json({ success: false, message: "Internal server error" });
     }
   },
   deleteEmployee: async (req, res) => {
     try {
+      console.log("req.params.id : ", req.params.id);
+      console.log("PhieuNhap : ", PhieuNhap);
       const ktpn = await PhieuNhap.findOne({ manv: req.params.id });
       if (ktpn) {
-        return res
-          .status(401)
-          .json({ message: "Nhân viên đã lập phiếu nhập. Không thể xóa !" });
+        return res.status(401).json({
+          success: false,
+          message: "Nhân viên đã lập phiếu nhập. Không thể xóa !",
+        });
       }
       const ktpx = await PhieuXuat.findOne({ manv: req.params.id });
       if (ktpx) {
-        return res
-          .status(401)
-          .json({ message: "Nhân viên đã lập phiếu xuất. Không thể xóa !" });
+        return res.status(401).json({
+          success: false,
+          message: "Nhân viên đã lập phiếu xuất. Không thể xóa !",
+        });
       }
       if (!ktpn > 0 && !ktpx > 0) {
         const deleteNhanVien = await NhanVien.findOneAndDelete({
@@ -361,12 +431,16 @@ const employeeCtrl = {
             .status(401)
             .json({ message: "Không tìm thấy nhân viên cần xóa" });
         } else {
-          return res.json({ message: "Xóa nhân viên thành công" });
+          return res.json({
+            success: true,
+            message: "Xóa nhân viên thành công",
+          });
         }
       }
     } catch (error) {
-      // console.log(error)
-      res.status(500).json({ message: "Xóa nhân viên thất bại" });
+      return res
+        .status(500)
+        .json({ success: false, message: "Xóa nhân viên thất bại" });
     }
   },
 };

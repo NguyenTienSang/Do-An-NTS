@@ -16,7 +16,7 @@ import { AiOutlineFileSearch } from "react-icons/ai";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-function StatisticImportBill() {
+function StatisticBill() {
   const state = useContext(GlobalState);
   const [importbills] = state.importbillAPI.importbills;
   const [searchTerm, setSearchTerm] = useState("");
@@ -86,18 +86,19 @@ function StatisticImportBill() {
                   <DatePicker
                     className="datepicker"
                     selected={startDate}
-                    dateFormat="dd-MM-yyyy"
-                    onChangeRaw={(e) => e.preventDefault()}
                     minDate={new Date("01-01-2010")}
                     maxDate={new Date()}
-                    inputs
-                    onChange={(date) => {
-                      setStartDate(date);
-                    }}
+                    onChangeRaw={(e) => e.preventDefault()}
+                    dateFormat="dd-MM-yyyy"
                     peekNextMonth
                     showMonthDropdown
                     showYearDropdown
                     dropdownMode="select"
+                    // inputs
+                    onChange={(date) => {
+                      setStartDate(date);
+                    }}
+                  
                   />
                 </div>
                 <div className="filter-date-component">
@@ -262,4 +263,4 @@ function StatisticImportBill() {
   );
 }
 
-export default StatisticImportBill;
+export default StatisticBill;

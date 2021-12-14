@@ -80,18 +80,8 @@ const warehouseCtrl = {
 
   updateWareHouse: async (req, res) => {
     try {
-      const {
-        tenkho,
-        madaily,
-        diachi,
-        sodienthoai,
-        trangthai,
-        images,
-        oldstore,
-        oldtrangthai,
-        warehouse,
-        // tenkhocheck,
-      } = req.body;
+      const { tenkho, madaily, diachi, sodienthoai, trangthai, images } =
+        req.body;
       if (!tenkho) {
         return res.status(400).json({ message: "Tên kho không được trống" });
       }
@@ -120,46 +110,73 @@ const warehouseCtrl = {
         return res.status(400).json({ message: "Ảnh trống" });
       }
 
-      //Kiểm tra tên kho trùng
-      // const kho = await Kho.findOne({ tenkho });
-
-      // if (kho && kho.tenkho !== tenkhocheck) {
-      //   return res
-      //     .status(400)
-      //     .json({ success: false, message: "Tên kho đã tồn tại" });
-      // }
-
+      const kho = await Kho.findById(req.body._id);
       //======================= New ========================
-      if (oldtrangthai === trangthai) {
-        let updateKho = {
-          tenkho,
-          madaily,
-          diachi,
-          sodienthoai,
-          trangthai,
-          images,
-        };
+      console.log("kho.madaily.toString() : ", kho.madaily.toString());
+      console.log("madaily.toString() : ", madaily.toString());
+      console.log("trangthai : ", trangthai);
+      if (
+        kho.madaily.toString() !== madaily.toString() &&
+        trangthai !== "Chuyển kho"
+      ) {
+        return res
+          .status(400)
+          .json({ message: "Vui lòng chọn trạng thái chuyển kho" });
+      }
 
-        updateKho = await Kho.findOneAndUpdate(
-          { _id: req.params.id },
-          updateKho,
-          { new: true }
+      let updatedKho = {
+        tenkho,
+        madaily,
+        diachi,
+        sodienthoai,
+        trangthai,
+        images,
+      };
+
+      if (kho.trangthai === trangthai) {
+        const kttenkho = await Kho.findOne({ tenkho });
+
+        if (kttenkho && tenkho !== kho.tenkho) {
+          return res
+            .status(400)
+            .json({ success: false, message: "Tên kho đã tồn tại" });
+        }
+
+        const ktsodienthoai = await Kho.findOne({ sodienthoai });
+        if (ktsodienthoai && sodienthoai !== kho.sodienthoai) {
+          return res
+            .status(400)
+            .json({ success: false, message: "Số điện thoại đã tồn tại" });
+        }
+
+        const update = await Kho.updateMany(
+          { sodienthoai: kho.sodienthoai },
+          {
+            $set: updatedKho,
+          }
         );
 
-        // User not authorised to update vattu
-        if (!updateKho)
-          return res.status(401).json({ message: "Kho không tìm thấy" });
+        if (!update.n) {
+          return res.status(401).json({ message: "Cập nhật thất bại" });
+        }
 
         return res.json({
           message: "Cập nhật thành công",
-          kho: updateKho,
         });
       } else {
         //============ Trường hợp =============
+        //Đổi trạng thái chuyển kho mà không đổi đại lý
+        if (
+          trangthai === "Chuyển kho" &&
+          kho.madaily.toString() === madaily.toString()
+        ) {
+          return res.status(400).json({ message: "Vui lòng chọn đại lý mới" });
+        }
+
         //Đang hoạt động -> Chuyển kho
-        if (oldtrangthai === "Đang hoạt động" && trangthai === "Chuyển kho") {
+        if (kho.trangthai === "Đang hoạt động" && trangthai === "Chuyển kho") {
           //Kiểm tra kho có vật tư tồn hay không
-          if (checkTonKho(oldstore, warehouse)) {
+          if (await checkTonKho(kho.madaily, kho._id)) {
             return res.status(401).json({
               message: "Kho còn vật tư tồn, không thể chuyển trạng thái",
             });
@@ -169,14 +186,16 @@ const warehouseCtrl = {
               sodienthoai: sodienthoai,
             });
 
+            console.log("kttontaikhodaily : ", kttontaikhodaily);
             //Nếu chưa có kho trong đại lý đó -> tạo mới
             if (!kttontaikhodaily) {
+              console.log("tạo ra kho mới");
               const newKho = new Kho({
                 tenkho,
                 madaily,
                 diachi,
                 sodienthoai,
-                trangthai: oldtrangthai,
+                trangthai: kho.trangthai,
                 images,
               });
               //Lưu vào mongodb
@@ -187,7 +206,7 @@ const warehouseCtrl = {
                   madaily: madaily,
                   sodienthoai: sodienthoai,
                 },
-                { trangthai: oldtrangthai },
+                { trangthai: kho.trangthai },
                 { new: true }
               );
             }
@@ -234,12 +253,12 @@ const warehouseCtrl = {
               });
             }
 
-            //Ngược lại chưa từng lập phiếu thì xóa nhân viên đi
+            //Ngược lại chưa từng lập phiếu thì xóa kho đi
             if (!phieunhap && !phieuxuat) {
-              const deleteNhanVien = await NhanVien.findOneAndDelete({
+              const deleteKho = await Kho.findOneAndDelete({
                 _id: req.params.id,
               });
-              if (!deleteNhanVien) {
+              if (!deleteKho) {
                 return res.status(401).json({
                   message:
                     "Không tìm thấy kho cần xóa, chuyển trạng thái thất bại",
@@ -252,10 +271,10 @@ const warehouseCtrl = {
             }
           }
         } else if (
-          oldtrangthai === "Đang hoạt động" &&
+          kho.trangthai === "Đang hoạt động" &&
           trangthai === "Ngừng hoạt động"
         ) {
-          if (checkTonKho(oldstore, warehouse)) {
+          if (await checkTonKho(kho.madaily, kho._id)) {
             return res.status(401).json({
               message: "Kho còn vật tư tồn, không thể chuyển trạng thái",
             });
@@ -269,7 +288,7 @@ const warehouseCtrl = {
             });
           }
         } else if (
-          oldtrangthai === "Chuyển kho" &&
+          kho.trangthai === "Chuyển kho" &&
           trangthai === "Đang hoạt động"
         ) {
           //Tìm kho đang hoạt động
@@ -284,19 +303,21 @@ const warehouseCtrl = {
             });
           }
 
-          if (checkTonKho(kttontaikhodaily.madaily, kttontaikhodaily._id)) {
+          if (
+            await checkTonKho(kttontaikhodaily.madaily, kttontaikhodaily._id)
+          ) {
             return res.status(401).json({
               message: "Kho còn vật tư tồn, không thể chuyển trạng thái",
             });
           } else {
-            //Kiểm tra trong phiếu nhập có kho chưa
+            //Kiểm tra trong phiếu nhập có kho chưa (kho đang hoạt động)
             const phieunhap = await PhieuNhap.findOne({
-              makho: req.params.id,
+              makho: kttontaikhodaily._id,
             });
             if (phieunhap) {
               updatedKho = await Kho.findOneAndUpdate(
-                { _id: req.params.id },
-                { trangthai: trangthai },
+                { _id: kttontaikhodaily._id },
+                { trangthai: "Chuyển kho" },
                 { new: true }
               );
 
@@ -304,20 +325,16 @@ const warehouseCtrl = {
                 return res.status(401).json({
                   message: "Kho không tìm thấy, chuyển trạng thái thất bại",
                 });
-
-              return res.json({
-                message: "Chuyển kho thành công",
-              });
             }
-            //===================== CHECK LẠI Ở ĐÂY NÈ ===================================
+
             //Kiểm tra trong phiếu xuất có kho chưa
             const phieuxuat = await PhieuXuat.findOne({
-              makho: req.params.id,
+              makho: kttontaikhodaily._id,
             });
             if (phieuxuat) {
               updatedKho = await Kho.findOneAndUpdate(
-                { _id: req.params.id },
-                { trangthai: trangthai },
+                { _id: kttontaikhodaily._id },
+                { trangthai: "Chuyển kho" },
                 { new: true }
               );
 
@@ -326,39 +343,27 @@ const warehouseCtrl = {
                   message: "Kho không tìm thấy, chuyển trạng thái thất bại",
                 });
 
-              return res.json({
-                message: "Chuyển kho thành công",
-              });
+              // return res.json({
+              //   message: "Chuyển kho thành công",
+              // });
             }
 
-            //Ngược lại chưa từng lập phiếu thì xóa nhân viên đi
+            //Ngược lại chưa từng lập phiếu thì xóa kho đi
             if (!phieunhap && !phieuxuat) {
-              const deleteNhanVien = await NhanVien.findOneAndDelete({
-                _id: req.params.id,
+              const deleteKho = await Kho.findOneAndDelete({
+                _id: kttontaikhodaily._id,
               });
-              if (!deleteNhanVien) {
+              if (!deleteKho) {
                 return res.status(401).json({
                   message:
                     "Không tìm thấy kho cần xóa, chuyển trạng thái thất bại",
                 });
-              } else {
-                return res.json({
-                  message: "Chuyển kho thành công và xóa",
-                });
               }
-            }
-
-            //Chuyển trạng thái của kho đang hoạt động, thành chuyển kho
-            const updatetrangthaikhocurrent = await NhanVien.findOneAndUpdate(
-              { madaily: madaily, trangthai: trangthai },
-              { trangthai: oldtrangthai },
-              { new: true }
-            );
-
-            if (!updatetrangthaikhocurrent) {
-              return res.status(401).json({
-                message: "Chuyển trạng thái thất bại",
-              });
+              // else {
+              //   return res.json({
+              //     message: "Chuyển kho thành công và xóa",
+              //   });
+              // }
             }
 
             //Chuyển trạng thái đang công tác -> đang làm
@@ -378,7 +383,7 @@ const warehouseCtrl = {
             });
           }
         } else if (
-          oldtrangthai === "Chuyển kho" &&
+          kho.trangthai === "Chuyển kho" &&
           trangthai === "Ngừng hoạt động"
         ) {
           //Tìm kho đang hoạt động
@@ -393,11 +398,62 @@ const warehouseCtrl = {
             });
           }
 
-          if (checkTonKho(kttontaikhodaily.madaily, kttontaikhodaily._id)) {
+          if (
+            await checkTonKho(kttontaikhodaily.madaily, kttontaikhodaily._id)
+          ) {
             return res.status(401).json({
               message: "Kho còn vật tư tồn, không thể chuyển trạng thái",
             });
           } else {
+            //Kiểm tra kho đang hoạt động có phiếu nhập phiếu xuất chưa
+            const phieunhap = await PhieuNhap.findOne({
+              makho: kttontaikhodaily._id,
+            });
+            if (phieunhap) {
+              updatedKho = await Kho.findOneAndUpdate(
+                { _id: kttontaikhodaily._id },
+                { trangthai: "Chuyển kho" },
+                { new: true }
+              );
+
+              if (!updatedKho)
+                return res.status(401).json({
+                  message: "Kho không tìm thấy, chuyển trạng thái thất bại",
+                });
+            }
+
+            //Kiểm tra trong phiếu xuất có kho chưa
+
+            const phieuxuat = await PhieuXuat.findOne({
+              makho: kttontaikhodaily._id,
+            });
+            if (phieuxuat) {
+              updatedKho = await Kho.findOneAndUpdate(
+                { _id: kttontaikhodaily._id },
+                { trangthai: "Chuyển kho" },
+                { new: true }
+              );
+
+              if (!updatedKho)
+                return res.status(401).json({
+                  message: "Kho không tìm thấy, chuyển trạng thái thất bại",
+                });
+            }
+
+            //Ngược lại chưa từng lập phiếu thì xóa kho đi
+            if (!phieunhap && !phieuxuat) {
+              const deleteKho = await Kho.findOneAndDelete({
+                _id: kttontaikhodaily._id,
+              });
+              if (!deleteKho) {
+                return res.status(401).json({
+                  message:
+                    "Không tìm thấy kho cần xóa, chuyển trạng thái thất bại",
+                });
+              }
+            }
+
+            //=======================================================
             await Kho.updateMany(
               { sodienthoai: sodienthoai },
               { $set: { trangthai: "Ngừng hoạt động" } }
@@ -407,12 +463,12 @@ const warehouseCtrl = {
             });
           }
         } else if (
-          oldtrangthai === "Ngừng hoạt động" &&
+          kho.trangthai === "Ngừng hoạt động" &&
           trangthai === "Đang hoạt động"
         ) {
           await Kho.updateMany(
             { sodienthoai: sodienthoai },
-            { $set: { trangthai: "Chuyển công tác" } }
+            { $set: { trangthai: "Chuyển kho" } }
           );
 
           const updatetrangthaikhoclick = await Kho.findOneAndUpdate(
@@ -429,6 +485,13 @@ const warehouseCtrl = {
           return res.json({
             message: "Cập nhật trạng thái thành công",
           });
+        } else if (
+          kho.trangthai === "Ngừng hoạt động" &&
+          trangthai === "Chuyển kho"
+        ) {
+          return res.status(401).json({
+            message: "Trạng thái không phù hợp",
+          });
         }
       }
 
@@ -439,36 +502,36 @@ const warehouseCtrl = {
   },
   deleteWareHouse: async (req, res) => {
     try {
-      console.log("Test");
-
       //Kiểm tra kho này đã có phiếu nhập chưa
       const ktpn = await PhieuNhap.findOne({ makho: req.params.id });
       if (ktpn) {
-        return res
-          .status(401)
-          .json({ message: "Kho đã có phiếu nhập. Không thể xóa !" });
+        return res.status(401).json({
+          success: false,
+          message: "Kho đã có phiếu nhập. Không thể xóa !",
+        });
       }
       //Kiểm tra kho này đã có phiếu xuất chưa
       const ktpx = await PhieuXuat.findOne({ makho: req.params.id });
       if (ktpx) {
-        return res
-          .status(401)
-          .json({ message: "Kho đã có phiếu xuất. Không thể xóa !" });
+        return res.status(401).json({
+          success: false,
+          message: "Kho đã có phiếu xuất. Không thể xóa !",
+        });
       }
       if (!ktpn > 0 && !ktpx > 0) {
         const deleteKho = await Kho.findOneAndDelete({ _id: req.params.id });
-        console.log("Đã xóa kho : ", deleteKho);
+        // console.log("Đã xóa kho : ", deleteKho);
         if (!deleteKho) {
           return res
             .status(401)
-            .json({ message: "Không tìm thấy kho cần xóa" });
+            .json({ success: false, message: "Không tìm thấy kho cần xóa" });
         } else {
-          return res.json({ message: "Xóa kho thành công" });
+          return res.json({ success: true, message: "Xóa kho thành công" });
         }
       }
     } catch (error) {
       // console.log(error)
-      res.status(500).json({ message: "Xóa kho thất bại" });
+      res.status(500).json({ success: false, message: "Xóa kho thất bại" });
     }
   },
 };
@@ -537,6 +600,7 @@ const checkTonKho = async (madailyfilter, makhofilter) => {
   const checkton = listmaterialfilter.some((itemstorage) => {
     return itemstorage.soluong > 0;
   });
+  console.log("checkton : ", checkton);
   return checkton;
 };
 

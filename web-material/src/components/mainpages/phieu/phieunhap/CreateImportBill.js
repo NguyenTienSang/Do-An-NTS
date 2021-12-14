@@ -211,11 +211,14 @@ function CreateImportBill() {
                   <label htmlFor="title">Ngày lập</label>
                   <DatePicker
                     className="date-picker"
-                    format="DD-MM-YYYY"
-                    minDate={new Date("10-20-2021")}
+                    minDate={new Date("10-20-2017")}
                     maxDate={new Date()}
                     onChangeRaw={(e) => e.preventDefault()}
                     dateFormat="dd-MM-yyyy"
+                    peekNextMonth
+                    showMonthDropdown
+                    showYearDropdown
+                    dropdownMode="select"
                     selected={currentDate}
                     onChange={(date) => {
                       setCurrentDate(date);
@@ -300,7 +303,7 @@ function CreateImportBill() {
                         </div>
 
                         <div className="item-bill-element" style={{ flex: 1 }}>
-                          {Format(item.gianhap)}
+                          {Format(item.gianhap)} / {item.donvi}
                         </div>
 
                         <div className="item-bill-element" style={{ flex: 1 }}>

@@ -36,6 +36,7 @@ function Stores() {
   const [onEdit, setOnEdit] = useState(false);
   const [callback, setCallback] = state.storeAPI.callback;
 
+  const [deactive_button, setDeactive_Button] = useState(false);
   const [openalert, setOpenAlert] = useState(false);
 
   const [message, setMessage] = useState("");
@@ -178,6 +179,7 @@ function Stores() {
   };
 
   const AddToListStore = async () => {
+    setDeactive_Button(true);
     //Thêm mới
     if (!onEdit) {
       try {
@@ -230,6 +232,7 @@ function Stores() {
         setOpenAlert(true);
       }
     }
+    setDeactive_Button(false);
   };
 
   const DeleteStore = async (id, public_id) => {
@@ -432,7 +435,12 @@ function Stores() {
             <button id="add" onClick={AddToListStore}>
               {onEdit ? "Cập nhật" : "Thêm"}
             </button>
-            <button id="close" onClick={CloseModalStore}>
+            <button
+              disabled={deactive_button ? true : false}
+              className={deactive_button ? "deactive_button" : null}
+              id="close"
+              onClick={CloseModalStore}
+            >
               Hủy
             </button>
           </div>

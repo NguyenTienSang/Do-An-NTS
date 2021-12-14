@@ -57,6 +57,11 @@ p {
   width: 100%;
 }
 
+.deactive_button {
+  background-color: #999 !important;
+  cursor: default;
+}
+
 @import url("https://cdn.syncfusion.com/ej2/material.css");
 /*--------------------- Header ---------------------*/
 @import url("./components/header/header.css");

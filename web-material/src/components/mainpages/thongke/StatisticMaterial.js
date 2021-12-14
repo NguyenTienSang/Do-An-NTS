@@ -9,6 +9,7 @@ import NavBar from "../../navbar/NavBar";
 import Loading from "../utils/loading/Loading";
 import { GiExplosiveMaterials } from "react-icons/gi";
 import { BiBookAdd } from "react-icons/bi";
+import Pagination from "../../common/Pagination";
 
 function StatisticMaterial() {
   const state = useContext(GlobalState);
@@ -25,14 +26,47 @@ function StatisticMaterial() {
   const [stores] = state.storeAPI.stores;
   const [warehouses] = state.warehouseAPI.warehouses;
   const [materials] = state.materialAPI.materials;
-  const [importbills] = state.importbillAPI.importbills;
-  // const [statisticmaterials] = state.statisticAPI.statisticmaterials;
 
   const [materialsfilter, setMaterialsFilter] = useState(materials);
+  const [listMaterialSearch, setListMaterialSearch] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [onEdit, setOnEdit] = useState(false);
   const [madailyfilter, setMaDaiLyFilter] = useState("allstores");
   const [makhofilter, setMaKhoFilter] = useState("allwarehouses");
+
+  //-------------- Phân trang ----------------
+  const [currentPage, setCurrentPage] = useState(1);
+  const [materialsPerPage] = useState(10);
+
+  // Get current
+  const indexOfLastMaterial = currentPage * materialsPerPage;
+  const indexOfFirstMaterial = indexOfLastMaterial - materialsPerPage;
+
+  useEffect(() => {
+    setListMaterialSearch(
+      materialsfilter?.filter((material) => {
+        if (searchTerm === "") {
+          return material;
+        } else if (
+          material._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          material.tenvt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          material.trangthai.toLowerCase().includes(searchTerm.toLowerCase())
+        ) {
+          return material;
+        }
+      })
+    );
+    setCurrentPage(1); //Khởi tạo lại trang hiện tại là 1
+  }, [searchTerm, materialsfilter]);
+
+  //Gán list vào trang hiện tại
+  const currentMaterials = listMaterialSearch?.slice(
+    indexOfFirstMaterial,
+    indexOfLastMaterial
+  );
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  //----------------------
 
   const Format = (number) => {
     if (number >= 0) {
@@ -125,10 +159,6 @@ function StatisticMaterial() {
                 </select>
               </div>
             </div>
-
-            {/* <div className="title-tab">
-                <h2 style={{display:'flex',alignItems:'center'}}><GiExplosiveMaterials style={{marginRight:'5px'}}/>Vật Tư</h2>
-              </div> */}
           </div>
 
           <div className="statisticvt_header__list">
@@ -141,66 +171,48 @@ function StatisticMaterial() {
             <p style={{ flex: 1 }}>Giá xuất</p>
             <p style={{ flex: 1 }}>Trạng thái</p>
           </div>
-          {materialsfilter.length > 0 ? (
-            materialsfilter
-              .filter((material) => {
-                if (searchTerm === "") {
-                  return material;
-                } else if (
-                  material._id
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  material.tenvt
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase()) ||
-                  material.trangthai
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                ) {
-                  return material;
-                }
-              })
-              .map((material, index) => {
-                return (
-                  <div className="material_item">
-                    <div
-                      style={{ width: "70px" }}
-                      className="material_item_element"
-                    >
-                      {index + 1}
-                    </div>
-                    <div
-                      style={{ width: "160px" }}
-                      className="material_item_element id_material"
-                    >
-                      <p>{material._id}</p>
-                    </div>
-                    <div style={{ flex: 1 }} className="material_item_element">
-                      <p>{material.tenvt}</p>
-                    </div>
-                    <div
-                      style={{ width: "160px" }}
-                      className="material_item_element"
-                    >
-                      <img src={material.images.url} alt="" />
-                    </div>
-
-                    <div style={{ flex: 1 }} className="material_item_element">
-                      {material.soluong} {material.donvi}
-                    </div>
-
-                    <div style={{ flex: 1 }} className="material_item_element">
-                      {Format(material.gianhap)}
-                    </div>
-                    <div style={{ flex: 1 }} className="material_item_element">
-                      {Format(material.giaxuat)}
-                    </div>
-                    <div style={{ flex: 1 }} className="material_item_element">
-                      {material.trangthai}
-                    </div>
+          {currentMaterials.length > 0 ? (
+            currentMaterials?.map((material, index) => {
+              return (
+                <div className="material_item">
+                  <div
+                    style={{ width: "70px" }}
+                    className="material_item_element"
+                  >
+                    {index + 1}
                   </div>
-                );
-              })
+                  <div
+                    style={{ width: "160px" }}
+                    className="material_item_element id_material"
+                  >
+                    <p>{material._id}</p>
+                  </div>
+                  <div style={{ flex: 1 }} className="material_item_element">
+                    <p>{material.tenvt}</p>
+                  </div>
+                  <div
+                    style={{ width: "160px" }}
+                    className="material_item_element"
+                  >
+                    <img src={material.images.url} alt="" />
+                  </div>
+
+                  <div style={{ flex: 1 }} className="material_item_element">
+                    {material.soluong} {material.donvi}
+                  </div>
+
+                  <div style={{ flex: 1 }} className="material_item_element">
+                    {Format(material.gianhap)}
+                  </div>
+                  <div style={{ flex: 1 }} className="material_item_element">
+                    {Format(material.giaxuat)}
+                  </div>
+                  <div style={{ flex: 1 }} className="material_item_element">
+                    {material.trangthai}
+                  </div>
+                </div>
+              );
+            })
           ) : (
             <div
               style={{
@@ -214,6 +226,15 @@ function StatisticMaterial() {
               Kho có vật tư tồn kho
             </div>
           )}
+
+          {currentMaterials.length > 0 ? (
+            <Pagination
+              itemsPerpage={materialsPerPage}
+              totalItems={listMaterialSearch?.length}
+              paginate={paginate}
+              currentPage={currentPage}
+            />
+          ) : null}
         </div>
       </div>
     </div>

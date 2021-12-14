@@ -234,10 +234,13 @@ function CreateExportBill() {
                   <DatePicker
                     className="date-picker"
                     format="DD-MM-YYYY"
-                    placeholder="Nhập ngày"
-                    minDate={new Date("10-20-2021")}
+                    minDate={new Date("10-20-2017")}
                     maxDate={new Date()}
                     dateFormat="dd-MM-yyyy"
+                    peekNextMonth
+                    showMonthDropdown
+                    showYearDropdown
+                    dropdownMode="select"
                     selected={currentDate}
                     onChangeRaw={(e) => e.preventDefault()}
                     onChange={(date) => {

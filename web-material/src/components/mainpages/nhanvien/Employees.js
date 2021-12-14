@@ -48,6 +48,8 @@ function Employees() {
 
   const [message, setMessage] = useState("");
 
+
+  const [deactive_button, setDeactive_Button] = useState(false);
   let inforuser = JSON.parse(localStorage.getItem("inforuser"));
 
   //-------------- Phân trang ----------------
@@ -170,6 +172,7 @@ function Employees() {
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
+    console.log("e.target.value : ", e.target.value);
     setEmployee({ ...employee, [name]: value });
   };
 
@@ -188,8 +191,13 @@ function Employees() {
 
   const EditEmployee = (data_employee_edit) => {
     console.log("data_employee_edit : ", data_employee_edit);
+
     setOnEdit(true);
-    setEmployee(data_employee_edit);
+    setEmployee({
+      ...data_employee_edit,
+      madaily: data_employee_edit.madaily._id,
+    });
+
     setStorageEmployee(data_employee_edit);
     setImages(data_employee_edit.images);
     document
@@ -205,6 +213,7 @@ function Employees() {
 
   const AddToListEmployee = async (e) => {
     // //Thêm mới
+    setDeactive_Button(true);
     if (!onEdit) {
       try {
         const res = await axios.post(
@@ -230,91 +239,72 @@ function Employees() {
     //Cập nhật thông tin nhân viên
     if (onEdit) {
       if (
-        employee.trangthai === "Chuyển công tác" &&
-        storageemployee.madaily._id === employee.madaily._id
+        inforuser.username === employee.username &&
+        inforuser.trangthai !== employee.trangthai &&
+        inforuser.madaily._id !== employee.madaily._id
       ) {
-        setMessage("Vui lòng chọn đại lý mới");
+        const infordaily = stores.find((storeitem) => {
+          return storeitem._id.toString() === employee.madaily.toString();
+        });
+
+        inforuser.madaily = infordaily;
+        localStorage.setItem("inforuser", JSON.stringify(inforuser));
+      }
+
+      try {
+        const res = await axios.put(
+          `/api/nhanvien/${employee._id}`,
+          {
+            ...employee,
+            images,
+          },
+          {
+            headers: { Authorization: token },
+          }
+        );
+
+        setMessage(res.data.message);
         setOpenAlert(true);
-      } else if (
-        storageemployee.madaily._id !== employee.madaily._id &&
-        employee.trangthai !== "Chuyển công tác"
-      ) {
-        setMessage("Vui lòng chọn trạng thái chuyển công tác");
+
+        document
+          .getElementById("modal_container__employee")
+          .classList.remove("modal_active");
+        setCallback(!callback);
+      } catch (err) {
+        setMessage(err.response.data.message);
         setOpenAlert(true);
-      } else if (
-        employee.trangthai === "Chuyển công tác" &&
-        storageemployee.trangthai === "Nghỉ việc"
-      ) {
-        setMessage("Trạng thái không phù hợp");
-        setOpenAlert(true);
-      } else {
-        if (
-          inforuser.username === employee.username &&
-          inforuser.trangthai !== employee.trangthai &&
-          inforuser.madaily._id !== employee.madaily._id
-        ) {
-          const infordaily = stores.find((storeitem) => {
-            return storeitem._id.toString() === employee.madaily.toString();
-          });
-
-          inforuser.madaily = infordaily;
-          console.log("inforuser : ", inforuser);
-          localStorage.setItem("inforuser", JSON.stringify(inforuser));
-        }
-
-        try {
-          const res = await axios.put(
-            `/api/nhanvien/${employee._id}`,
-            {
-              ...employee,
-              images,
-              oldstore: storageemployee.madaily._id,
-              oldtrangthai: storageemployee.trangthai,
-            },
-            {
-              headers: { Authorization: token },
-            }
-          );
-
-          setMessage(res.data.message);
-          setOpenAlert(true);
-
-          document
-            .getElementById("modal_container__employee")
-            .classList.remove("modal_active");
-          setCallback(!callback);
-        } catch (err) {
-          setMessage(err.response.data.message);
-          setOpenAlert(true);
-        }
       }
     }
+    setDeactive_Button(false);
   };
 
   const DeleteEmployee = async (id, public_id) => {
     try {
-      setLoading(true);
-      //Xóa ảnh trên cloudinary
-      const destroyImg = axios.post(
-        "/api/destroy",
-        {
-          public_id,
-        },
-        { headers: { Authorization: token } }
-      );
       //Xóa vật tư trong db
-      const deleteemployee = await axios.delete(`/api/nhanvien//${id}`, {
+      const deleteemployee = await axios.delete(`/api/nhanvien/${id}`, {
         headers: { Authorization: token },
       });
-      //  alert(res.data.message);
-      await destroyImg;
+
+      //Nếu xóa thành công thì xóa ảnh
+      if (deleteemployee.data.success) {
+        setLoading(true);
+        //Xóa ảnh trên cloudinary
+        await axios.post(
+          "/api/destroy",
+          {
+            public_id,
+          },
+          { headers: { Authorization: token } }
+        );
+        setLoading(false);
+      }
+
       // alert(deleteemployee.data.message);
 
       setMessage(deleteemployee.data.message);
       setOpenAlert(true);
 
       setCallback(!callback);
-      setLoading(false);
     } catch (err) {
       //  alert(err.response.data.message);
       setMessage(err.response.data.message);
@@ -440,7 +430,7 @@ function Employees() {
             <select
               className="select-daily-nhanvien"
               name="madaily"
-              value={onEdit ? employee.madaily._id : employee.madaily}
+              value={employee.madaily}
               onChange={handleChangeInput}
             >
               <option value="" disabled selected hidden>
@@ -613,7 +603,12 @@ function Employees() {
             <button id="add" onClick={AddToListEmployee}>
               {onEdit ? "Cập Nhật" : "Thêm"}
             </button>
-            <button id="close" onClick={CloseModalEmployee}>
+            <button
+              disabled={deactive_button ? true : false}
+              className={deactive_button ? "deactive_button" : null}
+              id="close"
+              onClick={CloseModalEmployee}
+            >
               Hủy
             </button>
           </div>

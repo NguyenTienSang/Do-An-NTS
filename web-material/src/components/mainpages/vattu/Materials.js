@@ -37,6 +37,7 @@ function Materials() {
   const [onEdit, setOnEdit] = useState(false);
   const [callback, setCallback] = state.materialAPI.callback;
 
+  const [deactive_button, setDeactive_Button] = useState(false);
   const [openalert, setOpenAlert] = useState(false);
 
   const [message, setMessage] = useState("");
@@ -66,7 +67,6 @@ function Materials() {
     );
     setCurrentPage(1); //Khởi tạo lại trang hiện tại là 1
   }, [searchTerm, materials]);
-
 
   //Gán list vào trang hiện tại
   const currentMaterials = listMaterialSearch?.slice(
@@ -161,7 +161,6 @@ function Materials() {
   };
 
   const EditMaterial = (data_material_edit) => {
-    console.log("dữ liệu vật tư edit : ", data_material_edit);
     setOnEdit(true);
     setMaterial(data_material_edit);
     setImages(data_material_edit.images);
@@ -173,6 +172,7 @@ function Materials() {
   };
 
   const AddToListMaterial = async () => {
+    setDeactive_Button(true);
     if (!onEdit) {
       try {
         const res = await axios.post(
@@ -225,6 +225,7 @@ function Materials() {
         setOpenAlert(true);
       }
     }
+    setDeactive_Button(false);
   };
 
   const DeleteMaterial = async (id, public_id) => {
@@ -445,7 +446,12 @@ function Materials() {
             <button id="add" onClick={AddToListMaterial}>
               {onEdit ? "Cập nhật" : "Thêm"}
             </button>
-            <button id="close" onClick={CloseModalMaterial}>
+            <button
+              id="close"
+              disabled={deactive_button ? true : false}
+              className={deactive_button ? "deactive_button" : null}
+              onClick={CloseModalMaterial}
+            >
               Hủy
             </button>
           </div>

@@ -1,6 +1,6 @@
 //API
 //Đăng nhập
-export const APISTATE = 'http://192.168.1.5:5000/api';
+export const APISTATE = 'http://192.168.1.3:5000/api';
 
 //Aunthentication
 export const APILogin = `${APISTATE}/auth/login`;

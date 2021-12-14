@@ -25,6 +25,7 @@ function WareHouses() {
   const [storagewarehouse, setStorageWarehouse] = useState([]);
   const [images, setImages] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [deactive_button, setDeactive_Button] = useState(false);
 
   const [isAdmin] = state.userAPI.isAdmin;
   const [token] = state.token;
@@ -214,7 +215,10 @@ function WareHouses() {
   const EditWareHouse = (data_warehouse_edit) => {
     console.log("dữ liệu vật tư edit : ", data_warehouse_edit);
     setOnEdit(true);
-    setWareHouse(data_warehouse_edit);
+    setWareHouse({
+      ...data_warehouse_edit,
+      madaily: data_warehouse_edit.madaily._id,
+    });
     setStorageWarehouse(data_warehouse_edit);
     setImages(data_warehouse_edit.images);
     document
@@ -229,9 +233,7 @@ function WareHouses() {
   };
 
   const AddToListWareHouse = async (e) => {
-    console.log(e);
-
-    console.log("warehouse : ", warehouse);
+    setDeactive_Button(true);
     // //Thêm mới
     if (!onEdit) {
       try {
@@ -258,81 +260,56 @@ function WareHouses() {
     //Cập nhật thông tin đại lý
     if (onEdit) {
       //=============== NEW ===========
-      if (
-        warehouse.trangthai === "Chuyển kho" &&
-        storagewarehouse.madaily._id === warehouse.madaily._id
-      ) {
-        setMessage("Vui lòng chọn đại lý mới");
+      try {
+        const res = await axios.put(
+          `/api/kho/${warehouse._id}`,
+          {
+            ...warehouse,
+            images,
+          },
+          {
+            headers: { Authorization: token },
+          }
+        );
+        setMessage(res.data.message);
         setOpenAlert(true);
-      } else if (
-        storagewarehouse.madaily._id !== warehouse.madaily._id &&
-        warehouse.trangthai !== "Chuyển kho"
-      ) {
-        setMessage("Vui lòng chọn trạng thái chuyển kho");
-        setOpenAlert(true);
-      } else if (
-        warehouse.trangthai === "Chuyển kho" &&
-        storagewarehouse.trangthai === "Ngừng hoạt động"
-      ) {
-        setMessage("Trạng thái không phù hợp");
-        setOpenAlert(true);
-      } else {
-        try {
-          const res = await axios.put(
-            `/api/kho/${warehouse._id}`,
-            {
-              ...warehouse,
-              images,
-              oldstore: storagewarehouse.madaily._id,
-              oldtrangthai: storagewarehouse.trangthai,
-              warehouse: storagewarehouse._id,
-            },
-            {
-              headers: { Authorization: token },
-            }
-          );
-          setMessage(res.data.message);
-          setOpenAlert(true);
 
-          document
-            .getElementById("modal_container__warehouse")
-            .classList.remove("modal_active");
-          setCallback(!callback);
-        } catch (err) {
-          setMessage(err.response.data.message);
-          setOpenAlert(true);
-        }
+        document
+          .getElementById("modal_container__warehouse")
+          .classList.remove("modal_active");
+        setCallback(!callback);
+      } catch (err) {
+        setMessage(err.response.data.message);
+        setOpenAlert(true);
       }
     }
+    setDeactive_Button(false);
   };
 
   const DeleteWareHouse = async (id, public_id) => {
     try {
-      setLoading(true);
-      //Xóa ảnh trên cloudinary
-      const destroyImg = axios.post(
-        "/api/destroy",
-        {
-          public_id,
-        },
-        { headers: { Authorization: token } }
-      );
       //Xóa vật tư trong db
       const deletewarehouse = await axios.delete(`/api/kho/${id}`, {
         headers: { Authorization: token },
       });
-      //  alert(res.data.message);
-      await destroyImg;
-      // alert(deletewarehouse.data.message);
+
+      if (deletewarehouse.data.success) {
+        setLoading(true);
+        //Xóa ảnh trên cloudinary
+        await axios.post(
+          "/api/destroy",
+          {
+            public_id,
+          },
+          { headers: { Authorization: token } }
+        );
+        setLoading(false);
+      }
 
       setMessage(deletewarehouse.data.message);
       setOpenAlert(true);
-
       setCallback(!callback);
-      setLoading(false);
     } catch (err) {
-      //  alert(err.response.data.message);
-
       setMessage(err.response.data.message);
       setOpenAlert(true);
     }
@@ -472,7 +449,7 @@ function WareHouses() {
             <select
               className="select_daily__kho"
               name="madaily"
-              value={onEdit ? warehouse.madaily._id : warehouse.madaily}
+              value={warehouse.madaily}
               onChange={handleChangeInput}
             >
               <option value="" disabled selected hidden>
@@ -494,6 +471,7 @@ function WareHouses() {
                 onChange={handleChangeInput}
               >
                 <option value="Đang hoạt động">Đang hoạt động</option>
+                <option value="Chuyển kho">Chuyển kho</option>
                 <option value="Ngừng hoạt động">Ngừng hoạt động</option>
               </select>
             ) : (
@@ -551,7 +529,12 @@ function WareHouses() {
             <button id="add" onClick={AddToListWareHouse}>
               {onEdit ? "Cập Nhật" : "Thêm"}
             </button>
-            <button id="close" onClick={CloseModalWareHouse}>
+            <button
+              disabled={deactive_button ? true : false}
+              className={deactive_button ? "deactive_button" : null}
+              id="close"
+              onClick={CloseModalWareHouse}
+            >
               Hủy
             </button>
           </div>
