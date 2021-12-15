@@ -1,0 +1,14 @@
+.title-statisticmaterial-detail {
+    display: flex;
+    justify-content: space-evenly;
+    /* width: 100%; */
+}
+
+.header-title .title-statisticmaterial-detail p:first-child {
+    margin-right: 50px !important;
+}
+
+.title-statisticmaterial-detail p {
+    font-size: 20px;
+    font-weight: 600;
+}

@@ -1,15 +1,18 @@
 import axios from "axios";
 import React, { useContext, useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-
+import moment from "moment";
 import { GlobalState } from "../../../GlobalState";
 import MaterialItem from "./MaterialItem";
 import Header from "../../header/Header";
 import NavBar from "../../navbar/NavBar";
 import Loading from "../utils/loading/Loading";
 import { GiExplosiveMaterials } from "react-icons/gi";
+import { FaFileExport } from "react-icons/fa";
 import { BiBookAdd } from "react-icons/bi";
 import Pagination from "../../common/Pagination";
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
 
 const initialMaterial = {
   tenvt: "",
@@ -31,16 +34,76 @@ function Materials() {
 
   const param = useParams();
 
+  const inforuser = JSON.parse(localStorage.getItem("inforuser"));
   const [materials] = state.materialAPI.materials;
-  const [listMaterialSearch, setListMaterialSearch] = useState(materials);
+
+  // const [listMaterialSearch, setListMaterialSearch] = useState(async () => {
+  //   if (inforuser.role === "admin") {
+  //     return materials;
+  //   } else if (inforuser.role === "user") {
+  //     const res = await axios.post("/api/thongke/vattu", {
+  //       madailyfilter: inforuser.madaily._id,
+  //       makhofilter: "allwarehouses",
+  //     });
+  //     return res.data;
+  //   }
+  // });
+
+  const [listMaterialSearch, setListMaterialSearch] = useState([]);
+
+  useEffect(async () => {
+    if (inforuser.role === "user") {
+      const res = await axios.post("/api/thongke/vattu", {
+        madailyfilter: inforuser.madaily._id,
+        makhofilter: "allwarehouses",
+      });
+      setListMaterialSearch(res.data);
+    } else if (inforuser.role === "admin") {
+      setListMaterialSearch(materials);
+    }
+  }, []);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [onEdit, setOnEdit] = useState(false);
   const [callback, setCallback] = state.materialAPI.callback;
 
   const [deactive_button, setDeactive_Button] = useState(false);
   const [openalert, setOpenAlert] = useState(false);
-
   const [message, setMessage] = useState("");
+
+  //============ XUẤT FILE ==============
+  const fileType =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  const fileExtension = ".xlsx";
+  const DATE = moment(new Date()).format("DD-MM-YYYY");
+
+  const customData = (dataImport) => {
+    let dataExport = [];
+    console.log("dataImport : ", dataImport.listMaterialSearch);
+
+    dataExport = dataImport.listMaterialSearch.map((data, index) => ({
+      STT: index + 1,
+      ID: data._id,
+      "Tên vật tư": data.tenvt,
+      "Đơn vị": data.donvi,
+      "Giá nhập": data.gianhap,
+      "Giá xuất": data.giaxuat,
+      "Số lượng": data.soluong,
+      "Trạng thái": data.trangthai,
+    }));
+
+    // console.log("dataExport : ", dataExport);
+    return dataExport;
+  };
+
+  const exportToCSV = (csvData, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(customData(csvData));
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
+  };
+  //======================================
 
   //-------------- Phân trang ----------------
   const [currentPage, setCurrentPage] = useState(1);
@@ -290,10 +353,29 @@ function Materials() {
               </div>
 
               {isAdmin ? (
-                <button className="add-item" onClick={AddMaterial}>
-                  <BiBookAdd style={{ marginRight: "5px", marginTop: "5px" }} />
-                  Thêm Vật Tư
-                </button>
+                <>
+                  <button className="add-item" onClick={AddMaterial}>
+                    <BiBookAdd
+                      style={{ marginRight: "5px", marginTop: "5px" }}
+                    />
+                    Thêm Vật Tư
+                  </button>
+
+                  <button
+                    className="add-item"
+                    onClick={() => {
+                      exportToCSV(
+                        { listMaterialSearch },
+                        `DanhSachVatTu_${DATE}`
+                      );
+                    }}
+                  >
+                    <FaFileExport
+                      style={{ marginRight: "5px", marginTop: "5px" }}
+                    />
+                    Xuất File
+                  </button>
+                </>
               ) : null}
             </div>
             <div className="material-header_list">
@@ -305,11 +387,7 @@ function Materials() {
               <p style={{ flex: 1 }}>Giá nhập</p>
               <p style={{ flex: 1 }}>Giá xuất</p>
               <p style={{ flex: 1 }}>Trạng thái</p>
-              {isAdmin ? (
-                <>
-                  <p style={{ flex: 1 }}>Chức năng</p>
-                </>
-              ) : null}
+              <p style={{ flex: 1 }}>Chức năng</p>
             </div>
             {currentMaterials?.map((material, index) => {
               return (

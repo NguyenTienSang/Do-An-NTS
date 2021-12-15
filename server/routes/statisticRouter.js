@@ -7,6 +7,7 @@ router
   .route("/thongke/timkiemvattuphieunhap")
   .post(statisticCtrl.searchMaterialImportBills);
 router.route("/thongke/vattu").post(statisticCtrl.statisticMaterials);
+router.route("/thongke/vattutrongcacdaily").post(statisticCtrl.statisticMaterialsInListWareHouse);
 router
   .route("/thongke/phieunhapnhanvien")
   .post(statisticCtrl.statisticImportBillEmployees);

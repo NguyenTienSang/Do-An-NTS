@@ -10,9 +10,12 @@ import { GiExplosiveMaterials } from "react-icons/gi";
 import { BiBookAdd } from "react-icons/bi";
 import moment from "moment";
 import DatePicker from "react-datepicker";
-// import { Button } from 'react-bootstrap';
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
+import { FaFileExport } from "react-icons/fa";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { AiOutlineFileSearch } from "react-icons/ai";
+import Pagination from "../../common/Pagination";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -22,11 +25,116 @@ function StatisticBill() {
   const [searchTerm, setSearchTerm] = useState("");
   const [manv, setMaNV] = useState("");
   const [optionbill, setOptionBill] = useState("PhieuNhap");
-  const [billsfilter, setBillsFilter] = useState();
+  const [billsfilter, setBillsFilter] = useState([]);
+  const [listStatisticBillSearch, setListStatisticBillSearch] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [openalert, setOpenAlert] = useState(false);
   const [message, setMessage] = useState("");
+
+  //============ XUẤT FILE ==============
+  const fileType =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  const fileExtension = ".xlsx";
+  const DATE = moment(new Date()).format("DD-MM-YYYY");
+  const customData = (dataImport) => {
+    let dataExport = [];
+
+    let count = -1;
+    for (var i = 0; i < dataImport.billsfilter.length; i++) {
+      count++;
+      dataExport[count] = {};
+      dataExport[count] = {
+        STT: i + 1,
+        ID: dataImport.billsfilter[i]._id,
+        "Ngày Lập": `${dataImport.billsfilter[i].ngay.slice(
+          8,
+          10
+        )}-${dataImport.billsfilter[i].ngay.slice(
+          5,
+          7
+        )}-${dataImport.billsfilter[i].ngay.slice(0, 4)}`,
+        "Id Nhân Viên": dataImport.billsfilter[i].manv._id,
+        "Đại Lý": dataImport.billsfilter[i].manv.madaily.tendl,
+        Kho: dataImport.billsfilter[i].makho.tenkho,
+        "Tổng Cộng": onLoadTotal(dataImport.billsfilter[i]),
+      };
+
+      count++;
+      dataExport[count] = {
+        STT: "STT",
+        ID: "Tên Vật Tư",
+        "Ngày Lập": optionbill === "PhieuNhap" ? "Giá nhập" : "Giá xuất",
+        "Id Nhân Viên": "Số lượng",
+        "Đại Lý": "Tổng tiền",
+        Kho: "",
+        "Tổng Cộng": "",
+      };
+
+      count++;
+
+      if (optionbill === "PhieuNhap") {
+        for (var j = 0; j < dataImport.billsfilter[i].ctpn.length; j++) {
+          dataExport[count] = {
+            STT: j + 1,
+            ID: dataImport.billsfilter[i].ctpn[j].mavt.tenvt,
+            "Ngày Lập": Format(dataImport.billsfilter[i].ctpn[j].gianhap),
+            "Id Nhân Viên": dataImport.billsfilter[i].ctpn[j].soluong,
+            "Đại Lý": Format(
+              dataImport.billsfilter[i].ctpn[j].gianhap *
+                dataImport.billsfilter[i].ctpn[j].soluong
+            ).toString(),
+            Kho: "",
+            "Tổng Cộng": "",
+          };
+          count++;
+        }
+      } else {
+        for (var j = 0; j < dataImport.billsfilter[i].ctpx.length; j++) {
+          dataExport[count] = {
+            STT: j + 1,
+            ID: dataImport.billsfilter[i].ctpx[j].mavt.tenvt,
+            "Ngày Lập": Format(dataImport.billsfilter[i].ctpx[j].giaxuat),
+            "Id Nhân Viên": dataImport.billsfilter[i].ctpx[j].soluong,
+            "Đại Lý": Format(
+              dataImport.billsfilter[i].ctpx[j].giaxuat *
+                dataImport.billsfilter[i].ctpx[j].soluong
+            ).toString(),
+            Kho: "",
+            "Tổng Cộng": "",
+          };
+          count++;
+        }
+      }
+    }
+    return dataExport;
+  };
+
+  const Format = (number) => {
+    if (number >= 0) {
+      return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
+    } else
+      return (
+        "-" + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND"
+      );
+  };
+
+  const onLoadTotal = (detailimportbill) => {
+    var totalcost = 0;
+    detailimportbill?.ctpn?.map((ipbill) => {
+      totalcost += ipbill.gianhap * ipbill.soluong;
+    });
+    return Format(totalcost);
+  };
+
+  const exportToCSV = (csvData, fileName) => {
+    // customData(csvData);
+    const ws = XLSX.utils.json_to_sheet(customData(csvData));
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
+  };
 
   const filterbill = async () => {
     if (manv === "") {
@@ -52,6 +160,51 @@ function StatisticBill() {
       setBillsFilter(res.data);
     }
   };
+
+  //================= PHÂN TRANG ======================
+  const [currentPage, setCurrentPage] = useState(1);
+  const [statisticbillsPerPage] = useState(10);
+
+  // Get current posts
+  const indexOfLastImportbill = currentPage * statisticbillsPerPage;
+  const indexOfFirstImportbill = indexOfLastImportbill - statisticbillsPerPage;
+
+  // Lấy ra danh sách kho có trong từ khóa search
+  useEffect(() => {
+    setListStatisticBillSearch(
+      billsfilter?.filter((importbill) => {
+        if (searchTerm === "") {
+          return importbill;
+        } else if (
+          importbill._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          importbill.manv._id
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          importbill.manv.madaily.tendl
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          importbill.makho.tenkho
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
+        ) {
+          return importbill;
+        }
+      })
+    );
+    setCurrentPage(1); //Khởi tạo lại trang hiện tại là 1
+  }, [searchTerm, billsfilter]);
+
+  //Gán list vào trang hiện tại
+
+  const currentImportbills = listStatisticBillSearch?.slice(
+    indexOfFirstImportbill,
+    indexOfLastImportbill
+  );
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  //===================================================
 
   return (
     <>
@@ -98,7 +251,6 @@ function StatisticBill() {
                     onChange={(date) => {
                       setStartDate(date);
                     }}
-                  
                   />
                 </div>
                 <div className="filter-date-component">
@@ -127,6 +279,8 @@ function StatisticBill() {
                 defaultValue={"PhieuNhap"}
                 onChange={(event) => {
                   setOptionBill(event.target.value);
+                  setBillsFilter([]);
+                  setListStatisticBillSearch([]);
                 }}
               >
                 <option value="PhieuNhap" selected>
@@ -156,11 +310,30 @@ function StatisticBill() {
                   }}
                 />
               </div>
-              <div className="title-tab">
+              <div className="title-tab statistic-bill-employee">
                 <h2 style={{ display: "flex", alignItems: "center" }}>
                   <GiExplosiveMaterials style={{ marginRight: "5px" }} />
                   Danh Sách Phiếu {optionbill === "PhieuNhap" ? "Nhập" : "Xuất"}
                 </h2>
+                <button
+                  className="add-item"
+                  onClick={() => {
+                    if (billsfilter.length > 0) {
+                      exportToCSV(
+                        { billsfilter },
+                        `ThongKePhieuNhanVien_${DATE}`
+                      );
+                    } else {
+                      setMessage("Dữ liệu đang trống không thể xuất");
+                      setOpenAlert(true);
+                    }
+                  }}
+                >
+                  <FaFileExport
+                    style={{ marginRight: "5px", marginTop: "5px" }}
+                  />
+                  Xuất File
+                </button>
               </div>
             </div>
             <div className="header_list">
@@ -175,61 +348,54 @@ function StatisticBill() {
             </div>
 
             {optionbill === "PhieuNhap"
-              ? billsfilter
-                  ?.filter((importbill) => {
-                    if (searchTerm === "") {
-                      return importbill;
-                    } else if (
-                      importbill._id
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase()) ||
-                      importbill.manv._id
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase()) ||
-                      importbill.manv.madaily.tendl
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase()) ||
-                      importbill.makho.tenkho
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                    ) {
-                      return importbill;
-                    }
-                  })
-                  .map((importbill, index) => {
-                    return (
-                      <>
-                        <ImportBillItem
-                          key={importbill._id}
-                          importbill={importbill}
-                          stt={index}
-                        />
-                      </>
-                    );
-                  })
-              : billsfilter
-                  ?.filter((exportbill) => {
-                    if (searchTerm === "") {
-                      return exportbill;
-                    } else if (
-                      exportbill.tenpx
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                    ) {
-                      return exportbill;
-                    }
-                  })
-                  .map((exportbill, index) => {
-                    return (
-                      <>
-                        <ExportBillItem
-                          key={exportbill._id}
-                          exportbill={exportbill}
-                          stt={index}
-                        />
-                      </>
-                    );
-                  })}
+              ? listStatisticBillSearch?.map((importbill, index) => {
+                  return (
+                    <>
+                      <ImportBillItem
+                        key={importbill._id}
+                        importbill={importbill}
+                        stt={index}
+                      />
+                    </>
+                  );
+                })
+              : listStatisticBillSearch?.map((exportbill, index) => {
+                  return (
+                    <>
+                      <ExportBillItem
+                        key={exportbill._id}
+                        exportbill={exportbill}
+                        stt={index}
+                      />
+                    </>
+                  );
+                })}
+
+            {listStatisticBillSearch.length > 0 ? (
+              <Pagination
+                itemsPerpage={statisticbillsPerPage}
+                totalItems={listStatisticBillSearch?.length}
+                paginate={paginate}
+                currentPage={currentPage}
+              />
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  fontSize: "18px",
+                  border: "1px solid #999",
+                  borderTop: "none",
+                }}
+              >
+                {optionbill === "PhieuNhap" ? (
+                  <div>Chưa có phiếu nhập</div>
+                ) : (
+                  <div>Chưa có phiếu xuất</div>
+                )}
+                {/*  */}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -33,7 +33,6 @@
 .header-title .title-tab h2 {
     font-size: 25px;
     font-weight: 400;
-    /* color: #fff; */
 }
 
 .header-title .add-item {
@@ -123,7 +122,7 @@
     display: flex;
     text-align: center;
     align-items: center;
-    width: 125px;
+    width: 170px;
 }
 
 .modal__material .row label,

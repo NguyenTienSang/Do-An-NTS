@@ -33,6 +33,10 @@
 /*--------------------- StatisticMaterial ---------------------*/
 @import url("./statisticmaterial.css");
 
+/*--------------------- StatisticMaterialDetail ---------------------*/
+@import url("./statisticmaterialdetail.css");
+
+
 /*--------------------- StatisticMaterial ---------------------*/
 @import url("./statisticbill.css");
 

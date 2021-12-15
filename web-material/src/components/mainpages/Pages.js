@@ -28,6 +28,7 @@ import CreateExportBill from "./phieu/phieuxuat/CreateExportBill";
 
 import Statistic from "./thongke/Statistic";
 import StatisticMaterial from "./thongke/StatisticMaterial";
+import StatisticMaterialDetail from "./thongke/StatisticMaterialDetail";
 import StatisticBill from "./thongke/StatisticBill";
 import StatisticProfitYear from "./thongke/StatisticProfitYear";
 import StatisticProfitStage from "./thongke/StatisticProfitStage";
@@ -73,6 +74,13 @@ function Pages() {
         exact
         component={isAdmin ? StatisticMaterial : NotFound}
       />
+
+      <Route
+        path="/thongkevattutrongcackho/:_id"
+        exact
+        component={StatisticMaterialDetail}
+      />
+
       <Route
         path="/thongkephieunhanvien"
         exact

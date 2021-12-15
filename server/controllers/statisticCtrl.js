@@ -115,139 +115,6 @@ const statisticCtrl = {
     });
 
     return res.json(vattu);
-
-    // if(madailyfilter === "allstores")
-    // {
-    //     console.log('Chọn toàn đại lý')
-    //     const vattu = await VatTu.find();
-    //     res.json(vattu)
-    //     // console.log('listmaterialfilter : ',vattu);
-    // }
-    // else {
-    //     if(makhofilter === "allwarehouses")
-    //     {
-    //         console.log('Chọn đại lý cụ thể')
-    //         const listmaterialfilter = [];
-    //         const phieunhap = await PhieuNhap.find().populate('manv').populate({path :'ctpn',populate: {path: 'mavt'}});
-    //         const phieuxuat = await PhieuXuat.find().populate('manv').populate({path :'ctpx',populate: {path: 'mavt'}});
-    //         console.log('phieunhap : ',phieunhap);
-    //         console.log('phieuxuat : ',phieuxuat);
-
-    //         //Lấy danh sách phiếu nhập trong đại lý
-    //         const filterpn = phieunhap.filter(pn => {
-    //                 return madailyfilter == pn.manv.madaily;
-    //         })
-
-    //         const filterpx = phieuxuat.filter(px => {
-
-    //                 return madailyfilter == px.manv.madaily;
-    //         })
-    //         console.log('filterpn : ',filterpn)
-    //         //Lọc phiếu nhập
-    //         filterpn?.map(pn => {
-    //             pn.ctpn?.map(ctpn => {
-    //                const timvattu =  listmaterialfilter.find(listmaterialitem => {
-    //                             if(ctpn.mavt._id === listmaterialitem._id)
-    //                             {
-    //                                 console.log('---------- Tìm Thấy -----------')
-    //                                 listmaterialitem.soluong+=ctpn.soluong;
-    //                             }
-    //                             return ctpn.mavt._id === listmaterialitem._id;
-    //                 })
-
-    //                 if(timvattu === undefined)
-    //                 {
-    //                     listmaterialfilter.push({_id: ctpn.mavt._id, tenvt: ctpn.mavt.tenvt, soluong: ctpn.soluong, gianhap: ctpn.mavt.gianhap, giaxuat: ctpn.mavt.giaxuat,donvi:  ctpn.mavt.donvi, trangthai: ctpn.mavt.trangthai,images: ctpn.mavt.images})
-    //                     // console.log('listmaterialfilter : ',listmaterialfilter)
-    //                 }
-    //             })
-    //         })
-
-    //         //Lọc phiếu xuất
-    //         filterpx?.map(px => {
-    //             px.ctpx?.map(ctpx => {
-    //                listmaterialfilter.find(listmaterialitem => {
-    //                             if(ctpx.mavt._id === listmaterialitem._id)
-    //                             {
-    //                                 listmaterialitem.soluong-=ctpx.soluong;//Nếu vật tư trong phiếu xuất tìm thấy trong listmaterialfilter thì trừ ra
-    //                             }
-    //                             return ctpx.mavt._id === listmaterialitem._id;
-    //                 })
-    //             })
-    //         })
-    //         console.log('listmaterialfilter : ',listmaterialfilter)
-    //         res.json(listmaterialfilter)
-    //     }
-    //     else//Chọn đại lý, chọn kho cụ thể
-    //     {
-    //         console.log('Chọn kho cụ thể')
-    //             const listmaterialfilter = [];
-    //             const phieunhap = await PhieuNhap.find().populate('manv').populate({path :'ctpn',populate: {path: 'mavt'}});
-    //             const phieuxuat = await PhieuXuat.find().populate('manv').populate({path :'ctpx',populate: {path: 'mavt'}});
-    //             console.log('PhieuNhap : ',phieunhap);
-    //             console.log('PhieuXuat : ',phieuxuat);
-    //             //Lọc phiếu nhập
-    //             const filterpn = phieunhap?.filter(pn => {
-    //                     return makhofilter == pn.makho;
-    //             })
-
-    //               //Lọc phiếu xuất
-    //               const filterpx = phieuxuat?.filter(px => {
-    //                 return makhofilter == px.makho;
-    //         })
-
-    //           console.log('filterpn : ',filterpn.length)
-
-    //             // try {
-    //                 filterpn?.map(pn => {
-    //                     pn.ctpn?.map(ctpn => {
-    //                        const timvattu =  listmaterialfilter.find(listmaterialitem => {
-    //                                     if(ctpn.mavt._id === listmaterialitem._id)
-    //                                     {
-    //                                         listmaterialitem.soluong+=ctpn.soluong;//Nếu vật tư trong phiếu xuất tìm thấy trong listmaterialfilter thì trừ ra
-    //                                     }
-    //                                     return ctpn.mavt._id === listmaterialitem._id;
-    //                         })
-
-    //                         if(timvattu === undefined)
-    //                         {
-    //                             listmaterialfilter.push({_id: ctpn.mavt._id, tenvt: ctpn.mavt.tenvt, soluong: ctpn.soluong, gianhap: ctpn.mavt.gianhap, giaxuat: ctpn.mavt.giaxuat,donvi:  ctpn.mavt.donvi, trangthai: ctpn.mavt.trangthai,images: ctpn.mavt.images})
-    //                         }
-    //                     })
-    //                 })
-    //             // } catch (error) {
-    //             //     console.log('error.message: ',error.message);
-    //             // }
-
-    //         console.log('filterpx : ',filterpx)
-
-    //         console.log('------------------------');
-    //         // console.log('filterpn : ',filterpn);
-    //         // console.log('filterpx : ',filterpx);
-    //         filterpx?.map(px => {
-    //             px.ctpx?.map(ctpx => {
-    //                listmaterialfilter.find(listmaterialitem => {
-    //                             // console.log(ctpx);
-    //                             // console.log('ctpx.mavt._id : ',ctpx.mavt._id);
-    //                             // console.log('listmaterialitem._id : ',listmaterialitem._id);
-    //                             // console.log('typeof(ctpx.mavt._id) : ',typeof(ctpx.mavt._id));
-    //                             // console.log('typeof(listmaterialitem._id) : ',typeof(listmaterialitem._id));
-    //                             // console.log('ctpx.mavt._id.toString() : ',ctpx.mavt._id.toString());
-    //                             // console.log('listmaterialitem._id.toString() : ',listmaterialitem._id.toString());
-    //                             if(ctpx.mavt._id.toString() === listmaterialitem._id.toString())
-    //                             {
-    //                                 console.log('Vô nè')
-    //                                 listmaterialitem.soluong-=ctpx.soluong;
-    //                             }
-    //                             return ctpx.mavt._id === listmaterialitem._id;
-    //                 })
-
-    //             })
-    //         })
-    //             console.log('listmaterialfilter : ',listmaterialfilter)
-    //             res.json(listmaterialfilter)
-    //     }
-    // }
   },
 
   statisticMaterials: async (req, res) => {
@@ -297,9 +164,9 @@ const statisticCtrl = {
             console.log("pn.makho.tenkho : ", pn.makho.tenkho);
             console.log("pn._id : ", pn._id);
             pn.ctpn?.map((ctpn) => {
-              if (ctpn.mavt.tenvt === "Đồng đỏ") {
-                console.log("ctpn.soluong : ", ctpn.soluong);
-              }
+              // if (ctpn.mavt.tenvt === "Đồng đỏ") {
+              //   console.log("ctpn.soluong : ", ctpn.soluong);
+              // }
               const timvattu = listmaterialfilter.find((listmaterialitem) => {
                 if (
                   ctpn.mavt._id.toString() === listmaterialitem._id.toString()
@@ -364,15 +231,20 @@ const statisticCtrl = {
             .populate({ path: "ctpx", populate: { path: "mavt" } });
           //Lọc phiếu nhập
           const filterpn = phieunhap?.filter((pn) => {
-            return (makhofilter === pn.makho._id.toString() && madailyfilter === pn.manv.madaily.toString());
+            return (
+              makhofilter === pn.makho._id.toString() &&
+              madailyfilter === pn.manv.madaily.toString()
+            );
           });
 
           //Lọc phiếu xuất
           const filterpx = phieuxuat?.filter((px) => {
-            return (makhofilter == px.makho._id.toString() && madailyfilter === px.manv.madaily.toString());
+            return (
+              makhofilter == px.makho._id.toString() &&
+              madailyfilter === px.manv.madaily.toString()
+            );
           });
 
-         
           filterpn?.map((pn) => {
             pn.ctpn?.map((ctpn) => {
               const timvattu = listmaterialfilter.find((listmaterialitem) => {
@@ -401,7 +273,6 @@ const statisticCtrl = {
             });
           });
 
-         
           filterpx?.map((px) => {
             px.ctpx?.map((ctpx) => {
               listmaterialfilter.find((listmaterialitem) => {
@@ -421,6 +292,85 @@ const statisticCtrl = {
       }
     } catch (error) {
       return res.status(500).json({ message: "Thống kê thất bại" });
+    }
+  },
+  statisticMaterialsInListWareHouse: async (req, res) => {
+    try {
+      const { mavattu } = req.body;
+
+      const listwarehouse = [];
+
+      const phieunhap = await PhieuNhap.find({
+        "ctpn.mavt": { $in: [mavattu] },
+      })
+        .populate("makho")
+        .populate({ path: "makho", populate: { path: "madaily" } })
+        .populate({ path: "ctpn", populate: { path: "mavt" } });
+
+     
+
+      const phieuxuat = await PhieuXuat.find({
+        "ctpx.mavt": { $in: [mavattu] },
+      })
+        .populate("makho")
+        .populate({ path: "ctpx", populate: { path: "mavt" } });
+
+      let timkho = "";
+
+      phieunhap?.map((pn) => {
+        // console.log("pn : ", pn);
+        pn.ctpn?.map((ctpn) => {
+          // console.log("ctpn.mavt._id.toString() : ", ctpn.mavt._id.toString());
+          // console.log("mavattu : ", mavattu);
+          if (ctpn.mavt._id.toString() === mavattu) {
+            // console.log("Vô nè");
+            timkho = listwarehouse.find((listwarehouseitem) => {
+              if (
+                pn.makho._id.toString() === listwarehouseitem._id.toString()
+              ) {
+                listwarehouseitem.soluong += ctpn.soluong;
+              }
+              return (
+                pn.makho._id.toString() === listwarehouseitem._id.toString()
+              );
+            });
+
+            if (timkho === undefined) {
+              listwarehouse.push({
+                _id: pn.makho._id,
+                tenkho: pn.makho.tenkho,
+                diachi: pn.makho.diachi,
+                sodienthoai: pn.makho.sodienthoai,
+                images: pn.makho.images,
+                soluong: ctpn.soluong,
+                tendl: pn.makho.madaily.tendl 
+              });
+            }
+          }
+        });
+      });
+
+      phieuxuat?.map((px) => {
+        px.ctpx?.map((ctpx) => {
+          if (ctpx.mavt._id.toString() === mavattu) {
+            listwarehouse.find((listwarehouseitem) => {
+              if (
+                px.makho._id.toString() === listwarehouseitem._id.toString()
+              ) {
+                listwarehouseitem.soluong -= ctpx.soluong;
+                // console.log("Giảm số lượng");
+              }
+              return (
+                px.makho._id.toString() === listwarehouseitem._id.toString()
+              );
+            });
+          }
+        });
+      });
+      // return res.json(phieunhap);
+      return res.json(listwarehouse);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
     }
   },
 

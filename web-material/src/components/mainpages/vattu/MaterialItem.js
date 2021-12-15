@@ -1,8 +1,10 @@
 import React, { useContext, useState } from "react";
 import { GlobalState } from "../../../GlobalState";
 
+import { Link } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
+import { AiOutlineEye } from "react-icons/ai";
 
 function MaterialItem({ material, stt, EditMaterial, DeleteMaterial }) {
   const state = useContext(GlobalState);
@@ -48,12 +50,12 @@ function MaterialItem({ material, stt, EditMaterial, DeleteMaterial }) {
       <div style={{ flex: 1 }} className="material_item_element">
         {material.trangthai}
       </div>
-      {isAdmin ? (
-        <>
-          <div
-            style={{ flex: 1 }}
-            className="material_item_element option_material"
-          >
+      <div
+        style={{ flex: 1 }}
+        className="material_item_element option_material"
+      >
+        {isAdmin ? (
+          <>
             <button
               style={{ fontSize: 36 }}
               onClick={() => EditMaterial(material)}
@@ -68,9 +70,14 @@ function MaterialItem({ material, stt, EditMaterial, DeleteMaterial }) {
             >
               <RiDeleteBin6Line style={{ color: "red" }} />
             </button>
-          </div>
-        </>
-      ) : null}
+          </>
+        ) : null}
+        <Link to={`/thongkevattutrongcackho/${material._id}`}>
+          <button style={{ fontSize: 36 }}>
+            <AiOutlineEye style={{ color: "rgb(26, 148, 255)" }} />
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }

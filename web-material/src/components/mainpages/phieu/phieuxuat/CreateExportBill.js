@@ -181,7 +181,7 @@ function CreateExportBill() {
                 <p>Tên VT</p>
                 <p>Hình ảnh</p>
                 <p>Số lượng tồn</p>
-                <p>Giá nhập</p>
+                <p>Giá xuất</p>
               </div>
               {materialsfilter
                 ?.filter((material) => {

@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useContext, useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-
+import moment from "moment";
 import { GlobalState } from "../../../GlobalState";
 import WareHouseItem from "./WareHouseItem";
 import NavBar from "../../navbar/NavBar";
@@ -9,7 +9,10 @@ import Header from "../../header/Header";
 import Loading from "../utils/loading/Loading";
 import { GiExplosiveMaterials } from "react-icons/gi";
 import { BiBookAdd } from "react-icons/bi";
+import { FaFileExport } from "react-icons/fa";
 import Pagination from "../../common/Pagination";
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
 
 const initialWareHouse = {
   tenkho: "",
@@ -44,6 +47,39 @@ function WareHouses() {
   const [message, setMessage] = useState("");
 
   const inforuser = JSON.parse(localStorage.getItem("inforuser"));
+
+  //============ XUẤT FILE ==============
+
+  const fileType =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  const fileExtension = ".xlsx";
+  const DATE = moment(new Date()).format("DD-MM-YYYY");
+  const customData = (dataImport) => {
+    let dataExport = [];
+
+    dataExport = dataImport.listWareHouseSearch.map((data, index) => ({
+      STT: index + 1,
+      ID: data._id,
+      "Tên kho": data.tenkho,
+      "Đại lý": data.madaily.tendl,
+      "Địa chỉ": data.diachi,
+      "Số điện thoại": data.sodienthoai,
+      "Trạng thái": data.trangthai,
+    }));
+
+    // console.log("dataExport : ", dataExport);
+    return dataExport;
+  };
+
+  const exportToCSV = (csvData, fileName) => {
+    // console.log("csvData : ", csvData);
+    // customData(csvData);
+    const ws = XLSX.utils.json_to_sheet(customData(csvData));
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
+  };
 
   //-------------- Phân trang ----------------
   const [currentPage, setCurrentPage] = useState(1);
@@ -346,10 +382,29 @@ function WareHouses() {
               </div>
 
               {isAdmin ? (
-                <button className="add-item" onClick={AddWareHouse}>
-                  <BiBookAdd style={{ marginRight: "5px", marginTop: "5px" }} />
-                  Thêm Kho
-                </button>
+                <>
+                  <button className="add-item" onClick={AddWareHouse}>
+                    <BiBookAdd
+                      style={{ marginRight: "5px", marginTop: "5px" }}
+                    />
+                    Thêm Kho
+                  </button>
+
+                  <button
+                    className="add-item"
+                    onClick={() => {
+                      exportToCSV(
+                        { listWareHouseSearch },
+                        `DanhSachKho_${DATE}`
+                      );
+                    }}
+                  >
+                    <FaFileExport
+                      style={{ marginRight: "5px", marginTop: "5px" }}
+                    />
+                    Xuất File
+                  </button>
+                </>
               ) : null}
             </div>
 
@@ -362,14 +417,7 @@ function WareHouses() {
               <p style={{ flex: 1 }}>Địa chỉ</p>
               <p style={{ flex: 1 }}>SĐT</p>
               <p style={{ flex: 1 }}>Trạng thái</p>
-              {/* {
-                isAdmin ? 
-                <>
-                    <p style={{flex:0.6}}>Cập nhật</p>
-                </>
-                : null
-              } */}
-              <p style={{ flex: 1 }}>Chức Năng</p>
+              <p style={{ flex: 1 }}>Chức năng</p>
             </div>
             {currentWareHouses?.map((warehouse, index) => {
               if (isAdmin) {

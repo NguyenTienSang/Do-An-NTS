@@ -10,9 +10,11 @@
     justify-content: center;
 }
 
-.header-title .item_second .title-tab p {
+.header-title .title-tab p {
     width: 100%;
     font-size: 20px;
+    font-weight: 700;
+    margin-left: 10px;
 }
 
 .statistic_profit_year .header-title .react-datepicker-wrapper {
@@ -56,11 +58,22 @@
     /* margin: 0px !important; */
 }
 
-.header-title .item_second {
+/* .header-title .item_second {
     display: flex;
-    /* width: 500px; */
     align-items: center;
     margin: 0px;
+} */
+
+.export-file-statisticyear{
+    display: flex; 
+    align-items: center; 
+    font-size: 25px; 
+    padding: 0px 10px 3px 10px; 
+    color: #fff; 
+    border: 1px solid #fff; 
+    border-radius: 5px; 
+    background-color: rgb(38 151 251);
+    margin-left: 10px;
 }
 
 .statistic_profit__year {

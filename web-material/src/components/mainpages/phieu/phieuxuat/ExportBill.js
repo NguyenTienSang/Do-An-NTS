@@ -1,13 +1,17 @@
 import axios from "axios";
 import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import moment from "moment";
 import { GlobalState } from "../../../../GlobalState";
 import ExportBillItem from "./ExportBillItem";
 import NavBar from "../../../navbar/NavBar";
 import Header from "../../../header/Header";
 import { GiExplosiveMaterials } from "react-icons/gi";
 import { BiBookAdd } from "react-icons/bi";
+import { FaFileExport } from "react-icons/fa";
 import Pagination from "../../../common/Pagination";
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
 
 function ExporttBill() {
   const state = useContext(GlobalState);
@@ -22,6 +26,95 @@ function ExporttBill() {
   // Get current posts
   const indexOfLastExportbill = currentPage * exportbillsPerPage;
   const indexOfFirstExportbill = indexOfLastExportbill - exportbillsPerPage;
+
+  //============ XUẤT FILE ==============
+  const fileType =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  const fileExtension = ".xlsx";
+  const DATE = moment(new Date()).format("DD-MM-YYYY");
+  const customData = (dataImport) => {
+    let dataExport = [];
+
+    let count = -1;
+    for (var i = 0; i < dataImport.listExportBillSearch.length; i++) {
+      count++;
+      dataExport[count] = {};
+      dataExport[count] = {
+        STT: i + 1,
+        ID: dataImport.listExportBillSearch[i]._id,
+        "Ngày Lập": `${dataImport.listExportBillSearch[i].ngay.slice(
+          8,
+          10
+        )}-${dataImport.listExportBillSearch[i].ngay.slice(
+          5,
+          7
+        )}-${dataImport.listExportBillSearch[i].ngay.slice(0, 4)}`,
+        "Id Nhân Viên": dataImport.listExportBillSearch[i].manv._id,
+        "Đại Lý": dataImport.listExportBillSearch[i].manv.madaily.tendl,
+        Kho: dataImport.listExportBillSearch[i].makho.tenkho,
+        "Tổng Cộng": onLoadTotal(dataImport.listExportBillSearch[i]),
+      };
+
+      count++;
+      dataExport[count] = {
+        STT: "STT",
+        ID: "Tên Vật Tư",
+        "Ngày Lập": "Giá xuất",
+        "Id Nhân Viên": "Số lượng",
+        "Đại Lý": "Tổng tiền",
+        Kho: "",
+        "Tổng Cộng": "",
+      };
+
+      count++;
+
+      for (var j = 0; j < dataImport.listExportBillSearch[i].ctpx.length; j++) {
+        dataExport[count] = {
+          STT: j + 1,
+          ID: dataImport.listExportBillSearch[i].ctpx[j].mavt.tenvt,
+          "Ngày Lập": Format(
+            dataImport.listExportBillSearch[i].ctpx[j].giaxuat
+          ),
+          "Id Nhân Viên": dataImport.listExportBillSearch[i].ctpx[j].soluong,
+          "Đại Lý": Format(
+            dataImport.listExportBillSearch[i].ctpx[j].giaxuat *
+              dataImport.listExportBillSearch[i].ctpx[j].soluong
+          ).toString(),
+          Kho: "",
+          "Tổng Cộng": "",
+        };
+        count++;
+      }
+    }
+
+    return dataExport;
+  };
+
+  const Format = (number) => {
+    if (number >= 0) {
+      return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
+    } else
+      return (
+        "-" + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND"
+      );
+  };
+
+  const onLoadTotal = (detailexportbill) => {
+    var totalcost = 0;
+    detailexportbill?.ctpx?.map((exbill) => {
+      totalcost += exbill.giaxuat * exbill.soluong;
+    });
+    return Format(totalcost);
+  };
+
+  const exportToCSV = (csvData, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(customData(csvData));
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
+  };
+  //============================================
 
   // Lấy ra danh sách kho có trong từ khóa search
   useEffect(() => {
@@ -124,6 +217,19 @@ function ExporttBill() {
                 <BiBookAdd style={{ marginRight: "5px", marginTop: "5px" }} />
                 Lập Phiếu Xuất
               </Link>
+            </button>
+
+            <button
+              className="add-item"
+              onClick={() => {
+                exportToCSV(
+                  { listExportBillSearch },
+                  `DanhSachPhieuXuat_${DATE}`
+                );
+              }}
+            >
+              <FaFileExport style={{ marginRight: "5px", marginTop: "5px" }} />
+              Xuất File
             </button>
           </div>
           <div className="header_list">

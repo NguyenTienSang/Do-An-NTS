@@ -7,16 +7,15 @@ import { GlobalState } from "../../../GlobalState";
 import Header from "../../header/Header";
 import NavBar from "../../navbar/NavBar";
 import Loading from "../utils/loading/Loading";
-import { GiExplosiveMaterials } from "react-icons/gi";
-import { BiBookAdd } from "react-icons/bi";
+import { FaFileExport } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import moment from "moment";
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
 import { AiOutlineFileSearch } from "react-icons/ai";
 
 function StatisticProfitStage() {
   const state = useContext(GlobalState);
-  // const [token] = state.token;
-  // const [material, setMaterial] = useState(initialMaterial);
 
   const [startyearstatistic, setStartYearStatistic] = useState(new Date());
   const [endyearstatistic, setEndYearStatistic] = useState(new Date());
@@ -37,14 +36,60 @@ function StatisticProfitStage() {
       );
   };
 
+  //============ XUẤT FILE ==============
+  const fileType =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  const fileExtension = ".xlsx";
+  const DATE = moment(new Date()).format("DD-MM-YYYY");
+
+  const customData = (dataImport) => {
+    let dataExport = [];
+    console.log("dataImport : ", dataImport.dataStatistic);
+
+    dataExport = dataImport.dataStatistic.map((data) => ({
+      Năm: data.nam,
+      "Số Phiếu Nhập": data.sophieunhap,
+      "Chi Phí Nhập": Format(data.chiphinhap),
+      "Số Phiếu Xuất": data.sophieuxuat,
+      "Chi Phí Xuất": Format(data.chiphixuat),
+      "Lợi Nhuận Năm": Format(data.chiphixuat - data.chiphinhap),
+    }));
+
+    dataExport[dataExport.length] = {
+      Năm: "",
+      "Số Phiếu Nhập": "",
+      "Chi Phí Nhập": "",
+      "Số Phiếu Xuất": "",
+      "Chi Phí Xuất":
+        "Lợi nhuận từ : " +
+        moment(startyearstatistic).format("YYYY") +
+        "-" +
+        moment(endyearstatistic).format("YYYY"),
+      "Lợi Nhuận Năm": Format(onLoadTotal()),
+    };
+    // {Format(onLoadTotal())}
+
+    return dataExport;
+  };
+
+  const exportToCSV = (csvData, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(customData(csvData));
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
+  };
+  //======================================
+
   const handlechangestore = (e) => {
     setMaDaiLyFilter(e.target.value);
   };
 
-  useEffect(async () => {
-    // console.log('yearstatistic : ', )
-    console.log("madailyfilter : ", madailyfilter);
-  }, [madailyfilter, startyearstatistic, endyearstatistic]);
+  useEffect(async () => {}, [
+    madailyfilter,
+    startyearstatistic,
+    endyearstatistic,
+  ]);
 
   const statisprofitstage = async () => {
     if (madailyfilter !== "") {
@@ -144,6 +189,29 @@ function StatisticProfitStage() {
                 >
                   <AiOutlineFileSearch />
                 </button>
+
+                <button
+                  style={{ marginRight: "0px" }}
+                  className="export-file-statisticyear"
+                  onClick={() => {
+                    if (dataStatistic.length > 0) {
+                      exportToCSV(
+                        { dataStatistic },
+                        `LoiNhuanNam_${moment(startyearstatistic).format(
+                          "YYYY"
+                        )}-${moment(endyearstatistic).format("YYYY")}`
+                      );
+                    } else {
+                      setMessage("Dữ liệu đang trống không thể xuất");
+                      setOpenAlert(true);
+                    }
+                  }}
+                >
+                  <FaFileExport
+                    style={{ marginRight: "5px", marginTop: "5px" }}
+                  />
+                  Xuất File
+                </button>
               </div>
             </div>
 
@@ -155,7 +223,7 @@ function StatisticProfitStage() {
               <p style={{ flex: 1 }}>Tổng Tiền Xuất</p>
               <p style={{ flex: 1 }}>Lợi Nhuận Năm</p>
             </div>
-            {dataStatistic?.map((item, index) => (
+            {dataStatistic?.map((item) => (
               <div className="material_item">
                 <div
                   style={{ width: "120px" }}
@@ -217,7 +285,6 @@ function StatisticProfitStage() {
               >
                 OK
               </button>
-              {/* <button id="close"  >Hủy</button> */}
             </div>
           </div>
         </div>

@@ -1,15 +1,18 @@
 import axios from "axios";
 import React, { useContext, useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-
+import moment from "moment";
 import { GlobalState } from "../../../GlobalState";
 import EmployeeItem from "./EmployeeItem";
 import NavBar from "../../navbar/NavBar";
 import Header from "../../header/Header";
 import Loading from "../utils/loading/Loading";
 import { BsFillPersonLinesFill } from "react-icons/bs";
+import { FaFileExport } from "react-icons/fa";
 import { BiBookAdd } from "react-icons/bi";
 import Pagination from "../../common/Pagination";
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
 
 const initialEmployee = {
   hoten: "",
@@ -48,9 +51,44 @@ function Employees() {
 
   const [message, setMessage] = useState("");
 
-
   const [deactive_button, setDeactive_Button] = useState(false);
   let inforuser = JSON.parse(localStorage.getItem("inforuser"));
+
+  //============ XUẤT FILE ==============
+  const fileType =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  const fileExtension = ".xlsx";
+  const DATE = moment(new Date()).format("DD-MM-YYYY");
+
+  const customData = (dataImport) => {
+    let dataExport = [];
+    console.log("dataImport : ", dataImport.listEmployeeSearch);
+
+    dataExport = dataImport.listEmployeeSearch.map((data, index) => ({
+      STT: index + 1,
+      ID: data._id,
+      "Họ tên": data.hoten,
+      "Giới tính": data.gioitinh,
+      "Đại lý": data.madaily.tendl,
+      Quyền: data.role,
+      "Trạng thái": data.trangthai,
+      Username: data.username,
+      "Số điện thoại": data.sodienthoai,
+      CMND: data.cmnd,
+      Email: data.email,
+    }));
+    return dataExport;
+  };
+
+  const exportToCSV = (csvData, fileName) => {
+    customData(csvData);
+    const ws = XLSX.utils.json_to_sheet(customData(csvData));
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
+  };
+  //=======================================
 
   //-------------- Phân trang ----------------
   const [currentPage, setCurrentPage] = useState(1);
@@ -343,10 +381,29 @@ function Employees() {
                 </h2>
               </div>
               {isAdmin ? (
-                <button className="add-item" onClick={AddEmployee}>
-                  <BiBookAdd style={{ marginRight: "5px", marginTop: "5px" }} />
-                  Thêm Nhân Viên
-                </button>
+                <>
+                  <button className="add-item" onClick={AddEmployee}>
+                    <BiBookAdd
+                      style={{ marginRight: "5px", marginTop: "5px" }}
+                    />
+                    Thêm Nhân Viên
+                  </button>
+
+                  <button
+                    className="add-item"
+                    onClick={() => {
+                      exportToCSV(
+                        { listEmployeeSearch },
+                        `DanhSachNhanVien_${DATE}`
+                      );
+                    }}
+                  >
+                    <FaFileExport
+                      style={{ marginRight: "5px", marginTop: "5px" }}
+                    />
+                    Xuất File
+                  </button>
+                </>
               ) : null}
             </div>
             <div className="header_list">

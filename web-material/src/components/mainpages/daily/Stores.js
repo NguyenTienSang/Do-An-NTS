@@ -1,15 +1,18 @@
 import axios from "axios";
 import React, { useContext, useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-
+import moment from "moment";
 import { GlobalState } from "../../../GlobalState";
 import StoreItem from "./StoreItem";
 import Header from "../../header/Header";
 import NavBar from "../../navbar/NavBar";
 import Loading from "../utils/loading/Loading";
 import { GiExplosiveMaterials } from "react-icons/gi";
+import { FaFileExport } from "react-icons/fa";
 import { BiBookAdd } from "react-icons/bi";
 import Pagination from "../../common/Pagination";
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
 
 const initialStore = {
   tendl: "",
@@ -29,6 +32,37 @@ function Stores() {
 
   const history = useHistory();
   const param = useParams();
+
+  //============ XUẤT FILE ==============
+  const fileType =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  const fileExtension = ".xlsx";
+  const DATE = moment(new Date()).format("DD-MM-YYYY");
+  const customData = (dataImport) => {
+    let dataExport = [];
+
+    dataExport = dataImport.listStoreSearch.map((data, index) => ({
+      STT: index + 1,
+      ID: data._id,
+      "Tên đại lý": data.tendl,
+      "Địa chỉ": data.diachi,
+      "Số điện thoại": data.sodienthoai,
+      "Trạng thái": data.trangthai,
+    }));
+
+    return dataExport;
+  };
+
+  const exportToCSV = (csvData, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(customData(csvData));
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    console.log("excelBuffer : ", excelBuffer);
+    const data = new Blob([excelBuffer], { type: fileType });
+    console.log("data : ", data);
+    // FileSaver.saveAs(data, fileName + fileExtension);
+  };
+  //============================================
 
   const [stores] = state.storeAPI.stores;
   const [listStoreSearch, setListStoreSearch] = useState(stores);
@@ -298,6 +332,18 @@ function Stores() {
               <button className="add-item" onClick={AddStore}>
                 <BiBookAdd style={{ marginRight: "5px", marginTop: "5px" }} />
                 Thêm Đại Lý
+              </button>
+
+              <button
+                className="add-item"
+                onClick={() => {
+                  exportToCSV({ listStoreSearch }, `DanhSachDaiLy_${DATE}`);
+                }}
+              >
+                <FaFileExport
+                  style={{ marginRight: "5px", marginTop: "5px" }}
+                />
+                Xuất File
               </button>
             </div>
 
