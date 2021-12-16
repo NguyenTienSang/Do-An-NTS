@@ -324,7 +324,7 @@ function StatisticBill() {
                         `ThongKePhieuNhanVien_${DATE}`
                       );
                     } else {
-                      setMessage("Dữ liệu đang trống không thể xuất");
+                      setMessage("Dữ liệu đang trống không thể xuất file");
                       setOpenAlert(true);
                     }
                   }}

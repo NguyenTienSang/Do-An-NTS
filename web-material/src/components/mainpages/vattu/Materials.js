@@ -37,18 +37,7 @@ function Materials() {
   const inforuser = JSON.parse(localStorage.getItem("inforuser"));
   const [materials] = state.materialAPI.materials;
 
-  // const [listMaterialSearch, setListMaterialSearch] = useState(async () => {
-  //   if (inforuser.role === "admin") {
-  //     return materials;
-  //   } else if (inforuser.role === "user") {
-  //     const res = await axios.post("/api/thongke/vattu", {
-  //       madailyfilter: inforuser.madaily._id,
-  //       makhofilter: "allwarehouses",
-  //     });
-  //     return res.data;
-  //   }
-  // });
-
+  const [listStorageMaterial, setListStorageMaterial] = useState([]);
   const [listMaterialSearch, setListMaterialSearch] = useState([]);
 
   useEffect(async () => {
@@ -57,9 +46,9 @@ function Materials() {
         madailyfilter: inforuser.madaily._id,
         makhofilter: "allwarehouses",
       });
-      setListMaterialSearch(res.data);
+      setListStorageMaterial(res.data);
     } else if (inforuser.role === "admin") {
-      setListMaterialSearch(materials);
+      setListStorageMaterial(materials);
     }
   }, []);
 
@@ -92,7 +81,6 @@ function Materials() {
       "Trạng thái": data.trangthai,
     }));
 
-    // console.log("dataExport : ", dataExport);
     return dataExport;
   };
 
@@ -116,7 +104,7 @@ function Materials() {
   // Lấy ra danh sách vật tư có trong từ khóa search
   useEffect(() => {
     setListMaterialSearch(
-      materials?.filter((material) => {
+      listStorageMaterial?.filter((material) => {
         if (searchTerm === "") {
           return material;
         } else if (
@@ -129,7 +117,7 @@ function Materials() {
       })
     );
     setCurrentPage(1); //Khởi tạo lại trang hiện tại là 1
-  }, [searchTerm, materials]);
+  }, [searchTerm, listStorageMaterial]);
 
   //Gán list vào trang hiện tại
   const currentMaterials = listMaterialSearch?.slice(
