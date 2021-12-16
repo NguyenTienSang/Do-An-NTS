@@ -40,6 +40,10 @@
 /*--------------------- StatisticMaterial ---------------------*/
 @import url("./statisticbill.css");
 
+/*--------------------- StatisticTurnOver ---------------------*/
+@import url("./statisticturnover.css");
+
+
 /*--------------------- StatisticProfitYear ---------------------*/
 @import url("./statisticprofityear.css");
 

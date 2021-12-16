@@ -307,8 +307,6 @@ const statisticCtrl = {
         .populate({ path: "makho", populate: { path: "madaily" } })
         .populate({ path: "ctpn", populate: { path: "mavt" } });
 
-     
-
       const phieuxuat = await PhieuXuat.find({
         "ctpx.mavt": { $in: [mavattu] },
       })
@@ -343,7 +341,7 @@ const statisticCtrl = {
                 sodienthoai: pn.makho.sodienthoai,
                 images: pn.makho.images,
                 soluong: ctpn.soluong,
-                tendl: pn.makho.madaily.tendl 
+                tendl: pn.makho.madaily.tendl,
               });
             }
           }
@@ -592,6 +590,112 @@ const statisticCtrl = {
     }
   },
 
+  //Thống kê doanh thu theo mốc thời gian
+  statisticTurnOverTime: async (req, res) => {
+    const { madailyfilter, timestatistic, optionstatistic } = req.body;
+
+    if (optionstatistic === "Ngay") {
+      const phieuxuat = await PhieuXuat.find({
+        ngay: { $gte: new Date(timestatistic) },
+        // ngay: { $gte: datestart, $lte: dateend },
+      })
+        .populate("manv")
+        .populate({ path: "manv", populate: { path: "madaily" } })
+        .populate("makho")
+        .populate("ctpx")
+        .populate({ path: "ctpx", populate: { path: "mavt" } });
+
+      const dataStatistic = phieuxuat.filter((px) => {
+        return px.manv.madaily._id.toString() === madailyfilter;
+      });
+
+      return res.json(dataStatistic);
+    } else if (optionstatistic === "Thang") {
+      const phieuxuat = await PhieuXuat.find({
+        $expr: {
+          $and: [
+            { $eq: [{ $month: "$ngay" }, parseInt(timestatistic.slice(5, 8))] },
+            { $eq: [{ $year: "$ngay" }, parseInt(timestatistic.slice(0, 4))] },
+          ],
+        },
+      })
+        .select({ ctpx: 1, ngay: 1, _id: 0 })
+        .populate("manv")
+        .populate({ path: "manv", populate: { path: "madaily" } });
+
+      var statisticProfitMonth = [];
+
+      let ngay = 0;
+      let tongtienxuat = 0;
+
+      const numberday = new Date(
+        parseInt(timestatistic.slice(0, 4)),
+        parseInt(timestatistic.slice(5, 8)),
+        0
+      ).getDate();
+
+      console.log("numberday : ", numberday);
+      console.log("typeof(numberday) : ", typeof numberday);
+
+      for (var i = 0; i < numberday; i++) {
+        statisticProfitMonth.push({
+          ngay: i + 1,
+          sophieuxuat: 0,
+          tongtienxuat: 0,
+        });
+      }
+
+      //Phiếu xuất
+      phieuxuat.map((px) => {
+        if (px.manv.madaily._id.toString() === madailyfilter) {
+          ngay = parseInt(JSON.stringify(px.ngay).slice(9, 12));
+          px.ctpx.map((ctpx) => {
+            tongtienxuat += parseInt(ctpx.giaxuat * ctpx.soluong);
+          });
+          statisticProfitMonth[ngay - 1].sophieuxuat++;
+          statisticProfitMonth[ngay - 1].tongtienxuat += tongtienxuat;
+          tongtienxuat = 0;
+        }
+      });
+
+      return res.json(statisticProfitMonth);
+    } else if (optionstatistic === "Nam") {
+      const phieuxuat = await PhieuXuat.find({
+        $expr: { $eq: [{ $year: "$ngay" }, parseInt(timestatistic)] },
+      })
+        .select({ ctpx: 1, ngay: 1, _id: 0 })
+        .populate("manv")
+        .populate({ path: "manv", populate: { path: "madaily" } });
+
+      var statisticProfitYear = [];
+
+      let thang = 0;
+      let tongtienxuat = 0;
+
+      for (var i = 0; i < 12; i++) {
+        statisticProfitYear.push({
+          thang: i + 1,
+          sophieuxuat: 0,
+          tongtienxuat: 0,
+        });
+      }
+
+      //Phiếu xuất
+      phieuxuat.map((px) => {
+        if (px.manv.madaily._id.toString() === madailyfilter) {
+          thang = JSON.stringify(px.ngay).slice(6, 8);
+          px.ctpx.map((ctpx) => {
+            tongtienxuat += parseInt(ctpx.giaxuat * ctpx.soluong);
+          });
+          statisticProfitYear[thang - 1].sophieuxuat++;
+          statisticProfitYear[thang - 1].tongtienxuat += tongtienxuat;
+          tongtienxuat = 0;
+        }
+      });
+      return res.json(statisticProfitYear);
+    }
+  },
+
   //Thống kê lợi nhuận năm
   statisticProfitYear: async (req, res) => {
     //Lấy ra danh sách phiếu nhập theo tháng
@@ -607,6 +711,7 @@ const statisticCtrl = {
     }
 
     var statisticProfitYear = [];
+
     var element = {
       thang: "",
       sophieunhap: 0,
@@ -683,16 +788,10 @@ const statisticCtrl = {
         //Phiếu nhập
 
         phieunhap.map((pn) => {
-          // console.log('pn.ngay : ',(pn.ngay).slice(5,7))
-
-          // console.log('pn.ngay : ',(JSON.stringify(pn.ngay)).slice(6,8))
-
           if (
             parseInt(JSON.stringify(pn.ngay).slice(6, 8)) === i &&
             pn.manv.madaily._id.toString() === madailyfilter
           ) {
-            // console.log('pn.manv.madaily : ',pn.manv.madaily._id);
-            // console.log('madailyfilter : ',madailyfilter);
             element.sophieunhap++;
             pn.ctpn.map((ctpn) => {
               element.chiphinhap += parseInt(ctpn.gianhap * ctpn.soluong);

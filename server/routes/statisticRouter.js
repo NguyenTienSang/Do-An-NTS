@@ -7,11 +7,18 @@ router
   .route("/thongke/timkiemvattuphieunhap")
   .post(statisticCtrl.searchMaterialImportBills);
 router.route("/thongke/vattu").post(statisticCtrl.statisticMaterials);
-router.route("/thongke/vattutrongcacdaily").post(statisticCtrl.statisticMaterialsInListWareHouse);
+router
+  .route("/thongke/vattutrongcacdaily")
+  .post(statisticCtrl.statisticMaterialsInListWareHouse);
 router
   .route("/thongke/phieunhapnhanvien")
   .post(statisticCtrl.statisticImportBillEmployees);
+
 router.route("/thongke/loinhuannam").post(statisticCtrl.statisticProfitYear); //Thống kê lợi nhuận năm
+router
+  .route("/thongke/thongkedoanhthu")
+  .post(statisticCtrl.statisticTurnOverTime); //Thống kê lợi nhuận năm
+
 router
   .route("/thongke/loinhuangiaidoan")
   .post(statisticCtrl.statisticProfitStage); //Thống kê lợi nhuận giai đoạn

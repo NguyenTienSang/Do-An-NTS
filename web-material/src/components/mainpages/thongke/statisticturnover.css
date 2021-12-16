@@ -1,0 +1,79 @@
+.statistic_turnover {
+    display: block;
+    justify-content: center;
+    width: 100%;
+    margin: 20px;
+}
+
+.statistic_turnover .header-title .container-filter {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0px;
+    width: 100%;
+}
+
+.statistic_turnover .container-filter .time_statistic {
+     display: flex;
+     justify-content: space-between;
+     width: 200px;
+     align-items: center;
+     margin: 0px;
+
+}
+.statistic_turnover .container-filter .filter-select label {
+    font-size: 20px;
+}
+
+.statistic_turnover .container-filter .time_statistic p {
+    width: 210px;
+    font-size: 20px;
+    margin-right: 5px;
+}
+
+.statistic_turnover .container-filter .statistic-button {
+   margin: 0px;
+}
+
+
+.statistic_turnover .statistic_column {
+    display: flex;
+}
+
+.statistic_turnover .statistic_column .statistic_column__item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid #999;
+    height: 100%;
+    font-size: 18px;
+    font-weight: 300;
+}
+
+/* .statistic_column .statistic_column__item p { */
+    .statistic_column  p {
+        display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid #999;
+    border-bottom: 1px solid #999;
+    height: 40px;
+    font-size: 18px;
+}
+
+.statistic_column  p:first-child {
+    border-left: 1px solid #999;
+}
+
+.statistic_turn__over {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    border: 1px solid #999;
+    border-top: none;
+    text-align: center;
+    height: 50px;
+    font-size: 20px;
+    background-color: rgb(26, 148, 255);
+    color: #fff;
+}

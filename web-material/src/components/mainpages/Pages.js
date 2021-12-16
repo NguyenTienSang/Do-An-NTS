@@ -30,6 +30,7 @@ import Statistic from "./thongke/Statistic";
 import StatisticMaterial from "./thongke/StatisticMaterial";
 import StatisticMaterialDetail from "./thongke/StatisticMaterialDetail";
 import StatisticBill from "./thongke/StatisticBill";
+import StatisticTurnOver from "./thongke/StatisticTurnOver";
 import StatisticProfitYear from "./thongke/StatisticProfitYear";
 import StatisticProfitStage from "./thongke/StatisticProfitStage";
 
@@ -86,11 +87,21 @@ function Pages() {
         exact
         component={isAdmin ? StatisticBill : NotFound}
       />
+
+      {/* StatisticTurnOver */}
+
+      <Route
+        path="/thongkedoanhthu"
+        exact
+        component={isAdmin ? StatisticTurnOver : NotFound}
+      />
+
       <Route
         path="/thongkeloinhuannam"
         exact
         component={isAdmin ? StatisticProfitYear : NotFound}
       />
+
       <Route
         path="/thongkeloinhuangiaidoan"
         exact

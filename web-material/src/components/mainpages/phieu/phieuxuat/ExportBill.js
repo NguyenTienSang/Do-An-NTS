@@ -252,7 +252,7 @@ function ExporttBill() {
                 />
               </>
             );
-          })}{" "}
+          })}
           {listExportBillSearch.length > 0 ? (
             <Pagination
               itemsPerpage={exportbillsPerPage}
