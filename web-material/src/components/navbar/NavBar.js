@@ -28,7 +28,7 @@ function NavBar() {
   const [isAdmin] = state.userAPI.isAdmin;
 
   const location = useLocation();
-  console.log("location : ", location);
+  // console.log("location : ", location);
   const [openbill, setOpenBill] = useState(
     location.pathname === "/phieunhap" || location.pathname === "/phieuxuat"
       ? true

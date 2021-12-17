@@ -41,7 +41,7 @@ const employeeCtrl = {
         // oldtrangthai,
       } = req.body;
 
-      if (!hoten) {
+      if (hoten.length != 0) {
         return res
           .status(400)
           .json({ success: false, message: "Họ tên trống" });
@@ -108,10 +108,9 @@ const employeeCtrl = {
       if (!images.public_id) {
         return res.status(400).json({ message: "Ảnh trống" });
       }
-   
+
       const nhanvien = await NhanVien.findById(req.body._id);
-     
-     
+
       //======================= New ========================
       //Th không thay đổi trạng thái
 

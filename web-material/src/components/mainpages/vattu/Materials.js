@@ -40,6 +40,8 @@ function Materials() {
   const [listStorageMaterial, setListStorageMaterial] = useState([]);
   const [listMaterialSearch, setListMaterialSearch] = useState([]);
 
+  console.log("listMaterialSearch : ", listMaterialSearch);
+
   useEffect(async () => {
     if (inforuser.role === "user") {
       const res = await axios.post("/api/thongke/vattu", {
@@ -50,7 +52,7 @@ function Materials() {
     } else if (inforuser.role === "admin") {
       setListStorageMaterial(materials);
     }
-  }, []);
+  }, [materials]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [onEdit, setOnEdit] = useState(false);
@@ -68,7 +70,6 @@ function Materials() {
 
   const customData = (dataImport) => {
     let dataExport = [];
-    console.log("dataImport : ", dataImport.listMaterialSearch);
 
     dataExport = dataImport.listMaterialSearch.map((data, index) => ({
       STT: index + 1,
@@ -116,6 +117,7 @@ function Materials() {
         }
       })
     );
+
     setCurrentPage(1); //Khởi tạo lại trang hiện tại là 1
   }, [searchTerm, listStorageMaterial]);
 
@@ -388,12 +390,26 @@ function Materials() {
               );
             })}
 
-            <Pagination
-              itemsPerpage={materialsPerPage}
-              totalItems={listMaterialSearch?.length}
-              paginate={paginate}
-              currentPage={currentPage}
-            />
+            {listMaterialSearch !== undefined && listMaterialSearch.length ? (
+              <Pagination
+                itemsPerpage={materialsPerPage}
+                totalItems={listMaterialSearch?.length}
+                paginate={paginate}
+                currentPage={currentPage}
+              />
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  fontSize: "18px",
+                  border: "1px solid #999",
+                  borderTop: "none",
+                }}
+              >
+                Đại lý chưa có vật tư
+              </div>
+            )}
           </div>
         </div>
       </div>

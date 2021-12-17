@@ -594,6 +594,10 @@ const statisticCtrl = {
   statisticTurnOverTime: async (req, res) => {
     const { madailyfilter, timestatistic, optionstatistic } = req.body;
 
+    console.log("madailyfilter : ", madailyfilter);
+    console.log("timestatistic : ", timestatistic);
+    console.log("optionstatistic : ", optionstatistic);
+
     if (optionstatistic === "Ngay") {
       const phieuxuat = await PhieuXuat.find({
         ngay: { $gte: new Date(timestatistic) },
@@ -634,8 +638,8 @@ const statisticCtrl = {
         0
       ).getDate();
 
-      console.log("numberday : ", numberday);
-      console.log("typeof(numberday) : ", typeof numberday);
+      // console.log("numberday : ", numberday);
+      // console.log("typeof(numberday) : ", typeof numberday);
 
       for (var i = 0; i < numberday; i++) {
         statisticProfitMonth.push({
@@ -710,6 +714,49 @@ const statisticCtrl = {
       return res.status(400).json({ message: "Vui lòng chọn năm" });
     }
 
+    //======================= Tính giá trung bình nhập ============================
+    // const listmaterialaverage = [];
+
+    // const listphieunhap = await PhieuNhap.find().populate("manv");
+
+    // listphieunhap.map((itemphieunhap) => {
+    //   if (
+    //     itemphieunhap.manv.madaily._id.toString() === madailyfilter.toString()
+    //   ) {
+    //     // console.log("itemphieunhap : ", itemphieunhap);
+    //     // console.log("bằng đại lý");
+    //     itemphieunhap.ctpn.map((ctpn) => {
+    //       // console.log("ctpn : ", ctpn);
+    //       const timvattu = listmaterialaverage.find(
+    //         (listmaterialaverageitem) => {
+    //           if (ctpn.mavt === listmaterialaverageitem._id) {
+    //             listmaterialaverageitem.soluong += ctpn.soluong;
+    //             listmaterialaverageitem.tongnhap += ctpn.gianhap * ctpn.soluong;
+    //           }
+    //           return ctpn.mavt === listmaterialaverageitem._id;
+    //         }
+    //       );
+
+    //       if (timvattu === undefined) {
+    //         listmaterialaverage.push({
+    //           _id: ctpn.mavt,
+    //           soluong: ctpn.soluong,
+    //           tongnhap: ctpn.gianhap * ctpn.soluong,
+    //           giatbnhap: 0,
+    //         });
+    //       }
+    //     });
+    //   }
+    // });
+
+    // listmaterialaverage.map((item) => {
+    //   item.giatbnhap = Math.round(item.tongnhap / item.soluong);
+    //   console.log("item._id : ", item._id);
+    //   console.log("item.giatbnhap : ", item.giatbnhap);
+    // });
+
+    //==========================================================
+
     var statisticProfitYear = [];
 
     var element = {
@@ -719,9 +766,6 @@ const statisticCtrl = {
       chiphinhap: 0,
       chiphixuat: 0,
     };
-
-    // phieunhap = await PhieuNhap.find({ $expr: { $and: [{ $eq: [{ $month: "$ngay" },11] }, { $eq: [{ $year: "$ngay" },nam] }] } }).select({ctpn : 1, ngay: 1, _id: 0})
-    // phieunhap = await PhieuNhap.find({ $expr: { $and: [{ $eq: [{ $month: "$ngay" },11] }, { $eq: [{ $year: "$ngay" },nam] }] } }).select({ctpn : 1, ngay: 1, _id: 0})
 
     const phieunhap = await PhieuNhap.find({
       $expr: { $eq: [{ $year: "$ngay" }, yearstatistic] },
@@ -735,7 +779,6 @@ const statisticCtrl = {
       .select({ ctpx: 1, ngay: 1, _id: 0 })
       .populate("manv")
       .populate({ path: "manv", populate: { path: "madaily" } });
-    // const phieuxuat = await PhieuXuat.find({ $expr: { $and: [{ $eq: [{ $month: "$ngay" },11] }, { $eq: [{ $year: "$ngay" },nam] }] } }).select({ctpx : 1, ngay: 1, _id: 0});
 
     //Nếu tất cả đại lý
     if (madailyfilter === "allstores") {
@@ -749,13 +792,7 @@ const statisticCtrl = {
         //Phiếu nhập
 
         phieunhap.map((pn) => {
-          // console.log('pn.ngay : ',(pn.ngay).slice(5,7))
-
-          // console.log('pn.ngay : ',(JSON.stringify(pn.ngay)).slice(6,8))
-
           if (parseInt(JSON.stringify(pn.ngay).slice(6, 8)) === i) {
-            // console.log('pn.manv.madaily : ',pn.manv.madaily._id);
-            // console.log('madailyfilter : ',madailyfilter);
             element.sophieunhap++;
             pn.ctpn.map((ctpn) => {
               element.chiphinhap += parseInt(ctpn.gianhap * ctpn.soluong);
@@ -772,7 +809,6 @@ const statisticCtrl = {
             });
           }
         });
-        // console.log('element : ',element)
         statisticProfitYear.push({ ...element });
       }
     }
@@ -785,8 +821,8 @@ const statisticCtrl = {
           element.chiphinhap =
           element.chiphixuat =
             0;
-        //Phiếu nhập
 
+        //Phiếu nhập
         phieunhap.map((pn) => {
           if (
             parseInt(JSON.stringify(pn.ngay).slice(6, 8)) === i &&
@@ -811,12 +847,10 @@ const statisticCtrl = {
             });
           }
         });
-        // console.log('element : ',element)
         statisticProfitYear.push({ ...element });
       }
     }
 
-    console.log("statisticProfitYear : ", statisticProfitYear);
     return res.json(statisticProfitYear);
   },
 

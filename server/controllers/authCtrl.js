@@ -28,11 +28,6 @@ const authCtrl = {
 
       // console.log("madaily : ", madaily);
       // console.log("req.body : ", req.body);
-      if (!validateEmail(email)) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Email không hợp lệ" });
-      }
 
       if (!hoten) {
         return res
@@ -92,6 +87,11 @@ const authCtrl = {
       }
       if (!email) {
         return res.status(400).json({ success: false, message: "Email trống" });
+      }
+      if (!validateEmail(email)) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Email không hợp lệ" });
       }
 
       if (!trangthai) {

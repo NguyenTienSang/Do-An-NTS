@@ -8,7 +8,6 @@ function WareHouseAPI() {
     const getWareHouses = async () => {
       const res = await axios.get('/api/kho');
       setWareHouses(res.data);
-      console.log('kho : ',res.data)
     };
   
  useEffect(() => {

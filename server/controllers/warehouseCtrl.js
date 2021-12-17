@@ -44,8 +44,8 @@ const warehouseCtrl = {
         return res.status(400).json({ message: "Trạng thái không được trống" });
       }
 
-      if (!images) {
-        return res.status(400).json({ message: "Ảnh trống" });
+      if (!images.public_id) {
+        return res.status(400).json({ success: false, message: "Ảnh trống" });
       }
 
       console.log("new kho : ", req.body);

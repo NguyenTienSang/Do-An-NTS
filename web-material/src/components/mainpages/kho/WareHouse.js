@@ -448,12 +448,26 @@ function WareHouses() {
               }
             })}
 
-            <Pagination
-              itemsPerpage={warehousesPerPage}
-              totalItems={listWareHouseSearch?.length}
-              paginate={paginate}
-              currentPage={currentPage}
-            />
+            {listWareHouseSearch !== undefined && listWareHouseSearch.length ? (
+              <Pagination
+                itemsPerpage={warehousesPerPage}
+                totalItems={listWareHouseSearch?.length}
+                paginate={paginate}
+                currentPage={currentPage}
+              />
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  fontSize: "18px",
+                  border: "1px solid #999",
+                  borderTop: "none",
+                }}
+              >
+                Đại lý chưa có kho
+              </div>
+            )}
           </div>
         </div>
       </div>

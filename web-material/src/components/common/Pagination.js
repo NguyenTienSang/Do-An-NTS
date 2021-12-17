@@ -4,10 +4,6 @@ import { BsCaretLeftFill, BsCaretRightFill } from "react-icons/bs";
 function Pagination({ itemsPerpage, totalItems, paginate, currentPage }) {
   const pageNumbers = [];
 
-  console.log("itemsPerpage : ", itemsPerpage);
-  console.log("totalItems : ", totalItems);
-  console.log("paginate : ", paginate);
-
   for (let i = 1; i <= Math.ceil(totalItems / itemsPerpage); i++) {
     pageNumbers.push(i);
   }
