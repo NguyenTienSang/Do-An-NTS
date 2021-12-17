@@ -136,7 +136,8 @@ export default function DanhSachDaiLy({navigation, route}) {
                               ) {
                                 console.log('đại lý nè : ', item);
                                 navigation.navigate('ThongKeVatTuTon', {
-                                  daily: item, type : 'chondaily'
+                                  daily: item,
+                                  type: 'chondaily',
                                 });
                               } else if (
                                 route.params.page == 'ThongKeTheoNamTungDaiLy'
@@ -144,6 +145,16 @@ export default function DanhSachDaiLy({navigation, route}) {
                                 navigation.navigate('ThongKeTheoNamTungDaiLy', {
                                   daily: item,
                                 });
+                              } else if (
+                                route.params.page ==
+                                'ThongKeDoanhThuMocThoiGian'
+                              ) {
+                                navigation.navigate(
+                                  'ThongKeDoanhThuMocThoiGian',
+                                  {
+                                    daily: item,
+                                  },
+                                );
                               } else if (
                                 route.params.page ==
                                 'ThongKeTheoGiaiDoanTungDaiLy'

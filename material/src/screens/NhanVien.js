@@ -123,7 +123,7 @@ export default function NhanVien({navigation}) {
               style={{marginRight: 100}}
               onPress={() => console.log('hello')}
             />
-          </Animatable.View>  
+          </Animatable.View>
         </View>
 
         <ScrollView>

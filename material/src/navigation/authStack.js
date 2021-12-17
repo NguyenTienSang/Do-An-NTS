@@ -8,7 +8,6 @@ import DrawerNavigator from './DrawerNavigator';
 // import RootClientTabs from './ClientTabs';
 import RestaurantMapScreen from '../screens/RestaurantsMapScreen';
 import DaiLy from './../screens/DaiLy';
-import LoiNhuan from './../screens/LoiNhuan';
 
 import ListMaterial from '../Materials/ListMaterial';
 import AddPriceMaterial from '../Materials/AddMaterial';
@@ -46,7 +45,7 @@ import DanhSachPhieuXuat from './../phieuxuat/DanhSachPhieuXuat';
 import ChiTietPhieuXuat from './../phieuxuat/ChiTietPhieuXuat';
 import SignUpScreen from './../screens/authScreens/SignUpScreen';
 
-// import { AsyncStorage } from '@react-native-async-storage/async-storage';
+import HomeScreen from '../screens/HomeScreen';
 import UserHomeScreen from './../User/UserHomeScreen';
 import DSNhanVienUser from './../User/DSNhanVienUser';
 import DanhSachPhieuNhapUser from './../phieunhap/DanhSachPhieuNhapUser';
@@ -57,6 +56,7 @@ import DoiMatKhau from './../screens/DoiMatKhau';
 import DanhSachKho from './../kho/DanhSachKho';
 
 import ThongKe from '../screens/ThongKe';
+import ThongKeDoanhThuMocThoiGian from '../screens/ThongKeDoanhThuMocThoiGian';
 import ThongKeTheoNamTungDaiLy from '../screens/ThongKeTheoNamTungDaiLy';
 import ThongKeTheoGiaiDoanTungDaiLy from '../screens/ThongKeTheoGiaiDoanTungDaiLy';
 import ThongKeNhanVienLapPhieu from '../thongke/ThongKeNhanVienLapPhieu';
@@ -121,14 +121,14 @@ export function AuthStack() {
         }}
       />
 
-      <Stack.Screen
+      {/* <Stack.Screen
         name="RestaurantMapScreen"
         component={RestaurantMapScreen}
         options={{
           headerShown: false,
           ...TransitionPresets.RevealFromBottomAndroid,
         }}
-      />
+      /> */}
 
       <Stack.Screen
         name="DaiLy"
@@ -387,6 +387,15 @@ export function AuthStack() {
       />
 
       <Stack.Screen
+        name="ThongKeDoanhThuMocThoiGian"
+        component={ThongKeDoanhThuMocThoiGian}
+        options={{
+          headerShown: false,
+          ...TransitionPresets.RevealFromBottomAndroid,
+        }}
+      />
+
+      <Stack.Screen
         name="ThongKeTheoNamTungDaiLy"
         component={ThongKeTheoNamTungDaiLy}
         options={{
@@ -422,14 +431,23 @@ export function AuthStack() {
         }}
       />
 
-      <Stack.Screen
+      {/* <Stack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{
+          headerShown: false,
+          ...TransitionPresets.RevealFromBottomAndroid,
+        }}
+      /> */}
+
+      {/* <Stack.Screen
         name="UserHomeScreen"
         component={UserHomeScreen}
         options={{
           headerShown: false,
           ...TransitionPresets.RevealFromBottomAndroid,
         }}
-      />
+      /> */}
 
       <Stack.Screen
         name="DSNhanVienUser"

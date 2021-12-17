@@ -115,9 +115,6 @@ export default function AddKho({navigation, route}) {
   };
 
   const ThemKho = async () => {
-    console.log('warehouse._id : ', warehouse._id);
-    console.log('warehouse : ', warehouse);
-    console.log('token :', token);
     try {
       const res = await axios.post(
         `${APIKho}`,
@@ -136,7 +133,15 @@ export default function AddKho({navigation, route}) {
         },
       ]);
     } catch (err) {
-      alert(err.response.data.message);
+      Alert.alert('Thông báo', err.response.data.message, [
+        {
+          text: 'OK',
+          onPress: () => {
+            // setCallback(!callback);
+            // navigation.replace('Kho');
+          },
+        },
+      ]);
     }
   };
 
@@ -284,7 +289,20 @@ export default function AddKho({navigation, route}) {
             <Button
               buttonStyle={styles.buttonAction}
               title="Hủy"
-              onPress={() => {
+              onPress={async () => {
+                if (warehouse.images.public_id !== '') {
+                  try {
+                    await axios.post(
+                      `${APIDestroy}`,
+                      {
+                        public_id: warehouse.images.public_id,
+                      },
+                      {headers: {Authorization: token}},
+                    );
+                  } catch (error) {
+                    Alert.alert('Thông báo', error.response.data.message);
+                  }
+                }
                 navigation.navigate('Kho');
               }}
             />

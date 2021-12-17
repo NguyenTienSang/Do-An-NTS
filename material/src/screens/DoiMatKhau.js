@@ -19,16 +19,10 @@ import {Icon, Button} from 'react-native-elements';
 import NumericInput from 'react-native-numeric-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {APIChangePass} from '../api/API';
-const argon2 = require('argon2');
 
 export default function DoiMatKhau({navigation, route}) {
-  const [iddl, setIDDL] = useState('');
-  const [hoten, setHoTen] = useState(route.params.nhanvien.hoten);
-  const [madl, setMaDL] = useState(route.params.nhanvien.madaily);
-  const [diachi, setDiaChi] = useState(route.params.nhanvien.diachi);
-  const [username, setUserName] = useState(route.params.nhanvien.username);
-  const [role, setRole] = useState(route.params.nhanvien.role);
-  const [imageData, setImageData] = useState(route.params.nhanvien.images);
+  console.log('test đổi mật khẩu');
+  console.log('navigation đổi mật khẩu : ', navigation);
 
   const [password, setPassword] = useState({
     oldpassword: '',
@@ -37,20 +31,8 @@ export default function DoiMatKhau({navigation, route}) {
   });
 
   const DoiMatKhau = async () => {
-    let manv = '';
-
-    await AsyncStorage.getItem('inforuser').then(async dataUser => {
-      manv = JSON.parse(dataUser)._id;
-      console.log('manv : ', manv);
-      // console.log('JSON.parse(dataUser)._id : ', JSON.parse(dataUser)._id);
-      // console.log(
-      //   'typeof(JSON.parse(dataUser)._id) : ',
-      //   typeof JSON.parse(dataUser)._id,
-      // );
-    });
-    console.log('manv2 : ', manv);
     await axios
-      .put(`http://192.168.1.5:5000/api/auth/changepassword/${manv}`, {
+      .put(`${APIChangePass}/${route.params.nhanvien._id}`, {
         ...password,
       })
       .then(res => {
@@ -150,7 +132,13 @@ export default function DoiMatKhau({navigation, route}) {
           buttonStyle={styles.buttonAction}
           title="Hủy"
           onPress={() => {
-            navigation.navigate('HomeScreen');
+            if (route.params.nhanvien.role === 'admin') {
+              console.log('quyền admin');
+              navigation.navigate('HomeScreen');
+            } else if (route.params.nhanvien.role === 'user') {
+              console.log('quyền user');
+              navigation.navigate('UserHomeScreen');
+            }
           }}
         />
       </View>

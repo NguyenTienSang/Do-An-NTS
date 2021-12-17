@@ -20,54 +20,65 @@ export default function PhieuNhap({navigation}) {
   return (
     <View style={{flex: 1}}>
       <Header title="Trở về" type="arrow-left" navigation={navigation} />
-      <View style={styles.groupButtonAction}>
-        <View style={{marginLeft: 'auto', marginRight: 'auto'}}>
-          <Text
-            style={{
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              fontSize: 20,
-              fontWeight: '500',
-              marginBottom: 30,
-            }}>
-            Thống Kê
-          </Text>
-          {/* ----------------- New -------------------- */}
-          <Button
-            buttonStyle={styles.buttonAction}
-            title="Nhân Viên Lập Phiếu"
-            onPress={() => {
-              navigation.navigate('ThongKeNhanVienLapPhieu');
-            }}
-          />
-          <Button
-            buttonStyle={styles.buttonAction}
-            title="Vật Tư Tồn"
-            onPress={async () => {
-              // AsyncStorage.removeItem('cart');
-              // AsyncStorage.setItem('kt', '0');
-              navigation.navigate('ThongKeVatTuTon');
-            }}
-          />
-          {/* ----------------------------------------------- */}
-          <Button
-            buttonStyle={styles.buttonAction}
-            title={'Thống kê lợi nhuận \n theo năm'}
-            onPress={() => {
-              navigation.navigate('ThongKeTheoNamTungDaiLy');
-            }}
-          />
-          <Button
-            buttonStyle={styles.buttonAction}
-            title={'Thống kê lợi nhuận \n theo giai đoạn'}
-            onPress={async () => {
-              AsyncStorage.removeItem('cart');
-              AsyncStorage.setItem('kt', '0');
-              navigation.navigate('ThongKeTheoGiaiDoanTungDaiLy');
-            }}
-          />
+      <ScrollView>
+        <View style={styles.groupButtonAction}>
+          <View style={{marginLeft: 'auto', marginRight: 'auto'}}>
+            <Text
+              style={{
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                fontSize: 20,
+                fontWeight: '500',
+                marginBottom: 30,
+              }}>
+              Thống Kê
+            </Text>
+            {/* ----------------- New -------------------- */}
+            <Button
+              buttonStyle={styles.buttonAction}
+              title="Nhân Viên Lập Phiếu"
+              onPress={() => {
+                navigation.navigate('ThongKeNhanVienLapPhieu');
+              }}
+            />
+            <Button
+              buttonStyle={styles.buttonAction}
+              title="Vật Tư Tồn"
+              onPress={async () => {
+                // AsyncStorage.removeItem('cart');
+                // AsyncStorage.setItem('kt', '0');
+                navigation.navigate('ThongKeVatTuTon');
+              }}
+            />
+            {/* ----------------------------------------------- */}
+
+            <Button
+              buttonStyle={styles.buttonAction}
+              title={'Thống kê doanh thu'}
+              onPress={() => {
+                navigation.navigate('ThongKeDoanhThuMocThoiGian');
+              }}
+            />
+
+            <Button
+              buttonStyle={styles.buttonAction}
+              title={'Thống kê lợi nhuận \n theo năm'}
+              onPress={() => {
+                navigation.navigate('ThongKeTheoNamTungDaiLy');
+              }}
+            />
+            <Button
+              buttonStyle={styles.buttonAction}
+              title={'Thống kê lợi nhuận \n theo giai đoạn'}
+              onPress={async () => {
+                AsyncStorage.removeItem('cart');
+                AsyncStorage.setItem('kt', '0');
+                navigation.navigate('ThongKeTheoGiaiDoanTungDaiLy');
+              }}
+            />
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }

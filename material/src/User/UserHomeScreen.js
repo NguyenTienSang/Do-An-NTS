@@ -1,27 +1,12 @@
-import React, {useState} from 'react';
-
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-  Pressable,
-  Dimensions,
-} from 'react-native';
-import {Icon, Button} from 'react-native-elements';
-import CountDown from 'react-native-countdown-component';
+import React from 'react';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import {Button} from 'react-native-elements';
 import HomeHeader from '../components/HomeHeader';
 import {colors, parameters} from '../global/styles';
-import {filterData, restaurantsData} from '../global/Data';
-import {ImagePropTypes} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function UserHomeScreen({navigation}) {
+  console.log('test');
+  console.log('navigation UserHomeScreen : ', navigation);
   return (
     <View style={styles.container}>
       <HomeHeader navigation={navigation} />

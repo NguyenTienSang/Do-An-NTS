@@ -157,32 +157,10 @@ export function DrawerContent({navigation, props}) {
                   }}>
                   Đổi mật khẩu
                 </Text>
-                {/* <Button
-                                                title="Đổi mật khẩu"
-                                                // buttonStyle={styles.taskButton}
-                                                // titleStyle={parameters.buttonTitle}
-                                                onPress={()=>{
-                                                    navigation.navigate("DSNhanVienUser")
-                                                }}
-                                            >
-                                            </Button> */}
               </View>
             </View>
           </View>
 
-          {/* <Drawer.Section title="Preferences"> */}
-          {/* <DrawerItem
-                                        icon={({color,size}) => (
-                                            <Icon
-                                            name="table-account"
-                                            iconStyle={{color: 'black',marginRight:10}}
-                                            type="material-community"
-                                            />
-                                        )}
-                                        label="Đổi mật khẩu"
-                                        onPress={() => {}}
-                                    /> */}
-          {/* </Drawer.Section>   */}
         </View>
       </DrawerContentScrollView>
 

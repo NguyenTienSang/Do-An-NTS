@@ -110,8 +110,6 @@ export default function EditKho({navigation, route}) {
   };
 
   const SuaKho = async () => {
-    console.log('route.params.kho.tenkho : ', warehouse.tenkho);
-    console.log('tenkhocheck : ', warehouse.tenkhocheck);
     try {
       const res = await axios.put(
         `${APIKho}/${warehouse._id}`,

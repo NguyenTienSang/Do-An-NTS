@@ -33,7 +33,7 @@ export default function DSNhanVienUser({navigation}) {
   const [employees] = state.employeeAPI.employees;
 
   const [search, setSearch] = useState('');
-  
+
   useEffect(() => {
     AsyncStorage.getItem('inforuser').then(async dataUser => {
       setInforUser(JSON.parse(dataUser));
@@ -62,7 +62,7 @@ export default function DSNhanVienUser({navigation}) {
 
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
         <Text style={styles.title}>Danh Sách Nhân Viên</Text>
-        <View style={styles.optionsSelect}>
+        {/* <View style={styles.optionsSelect}>
           <Button
             title="Thêm"
             buttonStyle={styles.buttonOption}
@@ -70,7 +70,7 @@ export default function DSNhanVienUser({navigation}) {
               navigation.navigate('AddEmployee');
             }}
           />
-        </View>
+        </View> */}
 
         <View style={styles.TextInput2}>
           <TextInput

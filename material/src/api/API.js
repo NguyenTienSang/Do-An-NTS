@@ -6,7 +6,7 @@ export const APISTATE = 'http://192.168.1.3:5000/api';
 export const APILogin = `${APISTATE}/auth/login`;
 export const APIToken = `${APISTATE}/auth/refresh_token`;
 export const APIGetUser = `${APISTATE}/nhanvien/login`;
-export const APIChangePass = `${APISTATE}/nhanvien/changepass`;
+export const APIChangePass = `${APISTATE}/auth/changepassword`;
 
 //User
 export const APIInforUser = `${APISTATE}/auth/infor`;
