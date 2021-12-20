@@ -10,6 +10,7 @@ router.get("/logout", authCtrl.logout);
 
 router.put("/changepassword/:id", authCtrl.changepassword);
 
+router.post("/forgotpassword", authCtrl.forgotpassword);
 
 router.get("/refresh_token", authCtrl.refreshToken);
 

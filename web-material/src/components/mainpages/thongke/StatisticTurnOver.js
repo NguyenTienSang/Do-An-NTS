@@ -185,7 +185,7 @@ function StatisticTurnOver() {
         console.log(res.data);
         setDataStatistic(res.data);
       } catch (error) {
-        setMessage(error.response.data.message);
+        setMessage(<p className="message">{error.response.data.message}</p>);
         setOpenAlert(true);
       }
     }
@@ -317,7 +317,12 @@ function StatisticTurnOver() {
                           : `DoanhThu${moment(timeStatistic).format("YYYY")}`
                       );
                     } else {
-                      setMessage("Dữ liệu đang trống không thể xuất");
+                      setMessage(
+                        <p className="message">
+                          Dữ liệu đang trống <br />
+                          không thể xuất
+                        </p>
+                      );
                       setOpenAlert(true);
                     }
                   }}
@@ -403,7 +408,7 @@ function StatisticTurnOver() {
         >
           <div className="modal__notification">
             <p className="title-notification">Thông báo</p>
-            <p>{message}</p>
+            {message}
             <div className="option-button">
               <button
                 id="add"

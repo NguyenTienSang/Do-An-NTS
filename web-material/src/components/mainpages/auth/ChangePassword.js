@@ -17,7 +17,6 @@ function ChangePassword() {
   });
 
   const changePass = async () => {
-   
     const _id = JSON.parse(localStorage.getItem("inforuser"))._id;
 
     console.log("password : ", password);
@@ -31,7 +30,7 @@ function ChangePassword() {
         //   setPassword({ ...password});
         // alert(res.data.message)
 
-        setMessage(res.data.message);
+        setMessage(<p className="message">{res.data.message}</p>);
         setOpenAlert(true);
 
         setPassword({
@@ -47,7 +46,7 @@ function ChangePassword() {
       .catch((error) => {
         // console.log('error : ',error.response.data.message)
         // alert('test'+error.response.data.message);
-        setMessage(error.response.data.message);
+        setMessage(<p className="message">{error.response.data.message}</p>);
         setOpenAlert(true);
       });
   };
@@ -153,7 +152,7 @@ function ChangePassword() {
         >
           <div className="modal__notification">
             <p className="title-notification">Thông báo</p>
-            <p>{message}</p>
+            {message}
             <div className="option-button">
               <button
                 id="add"

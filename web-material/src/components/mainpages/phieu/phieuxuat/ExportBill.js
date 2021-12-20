@@ -129,6 +129,12 @@ function ExporttBill() {
             return exportbill;
           } else if (
             (exportbill._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              `${exportbill.ngay.slice(8, 10)}-${exportbill.ngay.slice(
+                5,
+                7
+              )}-${exportbill.ngay.slice(0, 4)}`.includes(
+                searchTerm.toLowerCase()
+              ) ||
               exportbill.manv._id
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||
@@ -152,6 +158,12 @@ function ExporttBill() {
             return exportbill;
           } else if (
             (exportbill._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              `${exportbill.ngay.slice(8, 10)}-${exportbill.ngay.slice(
+                5,
+                7
+              )}-${exportbill.ngay.slice(0, 4)}`.includes(
+                searchTerm.toLowerCase()
+              ) ||
               exportbill.manv._id
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||

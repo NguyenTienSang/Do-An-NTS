@@ -98,7 +98,7 @@ function StatisticProfitStage() {
         parseInt(moment(endyearstatistic).format("YYYY"))
       ) {
         setOpenAlert(true);
-        setMessage("Thời gian không hợp lệ");
+        setMessage(<p className="message">Thời gian không hợp lệ</p>);
       } else {
         const res = await axios.post(
           "/api/thongke/loinhuangiaidoan",
@@ -111,8 +111,6 @@ function StatisticProfitStage() {
           }
           // {madailyfilter,yearstatistic : 2021}
         );
-
-        console.log("res.data : ", res.data);
         setDataStatistic(res.data);
       }
     }
@@ -202,7 +200,7 @@ function StatisticProfitStage() {
                         )}-${moment(endyearstatistic).format("YYYY")}`
                       );
                     } else {
-                      setMessage("Dữ liệu đang trống không thể xuất");
+                      setMessage(<p className="message">Dữ liệu đang trống <br/>không thể xuất</p>);
                       setOpenAlert(true);
                     }
                   }}
@@ -272,7 +270,7 @@ function StatisticProfitStage() {
         >
           <div className="modal__notification">
             <p className="title-notification">Thông báo</p>
-            <p>{message}</p>
+            {message}
             <div className="option-button">
               <button
                 id="add"

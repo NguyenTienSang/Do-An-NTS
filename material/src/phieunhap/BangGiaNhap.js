@@ -7,20 +7,23 @@ import {
   StyleSheet,
   Dimensions,
   Image,
-  Alert,
+  TextInput,
 } from 'react-native';
 import {Button} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {APIVattu, TimVatTuPN} from './../api/API';
 import Header from './../components/Header';
 import {GlobalState} from '../GlobalState';
-
+import {Icon} from 'react-native-elements';
+import * as Animatable from 'react-native-animatable';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function BangGiaNhap({navigation, route}) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState();
   const state = useContext(GlobalState);
+  const [search, setSearch] = useState('');
+  const [textInputFocussed, setTeInputFocussed] = useState(false);
   const [token] = state.token;
   const [materialsfilter, setMaterialsFilter] = useState(null);
 
@@ -78,28 +81,6 @@ export default function BangGiaNhap({navigation, route}) {
     setMaterialsFilter(res.data);
   }, []);
 
-  // const Infor = async ()=>{
-  //     const token = await AsyncStorage.getItem("token");
-  //   fetch(`${APIVattu}`,{
-  //   headers:new Headers({
-  //     Authorization:"Bearer "+token
-  //   })
-  //   }).then(res=>res.json())
-  //   .then(vt=>{
-  //       setData(vt.vattu);
-  //   }
-  //   )
-  //  }
-  // useEffect(()=>{
-
-  //   Infor()
-  //   if(data.length == 0)
-  //   {
-  //       setLoading("")
-  //   }
-
-  // },[loading])
-
   return (
     <View style={{flex: 1}}>
       <Header title="Trở về" type="arrow-left" navigation={navigation} />
@@ -111,84 +92,132 @@ export default function BangGiaNhap({navigation, route}) {
         }}>
         <Text style={styles.title}>Bảng Giá Nhập</Text>
 
+        <View style={styles.TextInput2}>
+          <TextInput
+            style={{width: '80%'}}
+            placeholder="Nhập từ khóa tìm kiếm"
+            onChangeText={text => setSearch(text)}
+            onFocus={() => {
+              setTeInputFocussed(false);
+            }}
+            onBlur={() => {
+              setTeInputFocussed(true);
+            }}
+          />
+
+          <Animatable.View
+            animation={textInputFocussed ? '' : 'fadeInLeft'}
+            duration={400}>
+            <Icon
+              name="search"
+              iconStyle={{color: '#86939e'}}
+              type="fontisto"
+              style={{marginRight: 100}}
+              onPress={() => console.log('hello')}
+            />
+          </Animatable.View>
+        </View>
+
         <ScrollView style={{paddingLeft: 5, paddingRight: 5}}>
           <View style={styles.listPrice}>
             {materialsfilter ? (
-              materialsfilter?.map(item => (
-                <View key={item._id}>
-                  <View
-                    style={{
-                      borderWidth: 1,
-                      borderStyle: 'solid',
-                      borderColor: '#1b94ff',
-                      borderRadius: 5,
-                      marginBottom: 20,
-                    }}>
+              materialsfilter
+                ?.filter(item => {
+                  if (search == '' && item.trangthai === 'Đang kinh doanh') {
+                    return item;
+                  } else if (
+                    (item._id.toLowerCase().includes(search.toLowerCase()) ||
+                      item.tenvt.toLowerCase().includes(search.toLowerCase()) ||
+                      item.soluong
+                        .toString()
+                        .toLowerCase()
+                        .includes(search.toLowerCase())) &&
+                    item.trangthai === 'Đang kinh doanh'
+                  ) {
+                    return item;
+                  }
+                })
+                .map(item => (
+                  <View key={item._id}>
                     <View
-                      style={{display: 'flex', flex: 1, flexDirection: 'row'}}>
-                      <Image
-                        style={styles.image}
-                        source={{uri: item.images.url}}
-                      />
-
+                      style={{
+                        borderWidth: 1,
+                        borderStyle: 'solid',
+                        borderColor: '#1b94ff',
+                        borderRadius: 5,
+                        marginBottom: 20,
+                      }}>
                       <View
                         style={{
                           display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          flexDirection: 'column',
+                          flex: 1,
+                          flexDirection: 'row',
                         }}>
-                        <Button
-                          title="Thêm Vào Phiếu"
-                          buttonStyle={styles.buttonOption}
-                          // disabled={item.soluong === 0 ? true : false}
-                          onPress={() => {
-                            onClickAddCart(item);
-                            navigation.navigate('LapPhieuNhap', {id: item._id});
-                          }}
+                        <Image
+                          style={styles.image}
+                          source={{uri: item.images.url}}
                         />
-                      </View>
-                    </View>
-                    <View style={styles.thonTinSP}>
-                      <View>
-                        <Text
-                          style={{
-                            color: '#000',
-                            marginLeft: 'auto',
-                            marginRight: 'auto',
-                          }}>
-                          Tên: {item.tenvt}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.thonTinSP}>
-                      <View>
-                        <Text
-                          style={{
-                            color: '#000',
-                            marginLeft: 'auto',
-                            marginRight: 'auto',
-                          }}>
-                          SL Tồn: {item.soluong} {item.donvi}
-                        </Text>
-                      </View>
-                      <View>
+
                         <View
                           style={{
                             display: 'flex',
-                            flexDirection: 'row',
-                            color: '#000',
-                            marginLeft: 'auto',
-                            marginRight: 'auto',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'column',
                           }}>
-                          <Text>Giá Nhập : {Format(item.gianhap)}</Text>
-                          <Text>/{item.donvi}</Text>
+                          <Button
+                            title="Thêm Vào Phiếu"
+                            buttonStyle={styles.buttonOption}
+                            // disabled={item.soluong === 0 ? true : false}
+                            onPress={() => {
+                              onClickAddCart(item);
+                              navigation.navigate('LapPhieuNhap', {
+                                id: item._id,
+                              });
+                            }}
+                          />
+                        </View>
+                      </View>
+                      <View style={styles.thonTinSP}>
+                        <View>
+                          <Text
+                            style={{
+                              color: '#000',
+                              marginLeft: 'auto',
+                              marginRight: 'auto',
+                            }}>
+                            Tên: {item.tenvt}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={styles.thonTinSP}>
+                        <View>
+                          <Text
+                            style={{
+                              color: '#000',
+                              marginLeft: 'auto',
+                              marginRight: 'auto',
+                            }}>
+                            SL Tồn: {item.soluong} {item.donvi}
+                          </Text>
+                        </View>
+                        <View>
+                          <View
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'row',
+                              color: '#000',
+                              marginLeft: 'auto',
+                              marginRight: 'auto',
+                            }}>
+                            <Text>Giá Nhập : {Format(item.gianhap)}</Text>
+                            <Text>/{item.donvi}</Text>
+                          </View>
                         </View>
                       </View>
                     </View>
                   </View>
-                </View>
-              ))
+                ))
             ) : (
               <View style={{marginLeft: 'auto', marginRight: 'auto'}}>
                 <Text style={{fontSize: 20}}>Kho chưa có vật tư</Text>
@@ -202,6 +231,19 @@ export default function BangGiaNhap({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
+  TextInput2: {
+    borderWidth: 1,
+    borderRadius: 12,
+    marginHorizontal: 20,
+    borderColor: '#86939e',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContent: 'center',
+    alignItems: 'center',
+    paddingLeft: 15,
+    paddingRight: 15,
+    marginBottom: 15,
+  },
   title: {
     fontSize: 30,
     fontWeight: '400',

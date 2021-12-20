@@ -42,8 +42,8 @@ function DetailWareHouse() {
       ID: data._id,
       "Tên vật tư": data.tenvt,
       "Số lượng tồn": `${data.soluong} ${data.donvi}`,
-      "Giá nhập": data.gianhap,
-      "Giá xuất": data.giaxuat,
+      "Giá nhập": Format(data.gianhap),
+      "Giá xuất": Format(data.giaxuat),
     }));
 
     return dataExport;
@@ -166,7 +166,13 @@ function DetailWareHouse() {
                         `DanhSachVatTuTon_${inforWareHouse?.tenkho}`
                       );
                     } else {
-                      setMessage("Dữ liệu đang trống không thể xuất file");
+                      setMessage(
+                        <p className="message">
+                          Dữ liệu đang trống
+                          <br />
+                          không thể xuất file
+                        </p>
+                      );
                       setOpenAlert(true);
                     }
                   }}
@@ -258,7 +264,7 @@ function DetailWareHouse() {
         >
           <div className="modal__notification">
             <p className="title-notification">Thông báo</p>
-            <p>{message}</p>
+            {message}
             <div className="option-button">
               <button
                 id="add"

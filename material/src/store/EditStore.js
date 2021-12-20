@@ -128,9 +128,9 @@ export default function EditStore({navigation, route}) {
 
           let formData = new FormData();
           formData.append('file', file);
-          console.log('data file : ', file);
+          // console.log('data file : ', file);
           // setLoading(true);
-          console.log('-------------- test --------------');
+          // console.log('-------------- test --------------');
 
           const res = await axios.post(`${APIUpload}`, formData, {
             headers: {

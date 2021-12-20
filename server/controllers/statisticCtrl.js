@@ -9,19 +9,10 @@ const statisticCtrl = {
   searchMaterialImportBills: async (req, res) => {
     //lấy danh sách vật tư của cửa hàng gán bằng 0
     const vattu = await VatTu.find();
-    // res.json(vatti)
-    // vattu.map(vattuitem => {
-    //     vattuitem.soluong = 0;
-    // })
 
     const { makhofilter } = req.body;
-
-    // console.log('Mã đại lý thực hiện thống kê : ',madailyfilter)
-    console.log("Mã kho thực hiện thống kê : ", makhofilter);
-
     //Tiến hành lấy danh sách vật tư đã có trong kho
 
-    console.log("Chọn kho cụ thể");
     const listmaterialfilter = [];
     const phieunhap = await PhieuNhap.find()
       .populate("manv")
@@ -29,8 +20,7 @@ const statisticCtrl = {
     const phieuxuat = await PhieuXuat.find()
       .populate("manv")
       .populate({ path: "ctpx", populate: { path: "mavt" } });
-    console.log("PhieuNhap : ", phieunhap);
-    console.log("PhieuXuat : ", phieuxuat);
+
     //Lọc phiếu nhập
     const filterpn = phieunhap?.filter((pn) => {
       return makhofilter == pn.makho;
@@ -66,28 +56,12 @@ const statisticCtrl = {
         }
       });
     });
-    // } catch (error) {
-    //     console.log('error.message: ',error.message);
-    // }
 
-    // console.log('filterpx : ',filterpx)
-
-    // console.log('------------------------');
-    // console.log('filterpn : ',filterpn);
-    // console.log('filterpx : ',filterpx);
     //Lọc ra những vật tư có trong phiếu xuất
     filterpx?.map((px) => {
       px.ctpx?.map((ctpx) => {
         listmaterialfilter.find((listmaterialitem) => {
-          // console.log(ctpx);
-          // console.log('ctpx.mavt._id : ',ctpx.mavt._id);
-          // console.log('listmaterialitem._id : ',listmaterialitem._id);
-          // console.log('typeof(ctpx.mavt._id) : ',typeof(ctpx.mavt._id));
-          // console.log('typeof(listmaterialitem._id) : ',typeof(listmaterialitem._id));
-          // console.log('ctpx.mavt._id.toString() : ',ctpx.mavt._id.toString());
-          // console.log('listmaterialitem._id.toString() : ',listmaterialitem._id.toString());
           if (ctpx.mavt._id.toString() === listmaterialitem._id.toString()) {
-            console.log("Vô nè");
             listmaterialitem.soluong -= ctpx.soluong;
           }
           return ctpx.mavt._id === listmaterialitem._id;
@@ -98,7 +72,6 @@ const statisticCtrl = {
     //Tiến hành gán vật tư có trong danh sách vật tư của kho thì lấy số lượng đó cho bằng số lượng vật tư tìm kiếm
     //Những vật  tư không có sẽ có giá trị là 0
 
-    console.log("listmaterialfilter : ", listmaterialfilter);
     // res.json(listmaterialfilter)
 
     vattu.map((vattuitem) => {
@@ -159,10 +132,7 @@ const statisticCtrl = {
           });
 
           //Lọc phiếu nhập
-          console.log("Lọc phiếu nhập");
           filterpn?.map((pn) => {
-            console.log("pn.makho.tenkho : ", pn.makho.tenkho);
-            console.log("pn._id : ", pn._id);
             pn.ctpn?.map((ctpn) => {
               // if (ctpn.mavt.tenvt === "Đồng đỏ") {
               //   console.log("ctpn.soluong : ", ctpn.soluong);
@@ -193,14 +163,9 @@ const statisticCtrl = {
             });
           });
           //Lọc phiếu xuất
-          console.log("Lọc phiếu xuất");
+
           filterpx?.map((px) => {
-            console.log("px.makho.tenkho : ", px.makho.tenkho);
-            console.log("px._id : ", px._id);
             px.ctpx?.map((ctpx) => {
-              if (ctpx.mavt.tenvt === "Đồng đỏ") {
-                console.log("ctpx.soluong : ", ctpx.soluong);
-              }
               listmaterialfilter.find((listmaterialitem) => {
                 if (
                   ctpx.mavt._id.toString() === listmaterialitem._id.toString()

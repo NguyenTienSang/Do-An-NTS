@@ -40,8 +40,6 @@ function Materials() {
   const [listStorageMaterial, setListStorageMaterial] = useState([]);
   const [listMaterialSearch, setListMaterialSearch] = useState([]);
 
-  console.log("listMaterialSearch : ", listMaterialSearch);
-
   useEffect(async () => {
     if (inforuser.role === "user") {
       const res = await axios.post("/api/thongke/vattu", {
@@ -62,6 +60,15 @@ function Materials() {
   const [openalert, setOpenAlert] = useState(false);
   const [message, setMessage] = useState("");
 
+  const Format = (number) => {
+    if (number >= 0) {
+      return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
+    } else
+      return (
+        "-" + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND"
+      );
+  };
+
   //============ XUẤT FILE ==============
   const fileType =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
@@ -76,8 +83,8 @@ function Materials() {
       ID: data._id,
       "Tên vật tư": data.tenvt,
       "Đơn vị": data.donvi,
-      "Giá nhập": data.gianhap,
-      "Giá xuất": data.giaxuat,
+      "Giá nhập": Format(data.gianhap),
+      "Giá xuất": Format(data.giaxuat),
       "Số lượng": data.soluong,
       "Trạng thái": data.trangthai,
     }));
@@ -173,7 +180,7 @@ function Materials() {
       setLoading(false);
       setImages(res.data);
     } catch (err) {
-      setMessage(err.response.data.message);
+      setMessage(<p className="message">{err.response.data.message}</p>);
       setOpenAlert(true);
     }
   };
@@ -192,7 +199,7 @@ function Materials() {
       setLoading(false);
       setImages(false);
     } catch (err) {
-      setMessage(err.response.data.message);
+      setMessage(<p className="message">{err.response.data.message}</p>);
       setOpenAlert(true);
     }
   };
@@ -237,7 +244,7 @@ function Materials() {
         );
         //  alert(res.data.message);
 
-        setMessage(res.data.message);
+        setMessage(<p className="message">{res.data.message}</p>);
         setOpenAlert(true);
 
         document
@@ -248,7 +255,7 @@ function Materials() {
       } catch (err) {
         //  alert(err.response.data.message);
 
-        setMessage(err.response.data.message);
+        setMessage(<p className="message">{err.response.data.message}</p>);
         setOpenAlert(true);
       }
     }
@@ -264,7 +271,7 @@ function Materials() {
         );
         //  alert(res.data.message);
 
-        setMessage(res.data.message);
+        setMessage(<p className="message">{res.data.message}</p>);
         setOpenAlert(true);
 
         document
@@ -274,7 +281,7 @@ function Materials() {
       } catch (err) {
         //  alert(err.response.data.message);
 
-        setMessage(err.response.data.message);
+        setMessage(<p className="message">{err.response.data.message}</p>);
         setOpenAlert(true);
       }
     }
@@ -300,14 +307,14 @@ function Materials() {
       await destroyImg;
       // alert(deletematerial.data.message);
 
-      setMessage(deletematerial.data.message);
+      setMessage(<p className="message">{deletematerial.data.message}</p>);
       setOpenAlert(true);
 
       setCallback(!callback);
       setLoading(false);
     } catch (err) {
       //  alert(err.response.data.message);
-      setMessage(err.response.data.message);
+      setMessage(<p className="message">{err.response.data.message}</p>);
       setOpenAlert(true);
     }
   };
@@ -547,7 +554,7 @@ function Materials() {
         >
           <div className="modal__notification">
             <p className="title-notification">Thông báo</p>
-            <p>{message}</p>
+            {message}
             <div className="option-button">
               <button
                 id="add"

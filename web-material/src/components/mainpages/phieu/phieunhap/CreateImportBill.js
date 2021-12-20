@@ -30,11 +30,10 @@ function CreateImportBill() {
   );
   const [currentDate, setCurrentDate] = useState(new Date());
   const [callback, setCallback] = state.importbillAPI.callback;
-  const [hdn, setHDN] = useState(new Date("10-20-2021"));
+  // const [hdn, setHDN] = useState(new Date("10-20-2021"));
   const [searchTerm, setSearchTerm] = useState("");
-  const [onSearch, setOnSearch] = useState(false);
+  const [onShow, setOnShow] = useState(false);
   const [importbill, setImportBill] = useState({
-    // tenpn: "",
     ngay: "",
     manv: "",
     makho: "",
@@ -72,20 +71,19 @@ function CreateImportBill() {
       makho: "",
       ctpn: [],
     });
-    console.log("setDetailImportBill");
     setDetailImportBill([]);
   }, [importbills]);
 
-  const newwarehouses = warehouses.filter((warehouse, index) =>
+  const newwarehouses = warehouses.filter((warehouse) =>
     user.madaily._id === warehouse.madaily._id ? warehouse : undefined
   );
 
   const AddToImportBill = (material, soluong, typing) => {
-    setSearchTerm("");
-    if (!onSearch) {
-      document.getElementById("list-material").style.display = "none";
+    if (searchTerm) {
+      setSearchTerm("");
       document.getElementById("inputsearch").value = "";
     }
+
     const exist = detailimportbill.find((x) => x._id === material._id);
     if (exist) {
       setDetailImportBill(
@@ -108,7 +106,8 @@ function CreateImportBill() {
     if (exist.quantity === 1) {
       setDetailImportBill(
         detailimportbill?.filter((x) => x._id !== material._id)
-      );
+      )
+      ;
     } else {
       setDetailImportBill(
         detailimportbill?.map((x) =>
@@ -121,7 +120,6 @@ function CreateImportBill() {
   };
 
   const handleChangeInput = (e) => {
-    console.log("setinput");
     const { name, value } = e.target;
     setLoading(!loading);
     setImportBill({ ...importbill, [name]: value });
@@ -143,10 +141,17 @@ function CreateImportBill() {
                 placeholder="Tìm kiếm vật tư"
                 id="inputsearch"
                 required
+                onClick={() => {
+                  setOnShow(true);
+                }}
+                onBlur={() => {
+                  setTimeout(() => {
+                    setOnShow(false);
+                  }, 200);
+                }}
                 autocomplete="off"
                 disabled={importbill.makho == "" ? true : false}
                 onChange={(event) => {
-                  console.log("event : ", event.target.value);
                   setSearchTerm(event.target.value);
                 }}
               />
@@ -154,7 +159,7 @@ function CreateImportBill() {
             <div
               className="list-material"
               id="list-material"
-              style={{ display: searchTerm !== "" ? "block" : "none" }}
+              style={{ display: onShow ? "block" : "none" }}
             >
               <div className="header-list-material">
                 <p>ID</p>
@@ -165,9 +170,10 @@ function CreateImportBill() {
               </div>
               {materialsfilter
                 ?.filter((material) => {
-                  if (searchTerm == "") {
+                  if (!onShow) {
                     return null;
                   } else if (
+                    onShow &&
                     (material._id
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase()) ||
@@ -390,7 +396,9 @@ function CreateImportBill() {
                 onClick={async () => {
                   if (detailimportbill.length == 0) {
                     setMessage(
-                      "Phiếu chưa có vật tư, vui lòng thêm  vật tư vào phiếu"
+                      <p className="message">
+                        Phiếu chưa có vật tư, vui lòng thêm vật tư vào phiếu
+                      </p>
                     );
                     setOpenAlert(true);
                     // alert('Phiếu chưa có vật tư, vui lòng thêm  vật tư vào phiếu')
@@ -418,12 +426,14 @@ function CreateImportBill() {
                       console.log("importbill nè : ", importbill);
 
                       //  alert(res.data.message);
-                      setMessage(res.data.message);
+                      setMessage(<p className="message">{res.data.message}</p>);
                       setOpenAlert(true);
                       setCallback(!callback);
                     } catch (err) {
                       //  alert(err.response.data.message);
-                      setMessage(err.response.data.message);
+                      setMessage(
+                        <p className="message">{err.response.data.message}</p>
+                      );
                       setOpenAlert(true);
                     }
                   }
@@ -447,7 +457,7 @@ function CreateImportBill() {
         >
           <div className="modal__notification">
             <p className="title-notification">Thông báo</p>
-            <p>{message}</p>
+            {message}
             <div className="option-button">
               <button
                 id="add"

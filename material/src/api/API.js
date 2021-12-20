@@ -1,12 +1,13 @@
 //API
 //Đăng nhập
-export const APISTATE = 'http://192.168.1.3:5000/api';
+export const APISTATE = 'http://192.168.1.12:5000/api';
 
 //Aunthentication
 export const APILogin = `${APISTATE}/auth/login`;
 export const APIToken = `${APISTATE}/auth/refresh_token`;
 export const APIGetUser = `${APISTATE}/nhanvien/login`;
 export const APIChangePass = `${APISTATE}/auth/changepassword`;
+export const APIResetPassword = `${APISTATE}/auth/forgotpassword`;
 
 //User
 export const APIInforUser = `${APISTATE}/auth/infor`;
@@ -47,5 +48,8 @@ export const APITKVTT = `${APISTATE}/thongke/vattu`;
 export const APITKLNN = `${APISTATE}/thongke/loinhuannam`;
 // statisticProfitYear
 export const APITKLNGD = `${APISTATE}/thongke/loinhuangiaidoan`;
+
+// Thống kê doanh thu
+export const APITKDoanhThu = `${APISTATE}/thongke/thongkedoanhthu`;
 
 export const APISTATISTIC = `${APISTATE}/thongke`;

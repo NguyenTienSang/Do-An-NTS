@@ -139,24 +139,21 @@ function StatisticBill() {
   const filterbill = async () => {
     if (manv === "") {
       // alert('Vui lòng nhập mã nhân viên')
-      setMessage("Vui lòng nhập mã nhân viên");
+      setMessage(<p className="message">Vui lòng nhập mã nhân viên</p>);
       setOpenAlert(true);
     } else if (startDate.getTime() > endDate.getTime()) {
       // alert('Thời gian không hợp lệ')
-      setMessage("Thời gian không hợp lệ");
+      setMessage(<p className="message">Thời gian không hợp lệ</p>);
       setOpenAlert(true);
     } else {
       const startDateFilter = moment(startDate).format("YYYY-MM-DD");
       const endDateFilter = moment(endDate).format("YYYY-MM-DD");
-      console.log("startDateFilter : ", startDateFilter);
-      console.log("endDateFilter : ", endDateFilter);
       const res = await axios.post("/api/thongke/phieunhapnhanvien", {
         manv,
         startDateFilter,
         endDateFilter,
         optionbill,
       });
-      console.log("res.data : ", res.data);
       setBillsFilter(res.data);
     }
   };
@@ -324,7 +321,11 @@ function StatisticBill() {
                         `ThongKePhieuNhanVien_${DATE}`
                       );
                     } else {
-                      setMessage("Dữ liệu đang trống không thể xuất file");
+                      setMessage(
+                        <p className="message">
+                          Dữ liệu đang trống <br /> không thể xuất file
+                        </p>
+                      );
                       setOpenAlert(true);
                     }
                   }}
@@ -407,7 +408,7 @@ function StatisticBill() {
         >
           <div className="modal__notification">
             <p className="title-notification">Thông báo</p>
-            <p>{message}</p>
+            {message}
             <div className="option-button">
               <button
                 id="add"

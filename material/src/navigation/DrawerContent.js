@@ -25,7 +25,6 @@ export function DrawerContent({navigation, props}) {
   const [loading, setLoading] = useState();
   const [inforuser, setInforUser] = useState('');
 
-
   AsyncStorage.getItem('inforuser').then(async dataUser => {
     // inforuser = await JSON.parse(dataUser);
     // console.log('test : ', JSON.parse(dataUser));
@@ -160,7 +159,6 @@ export function DrawerContent({navigation, props}) {
               </View>
             </View>
           </View>
-
         </View>
       </DrawerContentScrollView>
 

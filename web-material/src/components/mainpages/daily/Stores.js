@@ -59,8 +59,8 @@ function Stores() {
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     console.log("excelBuffer : ", excelBuffer);
     const data = new Blob([excelBuffer], { type: fileType });
-    console.log("data : ", data);
-    // FileSaver.saveAs(data, fileName + fileExtension);
+    // console.log("data : ", data);
+    FileSaver.saveAs(data, fileName + fileExtension);
   };
   //============================================
 
@@ -93,7 +93,8 @@ function Stores() {
           store._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
           store.tendl.toLowerCase().includes(searchTerm.toLowerCase()) ||
           store.diachi.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          store.sodienthoai.toLowerCase().includes(searchTerm.toLowerCase())
+          store.sodienthoai.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          store.trangthai.toLowerCase().includes(searchTerm.toLowerCase())
         ) {
           return store;
         }
@@ -157,7 +158,7 @@ function Stores() {
     } catch (err) {
       // alert(err.response.data.message);
 
-      setMessage(err.response.data.message);
+      setMessage(<p className="message">{err.response.data.message}</p>);
       setOpenAlert(true);
     }
   };
@@ -178,7 +179,7 @@ function Stores() {
     } catch (err) {
       // alert(err.response.data.message);
 
-      setMessage(err.response.data.message);
+      setMessage(<p className="message">{err.response.data.message}</p>);
       setOpenAlert(true);
     }
   };
@@ -226,7 +227,7 @@ function Stores() {
         );
         //  alert(res.data.message);
 
-        setMessage(res.data.message);
+        setMessage(<p className="message">{res.data.message}</p>);
         setOpenAlert(true);
 
         document
@@ -236,7 +237,7 @@ function Stores() {
       } catch (err) {
         //  alert(err.response.data.message);
 
-        setMessage(err.response.data.message);
+        setMessage(<p className="message">{err.response.data.message}</p>);
         setOpenAlert(true);
       }
     }
@@ -252,7 +253,7 @@ function Stores() {
         );
         //  alert(res.data.message);
 
-        setMessage(res.data.message);
+        setMessage(<p className="message">{res.data.message}</p>);
         setOpenAlert(true);
 
         document
@@ -262,7 +263,7 @@ function Stores() {
       } catch (err) {
         //  alert(err.response.data.message);
 
-        setMessage(err.response.data.message);
+        setMessage(<p className="message">{err.response.data.message}</p>);
         setOpenAlert(true);
       }
     }
@@ -286,13 +287,13 @@ function Stores() {
       });
       await destroyImg;
 
-      setMessage(deletestore.data.message);
+      setMessage(<p className="message">{deletestore.data.message}</p>);
       setOpenAlert(true);
 
       setCallback(!callback);
       setLoading(false);
     } catch (err) {
-      setMessage(err.response.data.message);
+      setMessage(<p className="message">{err.response.data.message}</p>);
       setOpenAlert(true);
     }
   };
@@ -500,7 +501,7 @@ function Stores() {
         >
           <div className="modal__notification">
             <p className="title-notification">Thông báo</p>
-            <p>{message}</p>
+            {message}
             <div className="option-button">
               <button
                 id="add"

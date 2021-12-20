@@ -41,7 +41,7 @@ const employeeCtrl = {
         // oldtrangthai,
       } = req.body;
 
-      if (hoten.length != 0) {
+      if (!hoten) {
         return res
           .status(400)
           .json({ success: false, message: "Họ tên trống" });
@@ -320,8 +320,7 @@ const employeeCtrl = {
             { trangthai: nhanvien.trangthai },
             { new: true }
           );
-
-          // console.log("updatetrangthainvcurrent : ", updatetrangthainvcurrent);
+         
           // if (!updatetrangthainvcurrent) {
           //   return res.status(401).json({
           //     message: "Chuyển trạng thái thất bại",

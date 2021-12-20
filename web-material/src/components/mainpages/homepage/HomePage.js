@@ -53,9 +53,8 @@ function HomePage() {
                   style={{ backgroundColor: "red" }}
                 >
                   <Link to="/daily">
-                    {" "}
                     <labeL>
-                      Số đại lý : {dataStatistic.countdaily}{" "}
+                      Số đại lý : {dataStatistic ? dataStatistic.countdaily : 0}
                       <IoStorefrontOutline />
                     </labeL>
                   </Link>
@@ -67,7 +66,8 @@ function HomePage() {
                 >
                   <Link to="/kho">
                     <labeL>
-                      Số kho : {dataStatistic.countkho} <FaWarehouse />
+                      Số kho : {dataStatistic ? dataStatistic.countkho : 0}{" "}
+                      <FaWarehouse />
                     </labeL>
                   </Link>
                 </div>
@@ -79,7 +79,8 @@ function HomePage() {
                   <Link to="/nhanvien">
                     {" "}
                     <labeL>
-                      Số nhân viên : {dataStatistic.countnhanvien}{" "}
+                      Số nhân viên :{" "}
+                      {dataStatistic ? dataStatistic.countnhanvien : 0}{" "}
                       <BsFillPersonLinesFill />
                     </labeL>
                   </Link>
@@ -93,7 +94,9 @@ function HomePage() {
                     <Link to="/phieunhap">
                       <labeL>
                         Số phiếu nhập :
-                        {dataStatistic?.statisticProfit?.sophieunhap}
+                        {dataStatistic
+                          ? dataStatistic?.statisticProfit?.sophieunhap
+                          : 0}
                         <GiNotebook />
                       </labeL>
                     </Link>
@@ -102,7 +105,11 @@ function HomePage() {
                   <div className="item_statistic">
                     <labeL>
                       Tổng tiền nhập :
-                      {Format(dataStatistic?.statisticProfit?.chiphinhap)}
+                      {Format(
+                        dataStatistic
+                          ? dataStatistic?.statisticProfit?.chiphinhap
+                          : 0
+                      )}
                       <GiMoneyStack />
                     </labeL>
                   </div>
@@ -113,7 +120,9 @@ function HomePage() {
                     <Link to="/phieuxuat">
                       <labeL>
                         Số phiếu xuất :
-                        {dataStatistic?.statisticProfit?.sophieuxuat}
+                        {dataStatistic
+                          ? dataStatistic?.statisticProfit?.sophieuxuat
+                          : 0}
                         <GiNotebook />
                       </labeL>
                     </Link>
@@ -122,7 +131,11 @@ function HomePage() {
                   <div className="item_statistic">
                     <labeL>
                       Tổng tiền xuất :
-                      {Format(dataStatistic?.statisticProfit?.chiphixuat)}
+                      {Format(
+                        dataStatistic
+                          ? dataStatistic?.statisticProfit?.chiphixuat
+                          : 0
+                      )}
                       <GiMoneyStack />
                     </labeL>
                   </div>
@@ -133,8 +146,10 @@ function HomePage() {
                     <labeL>
                       Lợi nhuận :
                       {Format(
-                        dataStatistic?.statisticProfit?.chiphixuat -
-                          dataStatistic?.statisticProfit?.chiphinhap
+                        dataStatistic
+                          ? dataStatistic?.statisticProfit?.chiphixuat -
+                              dataStatistic?.statisticProfit?.chiphinhap
+                          : 0
                       )}
                       <GiMoneyStack />
                     </labeL>

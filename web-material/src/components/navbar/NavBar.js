@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
-import { NavLink, Link, useLocation } from "react-router-dom";
+import { NavLink, Link, useLocation, useParams } from "react-router-dom";
 import { FaHome } from "react-icons/fa";
+
 import {
   BsFillPersonLinesFill,
   BsJournalArrowUp,
@@ -27,10 +28,15 @@ function NavBar() {
   const [isLogged] = state.userAPI.isLogged;
   const [isAdmin] = state.userAPI.isAdmin;
 
+  const params = useParams();
+
   const location = useLocation();
   // console.log("location : ", location);
   const [openbill, setOpenBill] = useState(
-    location.pathname === "/phieunhap" || location.pathname === "/phieuxuat"
+    location.pathname === "/phieunhap" ||
+      location.pathname === "/lapphieunhap" ||
+      location.pathname === "/phieuxuat" ||
+      location.pathname === "/lapphieuxuat"
       ? true
       : false
     // if(location.pathname === "/phieunhap" ||)
@@ -39,6 +45,7 @@ function NavBar() {
   const [openstatistic, setOpenStatistic] = useState(
     location.pathname === "/thongkephieunhanvien" ||
       location.pathname === "/thongkevattu" ||
+      location.pathname === `/thongkevattutrongcackho/${params._id}` ||
       location.pathname === "/thongkedoanhthu" ||
       location.pathname === "/thongkeloinhuannam" ||
       location.pathname === "/thongkeloinhuangiaidoan"
@@ -46,6 +53,7 @@ function NavBar() {
       : false
     // if(location.pathname === "/phieunhap" ||)
   );
+  console.log("location.pathname : ", location.pathname);
 
   return (
     <div className="navbar">
@@ -59,7 +67,14 @@ function NavBar() {
       ) : null}
 
       <div className="item-navbar">
-        <NavLink to="/nhanvien">
+        <NavLink
+          to="/nhanvien"
+          className={
+            location.pathname === `/detail_employee/${params._id}`
+              ? "active"
+              : null
+          }
+        >
           <BsFillPersonLinesFill />
           Nhân Viên
         </NavLink>
@@ -81,7 +96,15 @@ function NavBar() {
       ) : null}
 
       <div className="item-navbar">
-        <NavLink to="/kho">
+        <NavLink
+          to="/kho"
+          className={
+            location.pathname ===
+            `/chitietkho/${params.madaily}/${params.makho}`
+              ? "active"
+              : null
+          }
+        >
           <FaWarehouse />
           Kho
         </NavLink>
@@ -105,7 +128,10 @@ function NavBar() {
         className="item-navbar"
         style={{ display: openbill ? "block" : "none" }}
       >
-        <NavLink to="/phieunhap">
+        <NavLink
+          to="/phieunhap"
+          className={location.pathname === "/lapphieunhap" ? "active" : null}
+        >
           <BsJournalArrowDown />
           Phiếu Nhập
         </NavLink>
@@ -115,7 +141,10 @@ function NavBar() {
         className="item-navbar"
         style={{ display: openbill ? "block" : "none" }}
       >
-        <NavLink to="/phieuxuat">
+        <NavLink
+          to="/phieuxuat"
+          className={location.pathname === "/lapphieuxuat" ? "active" : null}
+        >
           <BsJournalArrowUp />
           Phiếu Xuất
         </NavLink>
@@ -151,7 +180,14 @@ function NavBar() {
             className="item-navbar "
             style={{ display: openstatistic ? "block" : "none" }}
           >
-            <NavLink to="/thongkevattu">
+            <NavLink
+              to="/thongkevattu"
+              className={
+                location.pathname === `/thongkevattutrongcackho/${params._id}`
+                  ? "active"
+                  : null
+              }
+            >
               <SiMaterialui />
               Vật Tư Tồn
             </NavLink>

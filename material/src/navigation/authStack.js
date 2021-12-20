@@ -6,7 +6,7 @@ import LoadingScreen from '../screens/authScreens/LoadingScreen';
 import DrawerNavigator from './DrawerNavigator';
 
 // import RootClientTabs from './ClientTabs';
-import RestaurantMapScreen from '../screens/RestaurantsMapScreen';
+// import RestaurantMapScreen from '../screens/RestaurantsMapScreen';
 import DaiLy from './../screens/DaiLy';
 
 import ListMaterial from '../Materials/ListMaterial';
@@ -45,14 +45,13 @@ import DanhSachPhieuXuat from './../phieuxuat/DanhSachPhieuXuat';
 import ChiTietPhieuXuat from './../phieuxuat/ChiTietPhieuXuat';
 import SignUpScreen from './../screens/authScreens/SignUpScreen';
 
-import HomeScreen from '../screens/HomeScreen';
-import UserHomeScreen from './../User/UserHomeScreen';
+// import HomeScreen from '../screens/HomeScreen';
+// import UserHomeScreen from './../User/UserHomeScreen';
 import DSNhanVienUser from './../User/DSNhanVienUser';
 import DanhSachPhieuNhapUser from './../phieunhap/DanhSachPhieuNhapUser';
 import DanhSachPhieuXuatUser from './../phieuxuat/DanhSachPhieuXuatUser';
 import ListMaterialUser from './../Materials/ListMaterialUser';
 import DanhSachDaiLy from './../store/DanhSachDaiLy';
-import DoiMatKhau from './../screens/DoiMatKhau';
 import DanhSachKho from './../kho/DanhSachKho';
 
 import ThongKe from '../screens/ThongKe';
@@ -63,6 +62,9 @@ import ThongKeNhanVienLapPhieu from '../thongke/ThongKeNhanVienLapPhieu';
 import ThongKeVatTuTon from '../thongke/ThongKeVatTuTon';
 
 import SoLuongTonKho from './../kho/SoLuongTonKho';
+
+import DoiMatKhau from './../screens/DoiMatKhau';
+import ForgotPassword from '../screens/authScreens/ForgotPassword';
 
 const Stack = createStackNavigator();
 
@@ -502,6 +504,17 @@ export function AuthStack() {
           ...TransitionPresets.RevealFromBottomAndroid,
         }}
       />
+
+      <Stack.Screen
+        name="ForgotPassword"
+        component={ForgotPassword}
+        options={{
+          headerShown: false,
+          ...TransitionPresets.RevealFromBottomAndroid,
+        }}
+      />
+
+
     </Stack.Navigator>
   );
 }

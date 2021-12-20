@@ -107,6 +107,7 @@
     justify-content: space-between;
     margin: 15px 0px;
     width: 100%;
+    align-items: center;
 }
 
 .modal_store .row .select_store {

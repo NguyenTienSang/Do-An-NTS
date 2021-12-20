@@ -19,15 +19,13 @@ export const DataProvider = ({children}) => {
   const [token, setToken] = useState(false);
 
   useEffect(() => {
-  
-
     const firstLogin = AsyncStorage.getItem('firstLogin');
     if (firstLogin) {
-      console.log('test');
+      // console.log('test');
       const refreshToken = async () => {
         const res = await axios.get(`${APIToken}`);
-        console.log('res.data.accesstoken : ', res.data.accesstoken);
-        console.log('nts');
+        // console.log('res.data.accesstoken : ', res.data.accesstoken);
+        // console.log('nts');
         setToken(res.data.accesstoken);
 
         setTimeout(() => {

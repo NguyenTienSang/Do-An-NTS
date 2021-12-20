@@ -36,6 +36,7 @@ function CreateExportBill() {
   const [onSearch, setOnSearch] = useState(false);
   const [madailyfilter, setMaDaiLyFilter] = useState("allstores");
   const [makhofilter, setMaKhoFilter] = useState("allwarehouses");
+  const [onShow, setOnShow] = useState(false);
 
   const [exportbill, setExportBill] = useState({
     ngay: "",
@@ -58,7 +59,6 @@ function CreateExportBill() {
   };
 
   useEffect(async () => {
-    console.log("load lại dữ liệu materialsfilter");
     const res = await axios.post(
       "/api/thongke/vattu",
       //  [JSON.parse(localStorage.getItem('inforuser')).madaily._id,exportbill.makho]
@@ -68,9 +68,6 @@ function CreateExportBill() {
         makhofilter: exportbill.makho,
       }
     );
-    console.log("Dữ liệu thống kê : ", res.data);
-    // console.log('madailyfilter : ',madailyfilter);
-    // console.log('makhofilter : ',makhofilter);
 
     setMaterialsFilter(res.data);
     setDetailExportBill([]);
@@ -131,16 +128,6 @@ function CreateExportBill() {
     }
   };
 
-  const [dataDate, setDate] = useState(new Date());
-  const ExampleCustomInput = ({ value, onClick }) => (
-    <button className="button-date-picker" onClick={onClick}>
-      {value}
-      <IoMdArrowDropdown />
-    </button>
-  );
-
-  // const param = useParams();
-
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
     setExportBill({ ...exportbill, [name]: value });
@@ -159,22 +146,28 @@ function CreateExportBill() {
               <input
                 type="text"
                 name="tenpn"
-                placeholder="Nhập tên vật tư"
+                placeholder="Tìm kiếm vật tư"
                 id="inputsearch"
                 required
+                onClick={() => {
+                  setOnShow(true);
+                }}
+                onBlur={() => {
+                  setTimeout(() => {
+                    setOnShow(false);
+                  }, 200);
+                }}
                 autocomplete="off"
                 disabled={exportbill.makho == "" ? true : false}
                 onChange={(event) => {
                   setSearchTerm(event.target.value);
-                  document.getElementById("list-material").style.display =
-                    "block";
                 }}
               />
             </div>
             <div
               className="list-material"
               id="list-material"
-              style={{ display: searchTerm !== "" ? "block" : "none" }}
+              style={{ display: onShow ? "block" : "none" }}
             >
               <div className="header-list-material">
                 <p>ID</p>
@@ -185,9 +178,10 @@ function CreateExportBill() {
               </div>
               {materialsfilter
                 ?.filter((material) => {
-                  if (searchTerm == "") {
+                  if (!onShow) {
                     return null;
                   } else if (
+                    onShow &&
                     (material._id
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase()) ||
@@ -409,7 +403,9 @@ function CreateExportBill() {
                 onClick={async () => {
                   if (detailexportbill.length == 0) {
                     setMessage(
-                      "Phiếu chưa có vật tư, vui lòng thêm  vật tư vào phiếu"
+                      <p className="message">
+                        Phiếu chưa có vật tư, vui lòng thêm vật tư vào phiếu
+                      </p>
                     );
                     setOpenAlert(true);
                   } else {
@@ -453,17 +449,23 @@ function CreateExportBill() {
                             headers: { Authorization: token },
                           }
                         );
-                        setMessage(res.data.message);
+                        setMessage(
+                          <p className="message">{res.data.message}</p>
+                        );
                         setOpenAlert(true);
 
                         setCallback(!callback);
                       } catch (err) {
-                        setMessage(err.response.data.message);
+                        setMessage(
+                          <p className="message">{err.response.data.message}</p>
+                        );
                         setOpenAlert(true);
                       }
                     } else {
                       setMessage(
-                        materialoverstorage.tenvt + " không đủ số lượng tồn"
+                        <p className="message">
+                          {materialoverstorage.tenvt} không đủ số lượng tồn
+                        </p>
                       );
                       setOpenAlert(true);
                     }
@@ -488,7 +490,7 @@ function CreateExportBill() {
         >
           <div className="modal__notification">
             <p className="title-notification">Thông báo</p>
-            <p>{message}</p>
+            {message}
             <div className="option-button">
               <button
                 id="add"

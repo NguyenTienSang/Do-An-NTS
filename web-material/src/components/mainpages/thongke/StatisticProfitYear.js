@@ -156,7 +156,12 @@ function StatisticProfitYear() {
                       `LoiNhuanNam_${moment(yearstatistic).format("YYYY")}`
                     );
                   } else {
-                    setMessage("Dữ liệu đang trống không thể xuất");
+                    setMessage(
+                      <p className="message">
+                        Dữ liệu đang trống <br />
+                        không thể xuất
+                      </p>
+                    );
                     setOpenAlert(true);
                   }
                 }}
@@ -223,7 +228,7 @@ function StatisticProfitYear() {
         >
           <div className="modal__notification">
             <p className="title-notification">Thông báo</p>
-            <p>{message}</p>
+            {message}
             <div className="option-button">
               <button
                 id="add"

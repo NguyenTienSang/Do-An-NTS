@@ -22,8 +22,7 @@ export const DataProvider = ({ children }) => {
     if (firstLogin) {
       const refreshToken = async () => {
         const res = await axios.get("/api/auth/refresh_token");
-        
-        console.log('res.data.accesstoken : ',res.data.accesstoken);
+     
         setToken(res.data.accesstoken);
         
         setTimeout(() => {

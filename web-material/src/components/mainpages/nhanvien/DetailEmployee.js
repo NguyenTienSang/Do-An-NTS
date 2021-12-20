@@ -23,6 +23,15 @@ function DetailEmployee() {
   const [dataStatistic, setDataStatistic] = useState("");
   const date = new Date();
 
+  const Format = (number) => {
+    if (number >= 0) {
+      return String(number).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND";
+    } else
+      return (
+        "-" + String(number * -1).replace(/(.)(?=(\d{3})+$)/g, "$1.") + " VND"
+      );
+  };
+
   useEffect(async () => {
     console.log("re render");
     if (params._id) {
@@ -30,7 +39,6 @@ function DetailEmployee() {
         if (employee._id === params._id) setDetailEmployee(employee);
       });
     }
-
 
     await axios
       .post("/api/thongke/phieunhanvien", {
@@ -123,31 +131,42 @@ function DetailEmployee() {
                   <div className="row">
                     <p>
                       Số phiếu nhập :{" "}
-                      {dataStatistic?.statisticProfit?.sophieunhapday}
+                      {dataStatistic
+                        ? dataStatistic?.statisticProfit?.sophieunhapday
+                        : 0}
                     </p>
                     <p>
                       Tổng tiền nhập :{" "}
-                      {dataStatistic?.statisticProfit?.chiphinhapday}
+                      {dataStatistic
+                        ? Format(dataStatistic?.statisticProfit?.chiphinhapday)
+                        : 0}
                     </p>
                   </div>
 
                   <div className="row">
                     <p>
                       Số phiếu xuất :{" "}
-                      {dataStatistic?.statisticProfit?.sophieuxuatday}
+                      {dataStatistic
+                        ? dataStatistic?.statisticProfit?.sophieuxuatday
+                        : 0}
                     </p>
                     <p>
                       Tổng tiền xuất :{" "}
-                      {dataStatistic?.statisticProfit?.chiphixuatday}
+                      {dataStatistic
+                        ? Format(dataStatistic?.statisticProfit?.chiphixuatday)
+                        : "0 VND"}
                     </p>
                   </div>
 
                   <div className="row">
                     <p>
-                      {" "}
                       Lợi nhuận ngày :{" "}
-                      {dataStatistic?.statisticProfit?.chiphixuatday -
-                        dataStatistic?.statisticProfit?.chiphinhapday}
+                      {dataStatistic
+                        ? Format(
+                            dataStatistic?.statisticProfit?.chiphixuatday -
+                              dataStatistic?.statisticProfit?.chiphinhapday
+                          )
+                        : "0 VND"}
                     </p>
                   </div>
                 </div>
@@ -159,28 +178,44 @@ function DetailEmployee() {
                   <div className="row">
                     <p>
                       Số phiếu nhập :{" "}
-                      {dataStatistic?.statisticProfit?.sophieunhapmonth}
+                      {dataStatistic
+                        ? dataStatistic?.statisticProfit?.sophieunhapmonth
+                        : 0}
                     </p>
                     <p>
                       Tổng tiền nhập :{" "}
-                      {dataStatistic?.statisticProfit?.chiphinhapmonth}
+                      {dataStatistic
+                        ? Format(
+                            dataStatistic?.statisticProfit?.chiphinhapmonth
+                          )
+                        : "0 VND"}
                     </p>
                   </div>
                   <div className="row">
                     <p>
                       Số phiếu xuất :{" "}
-                      {dataStatistic?.statisticProfit?.sophieuxuatmonth}
+                      {dataStatistic
+                        ? dataStatistic?.statisticProfit?.sophieuxuatmonth
+                        : 0}
                     </p>
                     <p>
                       Tổng tiền xuất :{" "}
-                      {dataStatistic?.statisticProfit?.chiphixuatmonth}
+                      {dataStatistic
+                        ? Format(
+                            dataStatistic?.statisticProfit?.chiphixuatmonth
+                          )
+                        : "0 VND"}
                     </p>
                   </div>
                   <div className="row">
                     <p>
                       Lợi nhuận tháng :{" "}
-                      {dataStatistic?.statisticProfit?.chiphixuatmonth -
-                        dataStatistic?.statisticProfit?.chiphinhapmonth}
+                      {dataStatistic
+                        ? Format(
+                            dataStatistic?.statisticProfit?.chiphixuatmonth -
+                              dataStatistic?.statisticProfit?.chiphinhapmonth
+                          )
+                        : "0 VND"}
                     </p>
                   </div>
                 </div>
@@ -192,30 +227,42 @@ function DetailEmployee() {
                   <div className="row">
                     <p>
                       Số phiếu nhập :{" "}
-                      {dataStatistic?.statisticProfit?.sophieunhapyear}
+                      {dataStatistic
+                        ? dataStatistic?.statisticProfit?.sophieunhapyear
+                        : 0}
                     </p>
                     <p>
                       Tổng tiền nhập :{" "}
-                      {dataStatistic?.statisticProfit?.chiphinhapyear}
+                      {dataStatistic
+                        ? Format(dataStatistic?.statisticProfit?.chiphinhapyear)
+                        : "0 VND"}
                     </p>
                   </div>
 
                   <div className="row">
                     <p>
                       Số phiếu xuất :{" "}
-                      {dataStatistic?.statisticProfit?.sophieuxuatyear}
+                      {dataStatistic
+                        ? dataStatistic?.statisticProfit?.sophieuxuatyear
+                        : 0}
                     </p>
                     <p>
                       Tổng tiền xuất :{" "}
-                      {dataStatistic?.statisticProfit?.chiphixuatyear}
+                      {dataStatistic
+                        ? Format(dataStatistic?.statisticProfit?.chiphixuatyear)
+                        : "0 VND"}
                     </p>
                   </div>
 
                   <div className="row">
                     <p>
                       Lợi nhuận năm :{" "}
-                      {dataStatistic?.statisticProfit?.chiphixuatyear -
-                        dataStatistic?.statisticProfit?.chiphinhapyear}
+                      {dataStatistic
+                        ? Format(
+                            dataStatistic?.statisticProfit?.chiphixuatyear -
+                              dataStatistic?.statisticProfit?.chiphinhapyear
+                          )
+                        : "0 VND"}
                     </p>
                   </div>
                 </div>

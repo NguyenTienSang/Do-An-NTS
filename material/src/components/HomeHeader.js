@@ -19,8 +19,8 @@ export default function HomeHeader({props, navigation}) {
           color={colors.cardbackground}
           size={32}
           onPress={() => {
-            console.log('test');
-            console.log('navigation', navigation);
+            // console.log('test');
+            // console.log('navigation', navigation);
             navigation.toggleDrawer();
           }}
         />

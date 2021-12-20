@@ -1,6 +1,11 @@
+require("dotenv").config();
 const NhanVien = require("../models/NhanVien");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+
+const mailgun = require("mailgun-js");
+const DOMAIN = "sandbox76e282523e9a4c1f83242529f4028696.mailgun.org";
+const mg = mailgun({ apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN });
 
 const validateEmail = (email) => {
   const res =
@@ -281,6 +286,82 @@ const authCtrl = {
     }
   },
 
+  forgotpassword: async (req, res) => {
+    try {
+      const { username, email, sodienthoai, cmnd } = req.body;
+
+      if (!username) {
+        return res.status(400).json({ message: "Username không được trống" });
+      }
+
+      if (!email) {
+        return res.status(400).json({ message: "Email không được trống" });
+      }
+
+      if (!sodienthoai) {
+        return res
+          .status(400)
+          .json({ message: "Số điện thoại không được trống" });
+      }
+
+      if (!cmnd) {
+        return res.status(400).json({ message: "Cmnd không được trống" });
+      }
+
+      //Kiểm tra username
+      const nhanvien = await NhanVien.findOne({ username });
+      if (!nhanvien) {
+        return res.status(400).json({ message: "Username không tồn tại" });
+      }
+
+      //Kiểm tra email
+      // const ktemail = await NhanVien.findOne({ email });
+      if (nhanvien.email !== email) {
+        return res.status(400).json({ message: "Email không đúng" });
+      }
+
+      //Kiểm tra số điện thoại
+      if (nhanvien.sodienthoai !== sodienthoai) {
+        return res.status(400).json({ message: "Số điện thoại không đúng" });
+      }
+
+      //Kiểm tra cmnd
+      if (nhanvien.cmnd !== cmnd) {
+        return res.status(400).json({
+          message: "Chứng minh nhân dân không đúng",
+        });
+      }
+
+      const newpassword = Math.floor(Math.random() * 100000000).toString();
+
+      const hashedPassword = await bcrypt.hash(newpassword, 10);
+
+      // let updatedNhanVien = user;
+      nhanvien.password = hashedPassword;
+      // {hoten,madaily,diachi,username,password : hashedPassword,role,sodienthoai,cmnd,trangthai,images}
+
+      await NhanVien.findOneAndUpdate({ _id: nhanvien._id }, nhanvien, {
+        new: true,
+      });
+
+      console.log("email : ", email);
+
+      const data = {
+        from: email,
+        to: email,
+        subject: "Cấp lại mật khẩu mới",
+        text: "Mật khẩu mới của bạn là : " + newpassword,
+      };
+      mg.messages().send(data, function (error, body) {
+        console.log(body);
+      });
+
+      return res.json({ message: "Mật khẩu mới đã gửi qua email" });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
   logout: async (req, res) => {
     try {
       res.clearCookie("refreshtoken", { path: "/api/auth/refresh_token" });
@@ -293,7 +374,7 @@ const authCtrl = {
     try {
       const rf_token = req.cookies.refreshtoken;
 
-      console.log("rf_token : ", rf_token);
+      // console.log("rf_token : ", rf_token);
 
       if (!rf_token)
         return res

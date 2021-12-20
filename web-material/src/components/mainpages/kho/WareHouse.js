@@ -19,7 +19,7 @@ const initialWareHouse = {
   madaily: "",
   diachi: "",
   sodienthoai: "",
-  trangthai: "Đang kinh doanh",
+  trangthai: "Đang hoạt động",
 };
 
 function WareHouses() {
@@ -205,7 +205,7 @@ function WareHouses() {
     } catch (err) {
       // alert(err.response.data.message);
 
-      setMessage(err.response.data.message);
+      setMessage(<p className="message">{err.response.data.message}</p>);
       setOpenAlert(true);
     }
   };
@@ -224,7 +224,7 @@ function WareHouses() {
       setLoading(false);
       setImages(false);
     } catch (err) {
-      setMessage(err.response.data.message);
+      setMessage(<p className="message">{err.response.data.message}</p>);
       setOpenAlert(true);
     }
   };
@@ -281,7 +281,7 @@ function WareHouses() {
           }
         );
 
-        setMessage(res.data.message);
+        setMessage(<p className="message">{res.data.message}</p>);
         setOpenAlert(true);
 
         document
@@ -289,7 +289,7 @@ function WareHouses() {
           .classList.remove("modal_active");
         setCallback(!callback);
       } catch (err) {
-        setMessage(err.response.data.message);
+        setMessage(<p className="message">{err.response.data.message}</p>);
         setOpenAlert(true);
       }
     }
@@ -307,7 +307,7 @@ function WareHouses() {
             headers: { Authorization: token },
           }
         );
-        setMessage(res.data.message);
+        setMessage(<p className="message">{res.data.message}</p>);
         setOpenAlert(true);
 
         document
@@ -315,7 +315,7 @@ function WareHouses() {
           .classList.remove("modal_active");
         setCallback(!callback);
       } catch (err) {
-        setMessage(err.response.data.message);
+        setMessage(<p className="message">{err.response.data.message}</p>);
         setOpenAlert(true);
       }
     }
@@ -342,11 +342,11 @@ function WareHouses() {
         setLoading(false);
       }
 
-      setMessage(deletewarehouse.data.message);
+      setMessage(<p className="message">{deletewarehouse.data.message}</p>);
       setOpenAlert(true);
       setCallback(!callback);
     } catch (err) {
-      setMessage(err.response.data.message);
+      setMessage(<p className="message">{err.response.data.message}</p>);
       setOpenAlert(true);
     }
   };
@@ -610,7 +610,7 @@ function WareHouses() {
         >
           <div className="modal__notification">
             <p className="title-notification">Thông báo</p>
-            <p>{message}</p>
+            {message}
             <div className="option-button">
               <button
                 id="add"

@@ -26,6 +26,7 @@ function StatisticMaterialDetail() {
   const [listWareHouseSearch, setListWareHouseSearch] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  let inforuser = JSON.parse(localStorage.getItem("inforuser"));
   //============ XUẤT FILE ==============
   const fileType =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
@@ -69,21 +70,55 @@ function StatisticMaterialDetail() {
 
   // Lấy ra danh sách kho có trong từ khóa search
   useEffect(() => {
-    setListWareHouseSearch(
-      listWareHouseMaterial?.filter((warehouse) => {
-        if (searchTerm === "") {
-          return warehouse;
-        } else if (
-          warehouse._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          warehouse.tenkho.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          warehouse.tendl.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          warehouse.diachi.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          warehouse.sodienthoai.toLowerCase().includes(searchTerm.toLowerCase())
-        ) {
-          return warehouse;
-        }
-      })
-    );
+    console.log("listWareHouseMaterial : ", listWareHouseMaterial);
+    if (inforuser.role === "user") {
+      setListWareHouseSearch(
+        listWareHouseMaterial?.filter((warehouse) => {
+          if (
+            searchTerm === "" &&
+            warehouse.tendl === inforuser.madaily.tendl
+          ) {
+            return warehouse;
+          } else if (
+            (warehouse._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              warehouse.tenkho
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              warehouse.tendl
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              warehouse.diachi
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              warehouse.sodienthoai
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())) &&
+            warehouse.tendl === inforuser.madaily.tendl
+          ) {
+            return warehouse;
+          }
+        })
+      );
+    } else {
+      setListWareHouseSearch(
+        listWareHouseMaterial?.filter((warehouse) => {
+          if (searchTerm === "") {
+            return warehouse;
+          } else if (
+            warehouse._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            warehouse.tenkho.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            warehouse.tendl.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            warehouse.diachi.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            warehouse.sodienthoai
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          ) {
+            return warehouse;
+          }
+        })
+      );
+    }
+
     setCurrentPage(1); //Khởi tạo lại trang hiện tại là 1
   }, [searchTerm, listWareHouseMaterial]);
 
@@ -114,7 +149,7 @@ function StatisticMaterialDetail() {
       console.log("res.data : ", res.data);
       setListWareHouseMaterial(res.data);
     } catch (err) {
-      setMessage(err.response.data.message);
+      setMessage(<p className="message">{err.response.data.message}</p>);
       setOpenAlert(true);
     }
   }, [params._id]);
@@ -199,7 +234,7 @@ function StatisticMaterialDetail() {
                     {warehouse.sodienthoai}
                   </div>
                   <div style={{ flex: 1 }} className="warehouse_item_element">
-                    {warehouse.soluong}/{inforMaterial.donvi}
+                    {warehouse.soluong} {inforMaterial.donvi}
                   </div>
                 </div>
               );
@@ -222,7 +257,7 @@ function StatisticMaterialDetail() {
         >
           <div className="modal__notification">
             <p className="title-notification">Thông báo</p>
-            <p>{message}</p>
+            {message}
             <div className="option-button">
               <button
                 id="add"

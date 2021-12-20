@@ -59,8 +59,8 @@ export default function ThongKeNhanVienLapPhieu({navigation, route}) {
       endDateFilter: dateto,
       optionbill: option,
     });
-    console.log('Test');
-    console.log('Thống kê : ', res.data);
+    // console.log('Test');
+    // console.log('Thống kê : ', res.data);
     setBillStatistic(res.data);
   };
 

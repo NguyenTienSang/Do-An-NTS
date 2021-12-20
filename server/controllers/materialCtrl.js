@@ -102,7 +102,7 @@ const materialCtrl = {
         path: "ctpx",
         populate: { path: "mavt" },
       });
-      console.log("Test");
+      // console.log("Test");
       phieuxuat.map((px) => {
         console.log("pn.ctpn : ", px.ctpx);
         px.ctpx.find((ctpx) => {
@@ -119,7 +119,7 @@ const materialCtrl = {
         });
       });
 
-      console.log("Test");
+      // console.log("Test");
       //Không nằm trong 2 trường hợp kia thì cho xóa
       await VatTu.findByIdAndDelete(req.params.id);
       return res.json({ message: "Xóa vật tư thành công" });

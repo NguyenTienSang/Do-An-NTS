@@ -39,16 +39,15 @@ export default function SignInScreen({props, navigation}) {
         ...user,
       });
 
+      
       AsyncStorage.setItem('inforuser', JSON.stringify(res.data.user));
 
       AsyncStorage.setItem('firstLogin', true);
 
       navigation.navigate('DrawerNavigator', {role: res.data.user.role});
     } catch (error) {
-      alert(error.response.data.message);
+      Alert.alert('Thông báo', error.response.data.message);
     }
-
-  
   };
 
   return (
@@ -145,6 +144,15 @@ export default function SignInScreen({props, navigation}) {
           onPress={() => {
             sendCred();
           }}></Button>
+      </View>
+      <View style={styles.forgotPassword}>
+        <Text
+          onPress={() => {
+            // AsyncStorage.setItem('loadpage','0');
+            navigation.navigate('ForgotPassword');
+          }}>
+          Quên mật khẩu ?
+        </Text>
       </View>
 
       <View style={{flex: 4, justifyContent: 'center'}}>
@@ -261,5 +269,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: -3,
+  },
+  forgotPassword: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 40,
   },
 });

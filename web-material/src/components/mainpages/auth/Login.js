@@ -8,13 +8,27 @@ const Login = () => {
     password: "",
   });
 
+  const [resetPassword, setResetPassword] = useState({
+    username: "",
+    email: "",
+    sodienthoai: "",
+    cmnd: "",
+  });
+
   const [openalert, setOpenAlert] = useState(false);
 
   const [message, setMessage] = useState("");
 
+  const [messageforget, setMessageForget] = useState("");
+
   const onChangeInput = (e) => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
+  };
+
+  const onResetPassword = (e) => {
+    const { name, value } = e.target;
+    setResetPassword({ ...resetPassword, [name]: value });
   };
 
   const loginSubmit = async (e) => {
@@ -23,16 +37,15 @@ const Login = () => {
       const res = await axios.post("/api/auth/login", { ...user });
       localStorage.setItem("inforuser", JSON.stringify(res.data.user));
       localStorage.setItem("firstLogin", true);
-      
-        if (res.data.user.role === "admin") {
-          window.location.href = "/trangchu";
-        } else if (res.data.user.role === "user") {
-          window.location.href = "/nhanvien";
-        }
-      
+
+      if (res.data.user.role === "admin") {
+        window.location.href = "/trangchu";
+      } else if (res.data.user.role === "user") {
+        window.location.href = "/nhanvien";
+      }
     } catch (error) {
       // alert(error.response.data.message);
-      setMessage(error.response.data.message);
+      setMessage(<p className="message">{error.response.data.message}</p>);
       setOpenAlert(true);
     }
   };
@@ -80,11 +93,128 @@ const Login = () => {
                 </div>
                 <div className="hr"></div>
                 <div className="foot-lnk">
-                  <a href="#forgot">Quên mật khẩu ?</a>
+                  <p
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      document
+                        .getElementById("modal_container__resetpassword")
+                        .classList.add("modal_active");
+                    }}
+                  >
+                    Quên mật khẩu ?
+                  </p>
                 </div>
               </div>
             </div>
           </form>
+        </div>
+      </div>
+
+      <div
+        className="modal_container__resetpassword"
+        id="modal_container__resetpassword"
+      >
+        <div className="modal_resetpassword">
+          <p className="title_resetpassword">Quên mật khẩu</p>
+
+          <div className="row">
+            <label>Username : </label>
+            <input
+              type="text"
+              name="username"
+              placeholder="Nhập username"
+              maxLength="25"
+              required
+              value={resetPassword.username}
+              onChange={onResetPassword}
+            />
+          </div>
+
+          <div className="row">
+            <label>Email : </label>
+            <input
+              type="text"
+              name="email"
+              autocomplete="off"
+              placeholder="Nhập email"
+              maxLength="32"
+              required
+              value={resetPassword.email}
+              onChange={onResetPassword}
+            />
+          </div>
+
+          <div className="row">
+            <label>Số điện thoại : </label>
+            <input
+              type="text"
+              name="sodienthoai"
+              autocomplete="off"
+              placeholder="Nhập số điện thoại"
+              id="sodienthoai"
+              required
+              maxLength="10"
+              value={resetPassword.sodienthoai}
+              onChange={onResetPassword}
+            />
+          </div>
+
+          <div className="row">
+            <label>Cmnd : </label>
+            <input
+              type="text"
+              name="cmnd"
+              autocomplete="off"
+              placeholder="Nhập chứng minh nhân dân"
+              required
+              maxLength="9"
+              value={resetPassword.cmnd}
+              onChange={onResetPassword}
+            />
+          </div>
+
+          <div className="option_button">
+            <button
+              id="add"
+              onClick={async () => {
+                // console.log("resetPassword : ", resetPassword);
+
+                try {
+                  console.log("resetPassword : ", resetPassword);
+                  const res = await axios.post("/api/auth/forgotpassword", {
+                    ...resetPassword,
+                  });
+                  setMessageForget(res.data.message);
+                } catch (error) {
+                  setMessageForget(error.response.data.message);
+                }
+              }}
+            >
+              Gửi Mail
+            </button>
+
+            <button
+              id="add"
+              onClick={() => {
+                setResetPassword({
+                  username: "",
+                  email: "",
+                  sodienthoai: "",
+                  cmnd: "",
+                });
+                setMessageForget("");
+                document
+                  .getElementById("modal_container__resetpassword")
+                  .classList.remove("modal_active");
+              }}
+            >
+              Đóng
+            </button>
+          </div>
+
+          <div className="message_reset__email">
+            {messageforget.length > 0 ? messageforget : null}
+          </div>
         </div>
       </div>
 
@@ -95,7 +225,7 @@ const Login = () => {
         >
           <div className="modal__notification">
             <p className="title-notification">Thông báo</p>
-            <p>{message}</p>
+            {message}
             <div className="option-button">
               <button
                 id="add"

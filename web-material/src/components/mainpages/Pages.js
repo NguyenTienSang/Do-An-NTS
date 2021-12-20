@@ -39,33 +39,65 @@ import NotFound from "./utils/not_found/NotFound";
 
 function Pages() {
   const state = useContext(GlobalState);
-  console.log(state);
+
   const [isLogged] = state.userAPI.isLogged;
   const [isAdmin] = state.userAPI.isAdmin;
   return (
     <Switch>
-      <Route path="/trangchu" exact component={isLogged ? HomePage : Login} />
-      <Route path="/" exact component={isLogged ? HomePage : Login} />
+      <Route path="/trangchu" exact component={isAdmin ? HomePage : Login} />
+      <Route path="/" exact component={isAdmin ? HomePage : Login} />
 
-      <Route path="/nhanvien" exact component={Employees} />
-      <Route path="/doimatkhau" exact component={ChangePassword} />
+      <Route
+        path="/nhanvien"
+        exact
+        component={isLogged ? Employees : NotFound}
+      />
+      <Route
+        path="/doimatkhau"
+        exact
+        component={isLogged ? ChangePassword : Login}
+      />
 
       {/* <Route path="/add_employee" exact component={AddEmployee}/> */}
-      <Route path="/detail_employee/:_id" exact component={DetailEmployee} />
-      <Route path="/add_material" exact component={AddMaterial} />
-      <Route path="/vattu" exact component={Materials} />
+      <Route
+        path="/detail_employee/:_id"
+        exact
+        component={isAdmin ? DetailEmployee : NotFound}
+      />
+      <Route
+        path="/add_material"
+        exact
+        component={isAdmin ? AddMaterial : NotFound}
+      />
+      <Route path="/vattu" exact component={isLogged ? Materials : NotFound} />
       <Route path="/daily" exact component={isAdmin ? Stores : NotFound} />
-      <Route path="/kho" exact component={WareHouses} />
-      <Route path="/phieunhap" exact component={ImportBill} />
+      <Route path="/kho" exact component={isLogged ? WareHouses : NotFound} />
+      <Route
+        path="/phieunhap"
+        exact
+        component={isLogged ? ImportBill : NotFound}
+      />
       <Route path="/ctphieunhap" exact component={DetailImportBill} />
-      <Route path="/lapphieunhap" exact component={CreateImportBill} />
+      <Route
+        path="/lapphieunhap"
+        exact
+        component={isLogged ? CreateImportBill : NotFound}
+      />
 
-      <Route path="/phieuxuat" exact component={ExportBill} />
-      <Route path="/lapphieuxuat" exact component={CreateExportBill} />
+      <Route
+        path="/phieuxuat"
+        exact
+        component={isLogged ? ExportBill : NotFound}
+      />
+      <Route
+        path="/lapphieuxuat"
+        exact
+        component={isLogged ? CreateExportBill : NotFound}
+      />
       <Route
         path="/chitietkho/:madaily/:makho"
         exact
-        component={DetailWareHouse}
+        component={isLogged ? DetailWareHouse : NotFound}
       />
 
       <Route path="/login" exact component={isLogged ? HomePage : Login} />
@@ -79,7 +111,7 @@ function Pages() {
       <Route
         path="/thongkevattutrongcackho/:_id"
         exact
-        component={StatisticMaterialDetail}
+        component={isLogged ? StatisticMaterialDetail : NotFound}
       />
 
       <Route

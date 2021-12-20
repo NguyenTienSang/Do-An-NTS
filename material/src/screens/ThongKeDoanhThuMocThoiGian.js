@@ -23,7 +23,7 @@ import {GlobalState} from '../GlobalState';
 import Header from '../components/Header';
 import PhieuXuatItem from '../phieuxuat/PhieuXuatItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {APICTPX, APITKLNGD} from '../api/API';
+import {APITKDoanhThu} from '../api/API';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -119,7 +119,7 @@ export default function ThongKeDoanhThuMocThoiGian({navigation, route}) {
     if (madl !== '') {
       try {
         const res = await axios.post(
-          'http://192.168.1.3:5000/api/thongke/thongkedoanhthu',
+          `${APITKDoanhThu}`,
           {
             madailyfilter: madl,
             timestatistic:

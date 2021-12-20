@@ -184,7 +184,7 @@ function Employees() {
       console.log("dữ liệu ảnh url : ", res.data.url);
       setImages(res.data);
     } catch (error) {
-      setMessage(error.response.data.message);
+      setMessage(<p className="message">{error.response.data.message}</p>);
       setOpenAlert(true);
     }
   };
@@ -203,7 +203,7 @@ function Employees() {
       setLoading(false);
       setImages(false);
     } catch (error) {
-      setMessage(error.response.data.message);
+      setMessage(<p className="message">{error.response.data.message}</p>);
       setOpenAlert(true);
     }
   };
@@ -261,7 +261,7 @@ function Employees() {
             headers: { Authorization: token },
           }
         );
-        setMessage(res.data.message);
+        setMessage(<p className="message">{res.data.message}</p>);
         setOpenAlert(true);
 
         document
@@ -270,7 +270,7 @@ function Employees() {
         setCallback(!callback);
         //  history.push("/vattu");
       } catch (error) {
-        setMessage(error.response.data.message);
+        setMessage(<p className="message">{error.response.data.message}</p>);
         setOpenAlert(true);
       }
     }
@@ -301,7 +301,7 @@ function Employees() {
           }
         );
 
-        setMessage(res.data.message);
+        setMessage(<p className="message">{res.data.message}</p>);
         setOpenAlert(true);
 
         document
@@ -309,7 +309,7 @@ function Employees() {
           .classList.remove("modal_active");
         setCallback(!callback);
       } catch (err) {
-        setMessage(err.response.data.message);
+        setMessage(<p className="message">{err.response.data.message}</p>);
         setOpenAlert(true);
       }
     }
@@ -317,36 +317,45 @@ function Employees() {
   };
 
   const DeleteEmployee = async (id, public_id) => {
-    try {
-      //Xóa vật tư trong db
-      const deleteemployee = await axios.delete(`/api/nhanvien/${id}`, {
-        headers: { Authorization: token },
-      });
+    if (inforuser._id.toString() === id) {
+      setMessage(
+        <p className="message">
+          Tài khoảng đang đăng nhập <br /> không thể xóa
+        </p>
+      );
+      setOpenAlert(true);
+    } else {
+      try {
+        //Xóa vật tư trong db
+        const deleteemployee = await axios.delete(`/api/nhanvien/${id}`, {
+          headers: { Authorization: token },
+        });
 
-      //Nếu xóa thành công thì xóa ảnh
-      if (deleteemployee.data.success) {
-        setLoading(true);
-        //Xóa ảnh trên cloudinary
-        await axios.post(
-          "/api/destroy",
-          {
-            public_id,
-          },
-          { headers: { Authorization: token } }
-        );
-        setLoading(false);
+        //Nếu xóa thành công thì xóa ảnh
+        if (deleteemployee.data.success) {
+          setLoading(true);
+          //Xóa ảnh trên cloudinary
+          await axios.post(
+            "/api/destroy",
+            {
+              public_id,
+            },
+            { headers: { Authorization: token } }
+          );
+          setLoading(false);
+        }
+
+        // alert(deleteemployee.data.message);
+
+        setMessage(deleteemployee.data.message);
+        setOpenAlert(true);
+
+        setCallback(!callback);
+      } catch (err) {
+        //  alert(err.response.data.message);
+        setMessage(<p className="message">{err.response.data.message}</p>);
+        setOpenAlert(true);
       }
-
-      // alert(deleteemployee.data.message);
-
-      setMessage(deleteemployee.data.message);
-      setOpenAlert(true);
-
-      setCallback(!callback);
-    } catch (err) {
-      //  alert(err.response.data.message);
-      setMessage(err.response.data.message);
-      setOpenAlert(true);
     }
   };
 
@@ -370,7 +379,6 @@ function Employees() {
                   autocomplete="off"
                   onChange={(event) => {
                     setSearchTerm(event.target.value);
-                    // document.getElementById("list-material").style.display = "block";
                   }}
                 />
               </div>
@@ -524,6 +532,7 @@ function Employees() {
                   name="username"
                   autocomplete="off"
                   placeholder="Nhập username"
+                  maxLength="25"
                   id="username"
                   required
                   value={employee.username}
@@ -679,7 +688,7 @@ function Employees() {
         >
           <div className="modal__notification">
             <p className="title-notification">Thông báo</p>
-            <p>{message}</p>
+            {message}
             <div className="option-button">
               <button
                 id="add"

@@ -164,6 +164,9 @@ const warehouseCtrl = {
           message: "Cập nhật thành công",
         });
       } else {
+        console.log("test");
+        console.log("kho.trangthai : ", kho.trangthai);
+        console.log("trangthai : ", trangthai);
         //============ Trường hợp =============
         //Đổi trạng thái chuyển kho mà không đổi đại lý
         if (
@@ -362,7 +365,7 @@ const warehouseCtrl = {
               // else {
               //   return res.json({
               //     message: "Chuyển kho thành công và xóa",
-              //   });
+              //   });l
               // }
             }
 

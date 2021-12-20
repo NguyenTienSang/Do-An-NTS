@@ -58,3 +58,9 @@
     position: relative;
     bottom: -50px;
 }
+
+.modal__notification .message {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}

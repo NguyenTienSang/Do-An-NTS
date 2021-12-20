@@ -131,9 +131,12 @@ function ImportBill() {
             return importbill;
           } else if (
             (importbill._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              importbill.ngay
-                .slice(8, 10)
-                .includes(searchTerm.toString().toLowerCase()) ||
+              `${importbill.ngay.slice(8, 10)}-${importbill.ngay.slice(
+                5,
+                7
+              )}-${importbill.ngay.slice(0, 4)}`.includes(
+                searchTerm.toLowerCase()
+              ) ||
               importbill.manv._id
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase()) ||
