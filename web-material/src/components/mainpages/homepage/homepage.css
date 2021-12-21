@@ -5,13 +5,13 @@
     margin: 20px;
 }
 
-.homepage .title_homepage__statistic {
+/* .homepage .title_homepage__statistic {
     display: flex;
     justify-content: center;
     font-size: 25px;
     margin-bottom: 20px !important;
     font-weight: 500;
-}
+} */
 
 .homepage .first_statistic {
     display: flex;
@@ -26,6 +26,7 @@
     border: 1px solid #fff;
     border-radius: 8px;
     background-color: rgb(233, 69, 19);
+    box-shadow: 2px 2px 2px 2px #aaaaaa;
 }
 
 .homepage .first_statistic .item_statistic svg,
@@ -94,4 +95,25 @@
     width: 320px;
     height: 50px;
     color: #fff;
+}
+
+.homepage .statistic_chart__homepage{
+    margin-top: 20px;
+    border: 1px solid #999;
+    border-radius: 8px;
+    box-shadow: 2px 2px 2px 2px #aaaaaa;
+    /* -webkit-box-shadow: 0px 0px 11px -1px #999;
+    box-shadow: 0px 0px 11px -11px #0000; */
+}
+
+.statistic_chart__homepage .header_chart{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0px;
+
+}
+
+.statistic_chart__homepage .header_chart .select-store{
+        margin-left: 10px;
 }

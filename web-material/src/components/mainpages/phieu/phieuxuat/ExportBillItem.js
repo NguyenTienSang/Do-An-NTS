@@ -5,6 +5,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaUserEdit } from "react-icons/fa";
 import { AiOutlineEye } from "react-icons/ai";
 import { BsEyeSlash } from "react-icons/bs";
+import { FiPrinter } from "react-icons/fi";
 import DetailExportBill from "./DetailExportBill";
 
 function ExportBillItem({ exportbill, stt }) {
@@ -58,7 +59,6 @@ function ExportBillItem({ exportbill, stt }) {
               setDetailExport(!detailexport);
             }}
           >
-            {" "}
             {detailexport ? (
               <AiOutlineEye
                 style={{ fontSize: 36, color: "rgb(26, 148, 255)" }}
@@ -66,6 +66,11 @@ function ExportBillItem({ exportbill, stt }) {
             ) : (
               <BsEyeSlash style={{ fontSize: 36, color: "red" }} />
             )}
+          </button>
+          <button>
+            <Link to={`/inphieuxuat/${exportbill._id}`}>
+              <FiPrinter style={{ fontSize: 36, color: "rgb(26, 148, 255)" }} />
+            </Link>
           </button>
         </div>
       </div>

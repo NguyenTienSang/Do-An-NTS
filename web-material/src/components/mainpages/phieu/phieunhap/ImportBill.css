@@ -97,3 +97,7 @@
 
 /*--------------------- Create Import Bill ---------------------*/
 @import url("./CreateImportBill.css");
+
+
+/*--------------------- Print To Import Bill ---------------------*/
+@import url("./PrintToImportBill.css");

@@ -77,3 +77,34 @@
     background-color: rgb(26, 148, 255);
     color: #fff;
 }
+
+.statistic_component {
+    display: flex;
+    flex-direction: column;
+}
+
+.statistic_chart {
+    display: flex;
+    flex-direction: column;
+}
+
+.explain_table {
+    display: flex;
+    flex-direction: column;
+      justify-content: flex-end;
+      /* margin: 0px auto; */
+}
+
+.explain_content {
+    display: flex;
+    flex-direction: column;
+    /* margin: 0px; */
+    justify-content: flex-end;
+}
+
+.explain_content p {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    /* margin: 0px; */
+}

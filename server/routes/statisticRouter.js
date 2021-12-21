@@ -22,7 +22,10 @@ router
 router
   .route("/thongke/loinhuangiaidoan")
   .post(statisticCtrl.statisticProfitStage); //Thống kê lợi nhuận giai đoạn
-router.route("/thongke/trangchu").get(statisticCtrl.statisticHomePage); //Thống kê ở trang chủ
+router.route("/thongke/trangchu").post(statisticCtrl.statisticHomePage); //Thống kê ở trang chủ
+
+router.route("/thongke/dulieuhomnay").get(statisticCtrl.statisticToday); //Thống kê ở trang chủ
+
 router
   .route("/thongke/phieunhanvien")
   .post(statisticCtrl.statisticBillEmployees); //Thống kê phiếu nhân viên

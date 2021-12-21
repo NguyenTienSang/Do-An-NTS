@@ -16,15 +16,17 @@ import DetailEmployee from "./nhanvien/DetailEmployee";
 
 import Stores from "./daily/Stores";
 import WareHouses from "./kho/WareHouse";
+import DetailWareHouse from "./kho/DetailWareHouse";
 
 import ImportBill from "./phieu/phieunhap/ImportBill";
 import CreateImportBill from "./phieu/phieunhap/CreateImportBill";
 import DetailImportBill from "./phieu/phieunhap/DetailImportBill";
 
-import DetailWareHouse from "./kho/DetailWareHouse";
+import PrintToImportBill from "./phieu/phieunhap/PrintToImportBill";
 
 import ExportBill from "./phieu/phieuxuat/ExportBill";
 import CreateExportBill from "./phieu/phieuxuat/CreateExportBill";
+import PrintToExportBill from "./phieu/phieuxuat/PrintToExportBill";
 
 import Statistic from "./thongke/Statistic";
 import StatisticMaterial from "./thongke/StatisticMaterial";
@@ -82,6 +84,18 @@ function Pages() {
         path="/lapphieunhap"
         exact
         component={isLogged ? CreateImportBill : NotFound}
+      />
+
+      <Route
+        path="/inphieunhap/:_id"
+        exact
+        component={isAdmin ? PrintToImportBill : NotFound}
+      />
+
+      <Route
+        path="/inphieuxuat/:_id"
+        exact
+        component={isAdmin ? PrintToExportBill : NotFound}
       />
 
       <Route

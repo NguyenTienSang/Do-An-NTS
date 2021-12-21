@@ -13,6 +13,16 @@ import moment from "moment";
 import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 import { AiOutlineFileSearch } from "react-icons/ai";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 function StatisticProfitStage() {
   const state = useContext(GlobalState);
@@ -23,6 +33,7 @@ function StatisticProfitStage() {
 
   const [madailyfilter, setMaDaiLyFilter] = useState("");
   const [dataStatistic, setDataStatistic] = useState([]);
+  const [kindStatistic, setKindStatistic] = useState("Bang");
 
   const [openalert, setOpenAlert] = useState(false);
   const [message, setMessage] = useState("");
@@ -162,6 +173,21 @@ function StatisticProfitStage() {
                   />
                 </div>
 
+                <div className="filter-select" style={{ width: "100px" }}>
+                  <select
+                    className="select-store"
+                    // value={optionbill}
+                    defaultValue={"Bang"}
+                    onChange={(event) => {
+                      setKindStatistic(event.target.value);
+                      setDataStatistic([]);
+                    }}
+                  >
+                    <option value="Bang">Bảng</option>
+                    <option value="BieuDo">Biểu đồ</option>
+                  </select>
+                </div>
+
                 <div className="filter-select">
                   <label>Đại lý : </label>
                   <select
@@ -200,7 +226,12 @@ function StatisticProfitStage() {
                         )}-${moment(endyearstatistic).format("YYYY")}`
                       );
                     } else {
-                      setMessage(<p className="message">Dữ liệu đang trống <br/>không thể xuất</p>);
+                      setMessage(
+                        <p className="message">
+                          Dữ liệu đang trống <br />
+                          không thể xuất
+                        </p>
+                      );
                       setOpenAlert(true);
                     }
                   }}
@@ -213,52 +244,126 @@ function StatisticProfitStage() {
               </div>
             </div>
 
-            <div className="header_list">
-              <p style={{ width: "120px" }}>Năm</p>
-              <p style={{ width: "130px" }}>Số Phiếu Nhập</p>
-              <p style={{ flex: 1 }}>Tổng Tiền Nhập</p>
-              <p style={{ width: "130px" }}>Số Phiếu Xuất</p>
-              <p style={{ flex: 1 }}>Tổng Tiền Xuất</p>
-              <p style={{ flex: 1 }}>Lợi Nhuận Năm</p>
-            </div>
-            {dataStatistic?.map((item) => (
-              <div className="material_item">
-                <div
-                  style={{ width: "120px" }}
-                  className="material_item_element"
-                >
-                  {item.nam}
+            {kindStatistic === "Bang" ? (
+              <>
+                <div className="header_list">
+                  <p style={{ width: "120px" }}>Năm</p>
+                  <p style={{ width: "130px" }}>Số Phiếu Nhập</p>
+                  <p style={{ flex: 1 }}>Tổng Tiền Nhập</p>
+                  <p style={{ width: "130px" }}>Số Phiếu Xuất</p>
+                  <p style={{ flex: 1 }}>Tổng Tiền Xuất</p>
+                  <p style={{ flex: 1 }}>Lợi Nhuận Năm</p>
                 </div>
-                <div
-                  style={{ width: "130px" }}
-                  className="material_item_element"
-                >
-                  {item.sophieunhap}
-                </div>
+                {dataStatistic?.map((item) => (
+                  <div className="material_item">
+                    <div
+                      style={{ width: "120px" }}
+                      className="material_item_element"
+                    >
+                      {item.nam}
+                    </div>
+                    <div
+                      style={{ width: "130px" }}
+                      className="material_item_element"
+                    >
+                      {item.sophieunhap}
+                    </div>
 
-                <div style={{ flex: 1 }} className="material_item_element">
-                  {Format(item.chiphinhap)}
-                </div>
+                    <div style={{ flex: 1 }} className="material_item_element">
+                      {Format(item.chiphinhap)}
+                    </div>
 
-                <div
-                  style={{ width: "130px" }}
-                  className="material_item_element"
-                >
-                  {item.sophieuxuat}
+                    <div
+                      style={{ width: "130px" }}
+                      className="material_item_element"
+                    >
+                      {item.sophieuxuat}
+                    </div>
+                    <div style={{ flex: 1 }} className="material_item_element">
+                      {Format(item.chiphixuat)}
+                    </div>
+                    <div style={{ flex: 1 }} className="material_item_element">
+                      {Format(item.chiphixuat - item.chiphinhap)}
+                    </div>
+                  </div>
+                ))}
+                <div className="statistic_profit__year">
+                  Lợi nhuận từ{" "}
+                  {parseInt(moment(startyearstatistic).format("YYYY"))} -{" "}
+                  {parseInt(moment(endyearstatistic).format("YYYY"))} :{" "}
+                  {Format(onLoadTotal())}
                 </div>
-                <div style={{ flex: 1 }} className="material_item_element">
-                  {Format(item.chiphixuat)}
-                </div>
-                <div style={{ flex: 1 }} className="material_item_element">
-                  {Format(item.chiphixuat - item.chiphinhap)}
+              </>
+            ) : (
+              <div className="statistic_chart">
+                <ResponsiveContainer width="100%" height="100%" aspect={4 / 1}>
+                  <LineChart
+                    width={500}
+                    height={300}
+                    data={dataStatistic.map((item) => {
+                      return {
+                        Năm: item.nam,
+                        "Số phiếu nhập": item.sophieunhap,
+                        "Tổng tiền nhập": item.chiphinhap,
+                        "Số phiếu xuất": item.sophieuxuat,
+                        "Tổng tiền xuất": item.chiphixuat,
+                        "Lợi nhuận": item.chiphixuat - item.chiphinhap,
+                      };
+                    })}
+                    margin={{
+                      top: 5,
+                      right: 30,
+                      left: 20,
+                      bottom: 5,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="Năm" />
+                    <YAxis />
+                    <Tooltip
+                      formatter={(value) => {
+                        return new Intl.NumberFormat("en").format(value);
+                      }}
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="Số phiếu nhập"
+                      stroke="orange"
+                      activeDot={{ r: 8 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="Tổng tiền nhập"
+                      stroke="red"
+                      activeDot={{ r: 8 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="Số phiếu xuất"
+                      stroke="blue"
+                      activeDot={{ r: 8 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="Tổng tiền xuất"
+                      stroke="#1a94ff"
+                    />
+
+                    <Line type="monotone" dataKey="Lợi nhuận" stroke="green" />
+
+                    {/* <Line type="monotone" dataKey="Lợi nhuận" stroke="red" /> */}
+                  </LineChart>
+                </ResponsiveContainer>
+                <div className="explain_table">
+                  <p>Đơn vị tính</p>
+                  <div className="explain_content">
+                    <p>Tiền : VND</p>
+                    <p>Số phiếu : Phiếu</p>
+                  </div>
                 </div>
               </div>
-            ))}
-            <div className="statistic_profit__year">
-              Lợi nhuận từ {parseInt(moment(startyearstatistic).format("YYYY"))}{" "}
-              - {parseInt(moment(endyearstatistic).format("YYYY"))} :{" "}
-              {Format(onLoadTotal())}
-            </div>
+            )}
           </div>
         </div>
       </div>

@@ -12,14 +12,24 @@ import DatePicker from "react-datepicker";
 import moment from "moment";
 import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 function StatisticProfitYear() {
   const state = useContext(GlobalState);
 
   const [yearstatistic, setYearStatistic] = useState(new Date());
   const [stores] = state.storeAPI.stores;
-
-  const [madailyfilter, setMaDaiLyFilter] = useState("");
+  const [kindStatistic, setKindStatistic] = useState("Bang");
+  const [madailyfilter, setMaDaiLyFilter] = useState("allstores");
   const [dataStatistic, setDataStatistic] = useState([]);
   const [openalert, setOpenAlert] = useState(false);
   const [message, setMessage] = useState("");
@@ -94,7 +104,7 @@ function StatisticProfitYear() {
       console.log("res.data : ", res.data);
       setDataStatistic(res.data);
     }
-  }, [madailyfilter, yearstatistic]);
+  }, [madailyfilter, yearstatistic, kindStatistic]);
 
   return (
     <>
@@ -123,6 +133,21 @@ function StatisticProfitYear() {
                 />
               </div>
 
+              <div className="filter-select" style={{ width: "100px" }}>
+                <select
+                  className="select-store"
+                  // value={optionbill}
+                  defaultValue={"Bang"}
+                  onChange={(event) => {
+                    setKindStatistic(event.target.value);
+                    setDataStatistic([]);
+                  }}
+                >
+                  <option value="Bang">Bảng</option>
+                  <option value="BieuDo">Biểu đồ</option>
+                </select>
+              </div>
+
               <div className="title-tab">
                 <p style={{ display: "flex", alignItems: "center" }}>
                   <AiOutlineMoneyCollect />
@@ -134,11 +159,14 @@ function StatisticProfitYear() {
                 <select
                   className="select-store"
                   // value={madailyfilter}
-                  defaultValue={""}
+                  defaultValue={"madailyfilter"}
                   onChange={handlechangestore}
                 >
-                  <option value="" disabled selected hidden>
+                  {/* <option value="allstores" disabled selected hidden>
                     Vui lòng chọn đại lý
+                  </option> */}
+                  <option value="allstores" selected>
+                    Tất cả đại lý
                   </option>
                   {stores.map((store) => (
                     <option value={store._id} key={store._id}>
@@ -173,51 +201,127 @@ function StatisticProfitYear() {
               </button>
             </div>
 
-            <div className="header_list">
-              <p style={{ width: "100px" }}>Tháng</p>
-              <p style={{ width: "130px" }}>Số Phiếu Nhập</p>
-              <p style={{ flex: 1 }}>Tổng Tiền Nhập</p>
-              <p style={{ width: "130px" }}>Số Phiếu Xuất</p>
-              <p style={{ flex: 1 }}>Tổng Tiền Xuất</p>
-              <p style={{ flex: 1 }}>Lợi Nhuận Tháng</p>
-            </div>
-            {dataStatistic?.map((item, index) => (
-              <div className="material_item">
-                <div
-                  style={{ width: "100px" }}
-                  className="material_item_element"
-                >
-                  {item.thang}
-                </div>
-                <div
-                  style={{ width: "130px" }}
-                  className="material_item_element"
-                >
-                  {item.sophieunhap}
-                </div>
+            <div></div>
 
-                <div style={{ flex: 1 }} className="material_item_element">
-                  {Format(item.chiphinhap)}
+            {kindStatistic === "Bang" ? (
+              <>
+                <div className="header_list">
+                  <p style={{ width: "100px" }}>Tháng</p>
+                  <p style={{ width: "130px" }}>Số Phiếu Nhập</p>
+                  <p style={{ flex: 1 }}>Tổng Tiền Nhập</p>
+                  <p style={{ width: "130px" }}>Số Phiếu Xuất</p>
+                  <p style={{ flex: 1 }}>Tổng Tiền Xuất</p>
+                  <p style={{ flex: 1 }}>Lợi Nhuận Tháng</p>
                 </div>
+                {dataStatistic?.map((item, index) => (
+                  <div className="material_item">
+                    <div
+                      style={{ width: "100px" }}
+                      className="material_item_element"
+                    >
+                      {item.thang}
+                    </div>
+                    <div
+                      style={{ width: "130px" }}
+                      className="material_item_element"
+                    >
+                      {item.sophieunhap}
+                    </div>
 
-                <div
-                  style={{ width: "130px" }}
-                  className="material_item_element"
-                >
-                  {item.sophieuxuat}
+                    <div style={{ flex: 1 }} className="material_item_element">
+                      {Format(item.chiphinhap)}
+                    </div>
+
+                    <div
+                      style={{ width: "130px" }}
+                      className="material_item_element"
+                    >
+                      {item.sophieuxuat}
+                    </div>
+                    <div style={{ flex: 1 }} className="material_item_element">
+                      {Format(item.chiphixuat)}
+                    </div>
+                    <div style={{ flex: 1 }} className="material_item_element">
+                      {Format(item.chiphixuat - item.chiphinhap)}
+                    </div>
+                  </div>
+                ))}
+                <div className="statistic_profit__year">
+                  Lợi nhuận cả năm{" "}
+                  {parseInt(moment(yearstatistic).format("YYYY"))} :{" "}
+                  {Format(onLoadTotal())}
                 </div>
-                <div style={{ flex: 1 }} className="material_item_element">
-                  {Format(item.chiphixuat)}
-                </div>
-                <div style={{ flex: 1 }} className="material_item_element">
-                  {Format(item.chiphixuat - item.chiphinhap)}
+              </>
+            ) : (
+              <div className="statistic_chart">
+                <ResponsiveContainer width="100%" height="100%" aspect={4 / 1}>
+                  <LineChart
+                    width={500}
+                    height={300}
+                    data={dataStatistic.map((item) => {
+                      return {
+                        Tháng: item.thang,
+                        "Số phiếu nhập": item.sophieunhap,
+                        "Tổng tiền nhập": item.chiphinhap,
+                        "Số phiếu xuất": item.sophieuxuat,
+                        "Tổng tiền xuất": item.chiphixuat,
+                        "Lợi nhuận": item.chiphixuat - item.chiphinhap,
+                      };
+                    })}
+                    margin={{
+                      top: 5,
+                      right: 30,
+                      left: 20,
+                      bottom: 5,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="Tháng" />
+                    <YAxis />
+                    <Tooltip
+                      formatter={(value) => {
+                        return new Intl.NumberFormat("en").format(value);
+                      }}
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="Số phiếu nhập"
+                      stroke="orange"
+                      activeDot={{ r: 8 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="Tổng tiền nhập"
+                      stroke="red"
+                      activeDot={{ r: 8 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="Số phiếu xuất"
+                      stroke="blue"
+                      activeDot={{ r: 8 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="Tổng tiền xuất"
+                      stroke="#1a94ff"
+                    />
+
+                    <Line type="monotone" dataKey="Lợi nhuận" stroke="green" />
+
+                    {/* <Line type="monotone" dataKey="Lợi nhuận" stroke="red" /> */}
+                  </LineChart>
+                </ResponsiveContainer>
+                <div className="explain_table">
+                  <p>Đơn vị tính</p>
+                  <div className="explain_content">
+                    <p>Tiền : VND</p>
+                    <p>Số phiếu : Phiếu</p>
+                  </div>
                 </div>
               </div>
-            ))}
-            <div className="statistic_profit__year">
-              Lợi nhuận cả năm {parseInt(moment(yearstatistic).format("YYYY"))}{" "}
-              : {Format(onLoadTotal())}
-            </div>
+            )}
           </div>
         </div>
       </div>

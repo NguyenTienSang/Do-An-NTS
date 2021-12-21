@@ -559,14 +559,17 @@ const statisticCtrl = {
   statisticTurnOverTime: async (req, res) => {
     const { madailyfilter, timestatistic, optionstatistic } = req.body;
 
-    console.log("madailyfilter : ", madailyfilter);
-    console.log("timestatistic : ", timestatistic);
-    console.log("optionstatistic : ", optionstatistic);
-
     if (optionstatistic === "Ngay") {
+      const date = new Date(timestatistic);
+
       const phieuxuat = await PhieuXuat.find({
-        ngay: { $gte: new Date(timestatistic) },
-        // ngay: { $gte: datestart, $lte: dateend },
+        $expr: {
+          $and: [
+            { $eq: [{ $dayOfMonth: "$ngay" }, date.getDate()] },
+            { $eq: [{ $month: "$ngay" }, date.getMonth() + 1] },
+            { $eq: [{ $year: "$ngay" }, date.getFullYear()] },
+          ],
+        },
       })
         .populate("manv")
         .populate({ path: "manv", populate: { path: "madaily" } })
@@ -683,20 +686,18 @@ const statisticCtrl = {
     // const listmaterialaverage = [];
 
     // const listphieunhap = await PhieuNhap.find().populate("manv");
+    // const listphieuxuat = await PhieuXuat.find().populate("manv");
 
     // listphieunhap.map((itemphieunhap) => {
     //   if (
     //     itemphieunhap.manv.madaily._id.toString() === madailyfilter.toString()
     //   ) {
-    //     // console.log("itemphieunhap : ", itemphieunhap);
-    //     // console.log("bằng đại lý");
     //     itemphieunhap.ctpn.map((ctpn) => {
-    //       // console.log("ctpn : ", ctpn);
     //       const timvattu = listmaterialaverage.find(
     //         (listmaterialaverageitem) => {
     //           if (ctpn.mavt === listmaterialaverageitem._id) {
-    //             listmaterialaverageitem.soluong += ctpn.soluong;
-    //             listmaterialaverageitem.tongnhap += ctpn.gianhap * ctpn.soluong;
+    //             listmaterialaverageitem.giatbnhap += ctpn.gianhap;
+    //             lannhap++;
     //           }
     //           return ctpn.mavt === listmaterialaverageitem._id;
     //         }
@@ -705,9 +706,39 @@ const statisticCtrl = {
     //       if (timvattu === undefined) {
     //         listmaterialaverage.push({
     //           _id: ctpn.mavt,
-    //           soluong: ctpn.soluong,
-    //           tongnhap: ctpn.gianhap * ctpn.soluong,
+    //           giatbnhap: ctpn.gianhap,
+    //           lannhap: 1,
+    //           giatbxuat: 0,
+    //           lanxuat: 0,
+    //         });
+    //       }
+    //     });
+    //   }
+    // });
+
+    // console.log("listmaterialaverage test : ", listmaterialaverage);
+    // listphieuxuat.map((itemphieuxuat) => {
+    //   if (
+    //     itemphieuxuat.manv.madaily._id.toString() === madailyfilter.toString()
+    //   ) {
+    //     itemphieuxuat.ctpx.map((ctpx) => {
+    //       const timvattu = listmaterialaverage.find(
+    //         (listmaterialaverageitem) => {
+    //           if (ctpx.mavt === listmaterialaverageitem._id) {
+    //             listmaterialaverageitem.giatbxuat += ctpx.giaxuat;
+    //             lanxuat++;
+    //           }
+    //           return ctpx.mavt === listmaterialaverageitem._id;
+    //         }
+    //       );
+
+    //       if (timvattu === undefined) {
+    //         listmaterialaverage.push({
+    //           _id: ctpx.mavt,
     //           giatbnhap: 0,
+    //           lannhap: 0,
+    //           giatbxuat: ctpx.giaxuat,
+    //           lanxuat: 1,
     //         });
     //       }
     //     });
@@ -715,10 +746,11 @@ const statisticCtrl = {
     // });
 
     // listmaterialaverage.map((item) => {
-    //   item.giatbnhap = Math.round(item.tongnhap / item.soluong);
-    //   console.log("item._id : ", item._id);
-    //   console.log("item.giatbnhap : ", item.giatbnhap);
+    //   item.giatbnhap = Math.round(item.giatbnhap / item.lannhap);
+    //   item.giatbxuat = Math.round(item.giatbxuat / item.lanxuat);
     // });
+
+    // console.log("listmaterialaverage : ", listmaterialaverage);
 
     //==========================================================
 
@@ -730,21 +762,73 @@ const statisticCtrl = {
       sophieuxuat: 0,
       chiphinhap: 0,
       chiphixuat: 0,
+      loinhuan: 0,
     };
 
     const phieunhap = await PhieuNhap.find({
       $expr: { $eq: [{ $year: "$ngay" }, yearstatistic] },
     })
+      .sort({ ngay: 1 })
       .select({ ctpn: 1, ngay: 1, _id: 0 })
       .populate("manv")
       .populate({ path: "manv", populate: { path: "madaily" } });
     const phieuxuat = await PhieuXuat.find({
       $expr: { $eq: [{ $year: "$ngay" }, yearstatistic] },
     })
+      .sort({ ngay: 1 })
       .select({ ctpx: 1, ngay: 1, _id: 0 })
       .populate("manv")
       .populate({ path: "manv", populate: { path: "madaily" } });
 
+    // console.log("phieunhap : ", phieunhap);
+    // console.log("phieuxuat : ", phieuxuat);
+
+    // //============== NEW =================
+    // let vattuitem = "";
+    // if (madailyfilter === "allstores") {
+    //   for (var i = 1; i <= 12; i++) {
+    //     element.thang = i;
+    //     element.sophieunhap =
+    //       element.sophieuxuat =
+    //       element.chiphinhap =
+    //       element.chiphixuat =
+    //       element.loinhuan =
+    //         0;
+
+    //     //Phiếu nhập
+    //     phieunhap.map((pn) => {
+    //       if (parseInt(JSON.stringify(pn.ngay).slice(6, 8)) === i) {
+    //         element.sophieunhap++;
+    //         pn.ctpn.map((ctpn) => {
+    //           element.chiphinhap += parseInt(ctpn.gianhap * ctpn.soluong);
+    //           vattuitem = listmaterialaverage.find((item) => {
+    //             return item._id.toString() === ctpn.mavt.toString();
+    //           });
+    //           element.loinhuan -= vattuitem.giatbnhap * ctpn.soluong;
+    //         });
+    //       }
+    //     });
+
+    //     //Phiếu nhập
+    //     phieuxuat.map((px) => {
+    //       if (parseInt(JSON.stringify(px.ngay).slice(6, 8)) === i) {
+    //         element.sophieuxuat++;
+    //         px.ctpx.map((ctpx) => {
+    //           element.chiphixuat += parseInt(ctpx.giaxuat * ctpx.soluong);
+    //           vattuitem = listmaterialaverage.find((item) => {
+    //             return item._id.toString() === ctpx.mavt.toString();
+    //           });
+    //           element.loinhuan += vattuitem.giatbxuat * ctpx.soluong;
+    //         });
+    //       }
+    //     });
+
+    //     statisticProfitYear.push({ ...element });
+    //   }
+    // }
+
+    // console.log("element : ", element);
+    //=========================
     //Nếu tất cả đại lý
     if (madailyfilter === "allstores") {
       for (var i = 1; i <= 12; i++) {
@@ -755,7 +839,6 @@ const statisticCtrl = {
           element.chiphixuat =
             0;
         //Phiếu nhập
-
         phieunhap.map((pn) => {
           if (parseInt(JSON.stringify(pn.ngay).slice(6, 8)) === i) {
             element.sophieunhap++;
@@ -984,9 +1067,25 @@ const statisticCtrl = {
 
   statisticHomePage: async (req, res) => {
     try {
+      const { madailyfilter } = req.body;
+      if (!madailyfilter) {
+        return res.status(400).json({ message: "Vui lòng chọn đại lý" });
+      }
+
       const date = new Date();
 
-      var statisticProfit = {
+      const countdaily = await DaiLy.countDocuments("_id");
+      const countkho = await Kho.countDocuments("_id");
+      const countnhanvien = await NhanVien.countDocuments("_id");
+
+      // res.json({ statisticProfit, countdaily, countkho, countnhanvien });
+
+      // const madailyfilter = "allstores";
+
+      var statisticProfitYear = [];
+
+      var element = {
+        thang: "",
         sophieunhap: 0,
         sophieuxuat: 0,
         chiphinhap: 0,
@@ -994,43 +1093,180 @@ const statisticCtrl = {
       };
 
       const phieunhap = await PhieuNhap.find({
-        $expr: {
-          $and: [
-            { $eq: [{ $month: "$ngay" }, date.getMonth() + 1] },
-            { $eq: [{ $year: "$ngay" }, date.getFullYear()] },
-          ],
-        },
-      }).select({ ctpn: 1, ngay: 1, _id: 0 });
+        $expr: { $eq: [{ $year: "$ngay" }, date.getFullYear()] },
+      })
+        .select({ ctpn: 1, ngay: 1, _id: 0 })
+        .populate("manv")
+        .populate({ path: "manv", populate: { path: "madaily" } });
       const phieuxuat = await PhieuXuat.find({
+        $expr: { $eq: [{ $year: "$ngay" }, date.getFullYear()] },
+      })
+        .select({ ctpx: 1, ngay: 1, _id: 0 })
+        .populate("manv")
+        .populate({ path: "manv", populate: { path: "madaily" } });
+
+      //Nếu tất cả đại lý
+      if (madailyfilter === "allstores") {
+        for (var i = 1; i <= 12; i++) {
+          element.thang = i;
+          element.sophieunhap =
+            element.sophieuxuat =
+            element.chiphinhap =
+            element.chiphixuat =
+              0;
+          //Phiếu nhập
+
+          phieunhap.map((pn) => {
+            if (parseInt(JSON.stringify(pn.ngay).slice(6, 8)) === i) {
+              element.sophieunhap++;
+              pn.ctpn.map((ctpn) => {
+                element.chiphinhap += parseInt(ctpn.gianhap * ctpn.soluong);
+              });
+            }
+          });
+
+          //Phiếu xuất
+          phieuxuat.map((px) => {
+            if (parseInt(JSON.stringify(px.ngay).slice(6, 8)) === i) {
+              element.sophieuxuat++;
+              px.ctpx.map((ctpx) => {
+                element.chiphixuat += parseInt(ctpx.giaxuat * ctpx.soluong);
+              });
+            }
+          });
+          statisticProfitYear.push({ ...element });
+        }
+      }
+      //Chọn đại lý
+      else {
+        for (var i = 1; i <= 12; i++) {
+          element.thang = i;
+          element.sophieunhap =
+            element.sophieuxuat =
+            element.chiphinhap =
+            element.chiphixuat =
+              0;
+
+          //Phiếu nhập
+          phieunhap.map((pn) => {
+            if (
+              parseInt(JSON.stringify(pn.ngay).slice(6, 8)) === i &&
+              pn.manv.madaily._id.toString() === madailyfilter
+            ) {
+              element.sophieunhap++;
+              pn.ctpn.map((ctpn) => {
+                element.chiphinhap += parseInt(ctpn.gianhap * ctpn.soluong);
+              });
+            }
+          });
+
+          //Phiếu xuất
+          phieuxuat.map((px) => {
+            if (
+              parseInt(JSON.stringify(px.ngay).slice(6, 8)) === i &&
+              px.manv.madaily._id.toString() === madailyfilter
+            ) {
+              element.sophieuxuat++;
+              px.ctpx.map((ctpx) => {
+                element.chiphixuat += parseInt(ctpx.giaxuat * ctpx.soluong);
+              });
+            }
+          });
+          statisticProfitYear.push({ ...element });
+        }
+      }
+
+      return res.json({
+        statisticProfitYear,
+        countdaily,
+        countkho,
+        countnhanvien,
+      });
+      // res.json({ statisticProfit, countdaily, countkho, countnhanvien });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+  statisticToday: async (req, res) => {
+    try {
+      var statisticStore = await DaiLy.find().select({ _id: 1, tendl: 1 });
+
+      const date = new Date();
+      let liststore = [];
+
+      statisticStore.map((item) => {
+        liststore.push({
+          _id: item._id,
+          tendl: item.tendl,
+          sophieunhap: 0,
+          chiphinhap: 0,
+          sophieuxuat: 0,
+          chiphixuat: 0,
+        });
+      });
+
+      const phieunhaptoday = await PhieuNhap.find({
         $expr: {
           $and: [
+            { $eq: [{ $dayOfMonth: "$ngay" }, date.getDate()] },
             { $eq: [{ $month: "$ngay" }, date.getMonth() + 1] },
             { $eq: [{ $year: "$ngay" }, date.getFullYear()] },
           ],
         },
-      }).select({ ctpx: 1, ngay: 1, _id: 0 });
+      })
+        .populate("manv")
+        .populate({ path: "manv", populate: { path: "madaily" } })
+        .populate("makho")
+        .populate("ctpn")
+        .populate({ path: "ctpn", populate: { path: "mavt" } });
 
-      //Phiếu nhập
-      phieunhap.forEach((pn) => {
-        statisticProfit.sophieunhap++;
-        pn.ctpn.forEach((ctpn) => {
-          statisticProfit.chiphinhap += parseInt(ctpn.gianhap * ctpn.soluong);
+      const phieuxuattoday = await PhieuXuat.find({
+        $expr: {
+          $and: [
+            { $eq: [{ $dayOfMonth: "$ngay" }, date.getDate()] },
+            { $eq: [{ $month: "$ngay" }, date.getMonth() + 1] },
+            { $eq: [{ $year: "$ngay" }, date.getFullYear()] },
+          ],
+        },
+      })
+        .populate("manv")
+        .populate({ path: "manv", populate: { path: "madaily" } })
+        .populate("makho")
+        .populate("ctpx")
+        .populate({ path: "ctpx", populate: { path: "mavt" } });
+
+      let finddaily = "";
+      let sumbill = 0;
+
+      phieunhaptoday.map((pn) => {
+        finddaily = liststore.find((itemstore) => {
+          if (pn.manv.madaily._id.toString() === itemstore._id.toString()) {
+            pn.ctpn.map((ctpnitem) => {
+              sumbill += ctpnitem.soluong * ctpnitem.gianhap;
+            });
+            itemstore.sophieunhap++;
+            itemstore.chiphinhap += sumbill;
+            sumbill = 0;
+          }
+          return pn.manv.madaily._id.toString() === itemstore._id.toString();
         });
       });
 
-      //Phiếu xuất
-      phieuxuat.forEach((px) => {
-        statisticProfit.sophieuxuat++;
-        px.ctpx.forEach((ctpx) => {
-          statisticProfit.chiphixuat += parseInt(ctpx.giaxuat * ctpx.soluong);
+      phieuxuattoday.map((px) => {
+        finddaily = liststore.find((itemstore) => {
+          if (px.manv.madaily._id.toString() === itemstore._id.toString()) {
+            pn.ctpn.map((ctpnitem) => {
+              sumbill += ctpnitem.soluong * ctpnitem.gianhap;
+            });
+            itemstore.sophieuxuat++;
+            itemstore.chiphixuat += sumbill;
+            sumbill = 0;
+          }
+          return pn.manv.madaily._id.toString() === itemstore._id.toString();
         });
       });
 
-      const countdaily = await DaiLy.countDocuments("_id");
-      const countkho = await Kho.countDocuments("_id");
-      const countnhanvien = await NhanVien.countDocuments("_id");
-
-      res.json({ statisticProfit, countdaily, countkho, countnhanvien });
+      return res.json(liststore);
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }

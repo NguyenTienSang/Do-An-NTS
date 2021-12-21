@@ -9,6 +9,7 @@ import Header from "../../../header/Header";
 import { GiExplosiveMaterials } from "react-icons/gi";
 import { BiBookAdd } from "react-icons/bi";
 import { FaFileExport } from "react-icons/fa";
+
 import Pagination from "../../../common/Pagination";
 import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
@@ -255,7 +256,7 @@ function ImportBill() {
             <p style={{ flex: 1 }}>Đại lý</p>
             <p style={{ flex: 1 }}>Kho</p>
             <p style={{ flex: 1 }}>Tổng Cộng</p>
-            <p style={{ flex: 1 }}>Chi tiết</p>
+            <p style={{ flex: 1 }}>Chức năng</p>
           </div>
           {currentImportbills?.map((importbill, index) => {
             return (

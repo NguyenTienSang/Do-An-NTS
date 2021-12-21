@@ -5,6 +5,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaUserEdit } from "react-icons/fa";
 import { AiOutlineEye } from "react-icons/ai";
 import { BsEyeSlash } from "react-icons/bs";
+import { FiPrinter } from "react-icons/fi";
 import DetailImportBill from "./DetailImportBill";
 
 function ImportBillItem({ importbill, stt }) {
@@ -58,12 +59,21 @@ function ImportBillItem({ importbill, stt }) {
             }}
           >
             {detailimport ? (
-              <AiOutlineEye
-                style={{ fontSize: 36, color: "rgb(26, 148, 255)" }}
-              />
+              <>
+                <AiOutlineEye
+                  style={{ fontSize: 36, color: "rgb(26, 148, 255)" }}
+                />
+              </>
             ) : (
-              <BsEyeSlash style={{ fontSize: 36, color: "red" }} />
-            )}{" "}
+              <>
+                <BsEyeSlash style={{ fontSize: 36, color: "red" }} />
+              </>
+            )}
+          </button>
+          <button>
+            <Link to={`/inphieunhap/${importbill._id}`}>
+              <FiPrinter style={{ fontSize: 36, color: "rgb(26, 148, 255)" }} />
+            </Link>
           </button>
         </div>
       </div>

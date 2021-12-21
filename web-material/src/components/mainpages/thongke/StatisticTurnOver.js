@@ -14,6 +14,16 @@ import moment from "moment";
 import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 import { AiOutlineFileSearch } from "react-icons/ai";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 function StatisticTurnOver() {
   const state = useContext(GlobalState);
@@ -24,6 +34,7 @@ function StatisticTurnOver() {
   const [madailyfilter, setMaDaiLyFilter] = useState("");
   const [dataStatistic, setDataStatistic] = useState([]);
   const [optionStatistic, setOptionStatistic] = useState("Thang");
+  const [kindStatistic, setKindStatistic] = useState("Bang");
 
   const [openalert, setOpenAlert] = useState(false);
   const [message, setMessage] = useState("");
@@ -161,7 +172,7 @@ function StatisticTurnOver() {
       return total;
     } else if (optionStatistic === "Thang" || optionStatistic === "Nam") {
       dataStatistic.map((item) => {
-        console.log("typeof(item.tongtienxuat) : ", typeof item.tongtienxuat);
+        // console.log("typeof(item.tongtienxuat) : ", typeof item.tongtienxuat);
         total += item.tongtienxuat;
       });
     }
@@ -170,6 +181,10 @@ function StatisticTurnOver() {
   };
 
   const StatisticTurnOver = async () => {
+    // console.log(
+    //   'moment(timeStatistic).format("YYYY-MM") : ',
+    //   moment(timeStatistic).format("YYYY-MM")
+    // );
     if (madailyfilter !== "") {
       try {
         const res = await axios.post("/api/thongke/thongkedoanhthu", {
@@ -203,7 +218,6 @@ function StatisticTurnOver() {
             <div className="header-title">
               <div className="container-filter">
                 <p className="label">Thống Kê Doanh Thu</p>
-
                 <div className="time_statistic">
                   <p>Thời gian : </p>
 
@@ -265,6 +279,10 @@ function StatisticTurnOver() {
                     defaultValue={"Thang"}
                     onChange={(event) => {
                       setOptionStatistic(event.target.value);
+                      // setKindStatistic("Bang");
+                      if (event.target.value === "Ngay") {
+                        setKindStatistic("Bang");
+                      }
                       setDataStatistic([]);
                     }}
                   >
@@ -291,6 +309,32 @@ function StatisticTurnOver() {
                         {store.tendl}
                       </option>
                     ))}
+                  </select>
+                </div>
+
+                <div className="filter-select" style={{ width: "100px" }}>
+                  <select
+                    className="select-store"
+                    // value={optionbill}
+                    defaultValue={"Bang"}
+                    onChange={(event) => {
+                      setKindStatistic(event.target.value);
+                      setDataStatistic([]);
+                    }}
+                  >
+                    {optionStatistic === "Thang" ||
+                    optionStatistic === "Nam" ? (
+                      <>
+                        <option value="Bang" selected>
+                          Bảng
+                        </option>
+                        <option value="BieuDo">Biểu đồ</option>
+                      </>
+                    ) : (
+                      <option value="Bang" selected>
+                        Bảng
+                      </option>
+                    )}
                   </select>
                 </div>
 
@@ -334,69 +378,149 @@ function StatisticTurnOver() {
                 </button>
               </div>
             </div>
-
-            <div className="header_list">
-              {optionStatistic == "Ngay" ? (
-                <>
-                  <p style={{ width: "70px" }}>STT</p>
-                  <p style={{ width: "160px" }}>ID</p>
-                  <p style={{ flex: 1 }}>Ngày lập</p>
-                  <p style={{ flex: 1 }}>Nhân viên</p>
-                  <p style={{ flex: 1 }}>Đại lý</p>
-                  <p style={{ flex: 1 }}>Kho</p>
-                  <p style={{ flex: 1 }}>Tổng Cộng</p>
-                  <p style={{ flex: 1 }}>Chi tiết</p>
-                </>
-              ) : optionStatistic == "Thang" ? (
-                <>
-                  <p style={{ flex: 1 }}>Ngày</p>
-                  <p style={{ flex: 1 }}>Tổng số phiếu</p>
-                  <p style={{ flex: 1 }}>Doanh thu</p>
-                </>
-              ) : (
-                <>
-                  <p style={{ flex: 1 }}>Tháng</p>
-                  <p style={{ flex: 1 }}>Tổng số phiếu</p>
-                  <p style={{ flex: 1 }}>Doanh thu</p>
-                </>
-              )}
-            </div>
-            {optionStatistic === "Ngay"
-              ? dataStatistic?.map((exportbill, index) => {
-                  return (
+            {kindStatistic === "Bang" ? (
+              <div className="detail_statistic">
+                <div className="header_list">
+                  {optionStatistic == "Ngay" ? (
                     <>
-                      <ExportBillItem
-                        key={exportbill._id}
-                        exportbill={exportbill}
-                        stt={index}
-                        // stt={(currentPage - 1) * exportbillsPerPage + index}
-                      />
+                      <p style={{ width: "70px" }}>STT</p>
+                      <p style={{ width: "160px" }}>ID</p>
+                      <p style={{ flex: 1 }}>Ngày lập</p>
+                      <p style={{ flex: 1 }}>Nhân viên</p>
+                      <p style={{ flex: 1 }}>Đại lý</p>
+                      <p style={{ flex: 1 }}>Kho</p>
+                      <p style={{ flex: 1 }}>Tổng Cộng</p>
+                      <p style={{ flex: 1 }}>Chi tiết</p>
                     </>
-                  );
-                })
-              : optionStatistic === "Thang"
-              ? dataStatistic?.map((dataitem, index) => {
-                  return (
-                    <div className="statistic_column">
-                      <p style={{ flex: 1 }}>{dataitem.ngay}</p>
-                      <p style={{ flex: 1 }}>{dataitem.sophieuxuat}</p>
-                      <p style={{ flex: 1 }}>{Format(dataitem.tongtienxuat)}</p>
-                    </div>
-                  );
-                })
-              : dataStatistic?.map((dataitem, index) => {
-                  return (
-                    <div className="statistic_column">
-                      <p style={{ flex: 1 }}>{dataitem.thang}</p>
-                      <p style={{ flex: 1 }}>{dataitem.sophieuxuat}</p>
-                      <p style={{ flex: 1 }}>{Format(dataitem.tongtienxuat)}</p>
-                    </div>
-                  );
-                })}
+                  ) : optionStatistic == "Thang" ? (
+                    <>
+                      <p style={{ flex: 1 }}>Ngày</p>
+                      <p style={{ flex: 1 }}>Tổng số phiếu</p>
+                      <p style={{ flex: 1 }}>Doanh thu</p>
+                    </>
+                  ) : (
+                    <>
+                      <p style={{ flex: 1 }}>Tháng</p>
+                      <p style={{ flex: 1 }}>Tổng số phiếu</p>
+                      <p style={{ flex: 1 }}>Doanh thu</p>
+                    </>
+                  )}
+                </div>
+                {optionStatistic === "Ngay"
+                  ? dataStatistic?.map((exportbill, index) => {
+                      return (
+                        <>
+                          <ExportBillItem
+                            key={exportbill._id}
+                            exportbill={exportbill}
+                            stt={index}
+                            // stt={(currentPage - 1) * exportbillsPerPage + index}
+                          />
+                        </>
+                      );
+                    })
+                  : optionStatistic === "Thang"
+                  ? dataStatistic?.map((dataitem, index) => {
+                      return (
+                        <div className="statistic_column">
+                          <p style={{ flex: 1 }}>{dataitem.ngay}</p>
+                          <p style={{ flex: 1 }}>{dataitem.sophieuxuat}</p>
+                          <p style={{ flex: 1 }}>
+                            {Format(dataitem.tongtienxuat)}
+                          </p>
+                        </div>
+                      );
+                    })
+                  : dataStatistic?.map((dataitem, index) => {
+                      return (
+                        <div className="statistic_column">
+                          <p style={{ flex: 1 }}>{dataitem.thang}</p>
+                          <p style={{ flex: 1 }}>{dataitem.sophieuxuat}</p>
+                          <p style={{ flex: 1 }}>
+                            {Format(dataitem.tongtienxuat)}
+                          </p>
+                        </div>
+                      );
+                    })}
 
-            <div className="statistic_turn__over">
-              Tổng Doanh Thu : {Format(onLoadTotal())}
-            </div>
+                <div className="statistic_turn__over">
+                  Tổng Doanh Thu : {Format(onLoadTotal())}
+                </div>
+              </div>
+            ) : (
+              <div className="statistic_chart">
+                <ResponsiveContainer width="100%" height="100%" aspect={4 / 1}>
+                  <LineChart
+                    width={500}
+                    height={300}
+                    data={dataStatistic.map((item) => {
+                      if (optionStatistic === "Thang") {
+                        return {
+                          // ngày: item.ngay,
+                          ngày: item.ngay,
+                          "Doanh thu": item.tongtienxuat,
+                          "Số phiếu xuất": item.sophieuxuat,
+                        };
+                      }
+                      if (optionStatistic === "Nam") {
+                        return {
+                          // ngày: item.ngay,
+                          tháng: item.thang,
+                          "Doanh thu": item.tongtienxuat,
+                          "Số phiếu xuất": item.sophieuxuat,
+                        };
+                      }
+                    })}
+                    margin={{
+                      top: 5,
+                      right: 30,
+                      left: 20,
+                      bottom: 5,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey={
+                        optionStatistic === "Thang"
+                          ? "ngày"
+                          : optionStatistic === "Nam"
+                          ? "tháng"
+                          : null
+                      }
+                    />
+                    <YAxis />
+                    <Tooltip
+                      formatter={(value) => {
+                        return new Intl.NumberFormat("en").format(value);
+                      }}
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="Doanh thu"
+                      stroke="#8884d8"
+                      activeDot={{ r: 8 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="Số phiếu xuất"
+                      stroke="#82ca9d"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+                <div className="explain_table">
+                  <p>Đơn vị tính</p>
+                  <div className="explain_content">
+                    <p>Doanh thu : VND</p>
+                    <p>Số phiếu xuất : Phiếu</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* =============== CHART ============== */}
+
+            {/* ========================================== */}
           </div>
         </div>
       </div>
