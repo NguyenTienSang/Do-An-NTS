@@ -142,7 +142,7 @@ function DetailWareHouse() {
                   placeholder="Nhập từ khóa tìm kiếm"
                   id="inputsearch"
                   required
-                  autocomplete="off"
+                  autoComplete="off"
                   onChange={(event) => {
                     setSearchTerm(event.target.value);
                   }}

@@ -221,7 +221,7 @@ function StatisticBill() {
                   placeholder="Nhập ID nhân viên"
                   id="inputsearch"
                   required
-                  autocomplete="off"
+                  autoComplete="off"
                   onChange={(event) => {
                     setMaNV(event.target.value);
                     // setSearchTerm(event.target.value);
@@ -300,7 +300,7 @@ function StatisticBill() {
                   placeholder="Nhập từ khóa tìm kiếm"
                   id="inputsearch"
                   required
-                  autocomplete="off"
+                  autoComplete="off"
                   onChange={(event) => {
                     setSearchTerm(event.target.value);
                     // document.getElementById("list-material").style.display = "block";

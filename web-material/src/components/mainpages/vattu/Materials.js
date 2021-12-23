@@ -336,7 +336,7 @@ function Materials() {
                   placeholder="Nhập từ khóa tìm kiếm"
                   id="inputsearch"
                   required
-                  autocomplete="off"
+                  autoComplete="off"
                   onChange={(event) => {
                     setSearchTerm(event.target.value);
                   }}
@@ -389,6 +389,7 @@ function Materials() {
             {currentMaterials?.map((material, index) => {
               return (
                 <MaterialItem
+                  key={index}
                   material={material}
                   stt={(currentPage - 1) * materialsPerPage + index}
                   EditMaterial={EditMaterial}

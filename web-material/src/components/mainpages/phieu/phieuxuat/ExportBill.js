@@ -17,12 +17,16 @@ function ExporttBill() {
   const state = useContext(GlobalState);
   const inforuser = JSON.parse(localStorage.getItem("inforuser"));
   const [exportbills] = state.exportbillAPI.exportbills;
+  const [callback, setCallback] = state.exportbillAPI.callback;
   const [listExportBillSearch, setListExportBillSearch] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [exportbillsPerPage] = useState(10);
 
+  useEffect(() => {
+    setCallback(!callback);
+  }, []);
   // Get current posts
   const indexOfLastExportbill = currentPage * exportbillsPerPage;
   const indexOfFirstExportbill = indexOfLastExportbill - exportbillsPerPage;
@@ -210,7 +214,7 @@ function ExporttBill() {
                 placeholder="Nhập từ khóa tìm kiếm"
                 id="inputsearch"
                 required
-                autocomplete="off"
+                autoComplete="off"
                 onChange={(event) => {
                   setSearchTerm(event.target.value);
                 }}

@@ -30,7 +30,7 @@ import {
 
 function HomePage() {
   const today = moment();
-  console.log("today : ", today.format("DD-MM-YYYY"));
+  // console.log("today : ", today.format("DD-MM-YYYY"));
   const state = useContext(GlobalState);
   const [dataStatistic, setDataStatistic] = useState([]);
   const [dataStatisticToday, setDataStatisticToday] = useState([]);
@@ -45,7 +45,7 @@ function HomePage() {
 
   useEffect(async () => {
     const res = await axios.get("/api/thongke/dulieuhomnay");
-    console.log("res.data1 : ", res.data);
+    // console.log("res.data1 : ", res.data);
     setDataStatisticToday(res.data);
   }, []);
 
@@ -87,10 +87,10 @@ function HomePage() {
                   style={{ backgroundColor: "red" }}
                 >
                   <Link to="/daily">
-                    <labeL>
+                    <div>
                       Số đại lý : {dataStatistic ? dataStatistic.countdaily : 0}
                       <IoStorefrontOutline />
-                    </labeL>
+                    </div>
                   </Link>
                 </div>
 
@@ -99,10 +99,10 @@ function HomePage() {
                   style={{ backgroundColor: "orange" }}
                 >
                   <Link to="/kho">
-                    <labeL>
+                    <div>
                       Số kho : {dataStatistic ? dataStatistic.countkho : 0}{" "}
                       <FaWarehouse />
-                    </labeL>
+                    </div>
                   </Link>
                 </div>
 
@@ -112,11 +112,11 @@ function HomePage() {
                 >
                   <Link to="/nhanvien">
                     {" "}
-                    <labeL>
+                    <div>
                       Số nhân viên :{" "}
                       {dataStatistic ? dataStatistic.countnhanvien : 0}{" "}
                       <BsFillPersonLinesFill />
-                    </labeL>
+                    </div>
                   </Link>
                 </div>
               </div>

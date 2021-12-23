@@ -89,13 +89,13 @@ function Pages() {
       <Route
         path="/inphieunhap/:_id"
         exact
-        component={isAdmin ? PrintToImportBill : NotFound}
+        component={isLogged ? PrintToImportBill : NotFound}
       />
 
       <Route
         path="/inphieuxuat/:_id"
         exact
-        component={isAdmin ? PrintToExportBill : NotFound}
+        component={isLogged ? PrintToExportBill : NotFound}
       />
 
       <Route

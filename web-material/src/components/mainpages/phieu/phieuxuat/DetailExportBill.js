@@ -21,7 +21,13 @@ function DetailExportBill(exportbill) {
   return (
     <div className="detail-exportbill">
       <div className="title-detail">
-        <p>Chi Tiết Phiếu Xuất {exportbill.exportbill._id}</p>
+        <div className="id_bill">
+          <p>Chi Tiết Phiếu Nhập {exportbill.exportbill._id}</p>
+        </div>
+        <div className="customer">
+          <p>Họ tên KH : {exportbill.exportbill.hotenkh}</p>
+          <p>SĐT : {exportbill.exportbill.sodienthoaikh}</p>
+        </div>
       </div>
       <div className="header-detail-exportbill">
         <p style={{ flex: 0.5 }}>STT</p>

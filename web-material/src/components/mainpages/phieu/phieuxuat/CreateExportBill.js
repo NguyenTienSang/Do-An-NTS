@@ -42,6 +42,8 @@ function CreateExportBill() {
     ngay: "",
     manv: "",
     makho: "",
+    hotenkh: "",
+    sodienthoaikh: "",
     ctpx: [],
   });
 
@@ -157,7 +159,7 @@ function CreateExportBill() {
                     setOnShow(false);
                   }, 200);
                 }}
-                autocomplete="off"
+                autoComplete="off"
                 disabled={exportbill.makho == "" ? true : false}
                 onChange={(event) => {
                   setSearchTerm(event.target.value);
@@ -279,6 +281,37 @@ function CreateExportBill() {
                   {user.hoten}
                 </div>
               </div>
+
+              <div className="item-first">
+                <div className="row">
+                  <label htmlFor="title">Họ tên KH : </label>
+                  <input
+                    type="text"
+                    name="hotenkh"
+                    placeholder="Nhập họ tên khách hàng"
+                    id="hotenkh"
+                    required
+                    autoComplete="off"
+                    value={exportbill.hotenkh}
+                    onChange={handleChangeInput}
+                  />
+                </div>
+                <div className="row">
+                  <label htmlFor="title">Số điện thoại : </label>
+                  <input
+                    // type="text"
+                    name="sodienthoaikh"
+                    placeholder="Nhập số điện thoại"
+                    id="sodienthoaikh"
+                    required
+                    autoComplete="off"
+                    value={exportbill.sodienthoaikh}
+                    maxlength="10"
+                    onChange={handleChangeInput}
+                  />
+                </div>
+              </div>
+
               {
                 <div className="list-item-bill">
                   <h3>Danh sách vật tư</h3>
@@ -324,7 +357,7 @@ function CreateExportBill() {
                           <input
                             type="text"
                             required
-                            autocomplete="off"
+                            autoComplete="off"
                             maxLength="3"
                             onChange={(event) => {
                               if (
@@ -453,7 +486,16 @@ function CreateExportBill() {
                           <p className="message">{res.data.message}</p>
                         );
                         setOpenAlert(true);
-
+                        document.getElementById("hotenkh").value = "";
+                        document.getElementById("sodienthoaikh").value = "";
+                        setExportBill({
+                          ngay: "",
+                          manv: "",
+                          makho: "",
+                          hotenkh: "",
+                          sodienthoaikh: "",
+                          ctpx: [],
+                        });
                         setCallback(!callback);
                       } catch (err) {
                         setMessage(

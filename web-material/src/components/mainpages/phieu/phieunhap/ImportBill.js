@@ -17,10 +17,16 @@ import * as XLSX from "xlsx";
 function ImportBill() {
   const state = useContext(GlobalState);
   const inforuser = JSON.parse(localStorage.getItem("inforuser"));
+
   const [importbills] = state.importbillAPI.importbills;
+  const [callback, setCallback] = state.importbillAPI.callback;
 
   const [listImportBillSearch, setListImportBillSearch] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    setCallback(!callback);
+  }, []);
 
   //============ XUẤT FILE ==============
   const fileType =
@@ -213,7 +219,7 @@ function ImportBill() {
                 placeholder="Nhập từ khóa tìm kiếm"
                 id="inputsearch"
                 required
-                autocomplete="off"
+                autoComplete="off"
                 onChange={(event) => {
                   setSearchTerm(event.target.value);
                 }}
@@ -262,7 +268,7 @@ function ImportBill() {
             return (
               <>
                 <ImportBillItem
-                  key={importbill._id}
+                  key={index}
                   importbill={importbill}
                   stt={(currentPage - 1) * importbillsPerPage + index}
                 />

@@ -315,8 +315,7 @@ function Stores() {
                   placeholder="Nhập từ khóa tìm kiếm"
                   id="inputsearch"
                   required
-                  autocomplete="off"
-                  autocomplete="off"
+                  autoComplete="off"
                   onChange={(event) => {
                     setSearchTerm(event.target.value);
                     // document.getElementById("list-material").style.display = "block";
@@ -422,7 +421,7 @@ function Stores() {
               id="sodienthoai"
               required
               value={store.sodienthoai}
-              maxlength="10"
+              maxLength="10"
               onChange={handleChangeInput}
             />
           </div>

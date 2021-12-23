@@ -135,7 +135,7 @@ const Login = () => {
             <input
               type="text"
               name="email"
-              autocomplete="off"
+              autoComplete="off"
               placeholder="Nhập email"
               maxLength="32"
               required
@@ -149,7 +149,7 @@ const Login = () => {
             <input
               type="text"
               name="sodienthoai"
-              autocomplete="off"
+              autoComplete="off"
               placeholder="Nhập số điện thoại"
               id="sodienthoai"
               required
@@ -164,7 +164,7 @@ const Login = () => {
             <input
               type="text"
               name="cmnd"
-              autocomplete="off"
+              autoComplete="off"
               placeholder="Nhập chứng minh nhân dân"
               required
               maxLength="9"

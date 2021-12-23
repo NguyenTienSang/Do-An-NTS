@@ -51,9 +51,9 @@ function NavBar() {
       location.pathname === "/thongkeloinhuangiaidoan"
       ? true
       : false
-    // if(location.pathname === "/phieunhap" ||)
+
   );
-  console.log("location.pathname : ", location.pathname);
+
 
   return (
     <div className="navbar">

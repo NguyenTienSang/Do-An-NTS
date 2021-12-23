@@ -325,10 +325,10 @@ function WareHouses() {
   const DeleteWareHouse = async (id, public_id) => {
     try {
       //Xóa vật tư trong db
+      console.log("token", token);
       const deletewarehouse = await axios.delete(`/api/kho/${id}`, {
         headers: { Authorization: token },
       });
-
       if (deletewarehouse.data.success) {
         setLoading(true);
         //Xóa ảnh trên cloudinary
@@ -368,7 +368,7 @@ function WareHouses() {
                   placeholder="Nhập từ khóa tìm kiếm"
                   id="inputsearch"
                   required
-                  autocomplete="off"
+                  autoComplete="off"
                   onChange={(event) => {
                     setSearchTerm(event.target.value);
                   }}
@@ -561,7 +561,7 @@ function WareHouses() {
               id="sodienthoai"
               required
               value={warehouse.sodienthoai}
-              maxlength="10"
+              maxLength="10"
               onChange={handleChangeInput}
             />
           </div>

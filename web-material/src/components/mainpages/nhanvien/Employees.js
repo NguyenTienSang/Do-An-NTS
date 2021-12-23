@@ -54,6 +54,10 @@ function Employees() {
   const [deactive_button, setDeactive_Button] = useState(false);
   let inforuser = JSON.parse(localStorage.getItem("inforuser"));
 
+  useEffect(() => {
+    setCallback(!callback);
+  }, []);
+
   //============ XUẤT FILE ==============
   const fileType =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
@@ -62,7 +66,7 @@ function Employees() {
 
   const customData = (dataImport) => {
     let dataExport = [];
-    console.log("dataImport : ", dataImport.listEmployeeSearch);
+    // console.log("dataImport : ", dataImport.listEmployeeSearch);
 
     dataExport = dataImport.listEmployeeSearch.map((data, index) => ({
       STT: index + 1,
@@ -180,8 +184,8 @@ function Employees() {
         },
       });
       setLoading(false);
-      console.log("dữ liệu ảnh : ", res.data);
-      console.log("dữ liệu ảnh url : ", res.data.url);
+      // console.log("dữ liệu ảnh : ", res.data);
+      // console.log("dữ liệu ảnh url : ", res.data.url);
       setImages(res.data);
     } catch (error) {
       setMessage(<p className="message">{error.response.data.message}</p>);
@@ -210,7 +214,7 @@ function Employees() {
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
-    console.log("e.target.value : ", e.target.value);
+    // console.log("e.target.value : ", e.target.value);
     setEmployee({ ...employee, [name]: value });
   };
 
@@ -228,7 +232,7 @@ function Employees() {
   };
 
   const EditEmployee = (data_employee_edit) => {
-    console.log("data_employee_edit : ", data_employee_edit);
+    // console.log("data_employee_edit : ", data_employee_edit);
 
     setOnEdit(true);
     setEmployee({
@@ -376,7 +380,7 @@ function Employees() {
                   placeholder="Nhập từ khóa tìm kiếm"
                   id="inputsearch"
                   required
-                  autocomplete="off"
+                  autoComplete="off"
                   onChange={(event) => {
                     setSearchTerm(event.target.value);
                   }}
@@ -429,12 +433,12 @@ function Employees() {
               ) : null}
             </div>
             {currentEmployees.map((employee, index) => {
-              console.log(employee);
+              // console.log(employee);
 
               if (isAdmin) {
                 return (
                   <EmployeeItem
-                    key={employee._id}
+                    key={index}
                     employee={employee}
                     stt={(currentPage - 1) * employeesPerPage + index}
                     EditEmployee={EditEmployee}
@@ -449,7 +453,7 @@ function Employees() {
                   // if(employee.madaily._id.toString() === inforuser.madaily)
                   return (
                     <EmployeeItem
-                      key={employee._id}
+                      key={index}
                       employee={employee}
                       stt={(currentPage - 1) * employeesPerPage + index}
                       EditEmployee={EditEmployee}
@@ -483,7 +487,7 @@ function Employees() {
               placeholder="Nhập họ tên"
               id="hoten"
               required
-              autocomplete="off"
+              autoComplete="off"
               value={employee.hoten}
               onChange={handleChangeInput}
             />
@@ -512,7 +516,7 @@ function Employees() {
             <input
               type="text"
               name="diachi"
-              autocomplete="off"
+              autoComplete="off"
               placeholder="Nhập địa chỉ"
               id="diachi"
               required
@@ -530,7 +534,7 @@ function Employees() {
                 <input
                   type="text"
                   name="username"
-                  autocomplete="off"
+                  autoComplete="off"
                   placeholder="Nhập username"
                   maxLength="25"
                   id="username"
@@ -545,7 +549,7 @@ function Employees() {
                 <input
                   type="password"
                   name="password"
-                  autocomplete="off"
+                  autoComplete="off"
                   placeholder="Nhập mật khẩu"
                   id="password"
                   required
@@ -588,7 +592,7 @@ function Employees() {
             <label htmlFor="sodienthoai">Số điện thoại</label>
             <input
               name="sodienthoai"
-              autocomplete="off"
+              autoComplete="off"
               placeholder="Nhập số điện thoại"
               id="sodienthoai"
               required
@@ -603,7 +607,7 @@ function Employees() {
             <input
               type="cmnd"
               name="cmnd"
-              autocomplete="off"
+              autoComplete="off"
               placeholder="Nhập cmnd"
               id="cmnd"
               required
@@ -618,7 +622,7 @@ function Employees() {
             <input
               type="text"
               name="email"
-              autocomplete="off"
+              autoComplete="off"
               placeholder="Nhập email"
               id="email"
               required
@@ -633,7 +637,7 @@ function Employees() {
             <select
               className="select-daily-nhanvien"
               name="trangthai"
-              autocomplete="off"
+              autoComplete="off"
               value={employee.trangthai}
               onChange={handleChangeInput}
               disabled={onEdit ? false : true}

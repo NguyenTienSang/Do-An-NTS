@@ -30,13 +30,14 @@ function CreateImportBill() {
   );
   const [currentDate, setCurrentDate] = useState(new Date());
   const [callback, setCallback] = state.importbillAPI.callback;
-  // const [hdn, setHDN] = useState(new Date("10-20-2021"));
   const [searchTerm, setSearchTerm] = useState("");
   const [onShow, setOnShow] = useState(false);
   const [importbill, setImportBill] = useState({
     ngay: "",
     manv: "",
     makho: "",
+    hotenkh: "",
+    sodienthoaikh: "",
     ctpn: [],
   });
 
@@ -106,8 +107,7 @@ function CreateImportBill() {
     if (exist.quantity === 1) {
       setDetailImportBill(
         detailimportbill?.filter((x) => x._id !== material._id)
-      )
-      ;
+      );
     } else {
       setDetailImportBill(
         detailimportbill?.map((x) =>
@@ -149,7 +149,7 @@ function CreateImportBill() {
                     setOnShow(false);
                   }, 200);
                 }}
-                autocomplete="off"
+                autoComplete="off"
                 disabled={importbill.makho == "" ? true : false}
                 onChange={(event) => {
                   setSearchTerm(event.target.value);
@@ -275,6 +275,36 @@ function CreateImportBill() {
                 </div>
               </div>
 
+              <div className="item-first">
+                <div className="row">
+                  <label htmlFor="title">Họ tên KH : </label>
+                  <input
+                    type="text"
+                    name="hotenkh"
+                    placeholder="Nhập họ tên khách hàng"
+                    id="hotenkh"
+                    required
+                    autoComplete="off"
+                    value={importbill.hotenkh}
+                    onChange={handleChangeInput}
+                  />
+                </div>
+                <div className="row">
+                  <label htmlFor="title">Số điện thoại : </label>
+                  <input
+                    // type="text"
+                    name="sodienthoaikh"
+                    placeholder="Nhập số điện thoại"
+                    id="sodienthoaikh"
+                    required
+                    autoComplete="off"
+                    value={importbill.sodienthoaikh}
+                    maxlength="10"
+                    onChange={handleChangeInput}
+                  />
+                </div>
+              </div>
+
               {
                 <div className="list-item-bill">
                   <h3>Danh sách vật tư</h3>
@@ -323,7 +353,7 @@ function CreateImportBill() {
                           <input
                             type="text"
                             required
-                            autocomplete="off"
+                            autoComplete="off"
                             maxLength="3"
                             onChange={(event) => {
                               if (
@@ -408,6 +438,8 @@ function CreateImportBill() {
                       (parseInt(importbill.ngay.slice(3, 5)) + 1) +
                       importbill.ngay.slice(5, 10);
 
+                
+
                     try {
                       const res = await axios.post(
                         "/api/phieunhap",
@@ -423,11 +455,21 @@ function CreateImportBill() {
                           headers: { Authorization: token },
                         }
                       );
-                      console.log("importbill nè : ", importbill);
+                      
 
-                      //  alert(res.data.message);
+                 
                       setMessage(<p className="message">{res.data.message}</p>);
                       setOpenAlert(true);
+                      document.getElementById("hotenkh").value = "";
+                      document.getElementById("sodienthoaikh").value = "";
+                      setImportBill({
+                        ngay: "",
+                        manv: "",
+                        makho: "",
+                        hotenkh: "",
+                        sodienthoaikh: "",
+                        ctpn: [],
+                      });
                       setCallback(!callback);
                     } catch (err) {
                       //  alert(err.response.data.message);

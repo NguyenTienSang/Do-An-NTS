@@ -42,7 +42,7 @@ function StatisticProfitYear() {
 
   const customData = (dataImport) => {
     let dataExport = [];
-    console.log("dataImport : ", dataImport.dataStatistic);
+    // console.log("dataImport : ", dataImport.dataStatistic);
 
     dataExport = dataImport.dataStatistic.map((data) => ({
       Tháng: data.thang,
@@ -91,7 +91,7 @@ function StatisticProfitYear() {
 
   useEffect(async () => {
     if (madailyfilter !== "") {
-      console.log("madailyfilter : ", madailyfilter);
+      // console.log("madailyfilter : ", madailyfilter);
       const res = await axios.post(
         "/api/thongke/loinhuannam",
         {
@@ -101,7 +101,7 @@ function StatisticProfitYear() {
         // {madailyfilter,yearstatistic : 2021}
       );
 
-      console.log("res.data : ", res.data);
+      // console.log("res.data : ", res.data);
       setDataStatistic(res.data);
     }
   }, [madailyfilter, yearstatistic, kindStatistic]);
@@ -168,8 +168,8 @@ function StatisticProfitYear() {
                   <option value="allstores" selected>
                     Tất cả đại lý
                   </option>
-                  {stores.map((store) => (
-                    <option value={store._id} key={store._id}>
+                  {stores.map((store, index) => (
+                    <option value={store._id} key={index}>
                       {store.tendl}
                     </option>
                   ))}

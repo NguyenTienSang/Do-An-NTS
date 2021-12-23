@@ -148,7 +148,7 @@ function StatisticMaterial() {
                   placeholder="Nhập từ khóa tìm kiếm"
                   id="inputsearch"
                   required
-                  autocomplete="off"
+                  autoComplete="off"
                   onChange={(event) => {
                     setSearchTerm(event.target.value);
                   }}
@@ -168,8 +168,8 @@ function StatisticMaterial() {
                   onChange={handlechangestore}
                 >
                   <option value="allstores">Tất cả đại lý</option>
-                  {stores.map((store) => (
-                    <option value={store._id} key={store._id}>
+                  {stores.map((store, index) => (
+                    <option value={store._id} key={index}>
                       {store.tendl}
                     </option>
                   ))}
@@ -181,10 +181,10 @@ function StatisticMaterial() {
                   onChange={handlechangewarehouse}
                 >
                   (<option value="allwarehouses">Tất cả kho</option>
-                  {warehouses.map((warehouse) =>
+                  {warehouses.map((warehouse, index) =>
                     madailyfilter == warehouse.madaily._id &&
                     warehouse.trangthai === "Đang hoạt động" ? (
-                      <option value={warehouse._id} key={warehouse._id}>
+                      <option value={warehouse._id} key={index}>
                         {warehouse.tenkho}
                       </option>
                     ) : null

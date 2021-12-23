@@ -74,7 +74,12 @@ export default function PrintToImportBill() {
 
               <div className="header_bill__item">
                 <p>Giới tính : {importbill.manv.gioitinh}</p>
-                <p>Số điện thoại : {importbill.manv.sodienthoai}</p>
+                <p>SĐT : {importbill.manv.sodienthoai}</p>
+              </div>
+
+              <div className="header_bill__item">
+                <p>Họ tên kh : {importbill.hotenkh}</p>
+                <p>SĐT KH : {importbill.sodienthoaikh}</p>
               </div>
             </div>
             <div className="title_header__detail">
