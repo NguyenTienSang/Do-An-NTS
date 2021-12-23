@@ -24,7 +24,7 @@ export default function DanhSachKho({navigation, route}) {
   const state = useContext(GlobalState);
   const [token] = state.token;
   const [warehouses] = state.warehouseAPI.warehouses;
-  const [inforuser] = state.userAPI.inforuser;
+  // const [inforuser] = state.userAPI.inforuser;
 
   const [indexCheck, setIndexCheck] = useState('0');
   var [dskho, setDSKho] = useState([]);
@@ -39,7 +39,7 @@ export default function DanhSachKho({navigation, route}) {
     route.params.page == 'LapPhieuXuat'
   ) {
     newwarehouses = warehouses.filter((warehouse, index) =>
-      inforuser.madaily._id === warehouse.madaily._id ? warehouse : undefined,
+      route.params.madl === warehouse.madaily._id ? warehouse : undefined,
     );
   } else if (route.params.page == 'ThongKeVatTuTon') {
     newwarehouses = warehouses.filter((warehouse, index) =>

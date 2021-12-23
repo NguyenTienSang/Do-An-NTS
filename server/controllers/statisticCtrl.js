@@ -1220,6 +1220,8 @@ const statisticCtrl = {
         .populate("ctpn")
         .populate({ path: "ctpn", populate: { path: "mavt" } });
 
+      console.log("phieunhaptoday : ", phieunhaptoday);
+
       const phieuxuattoday = await PhieuXuat.find({
         $expr: {
           $and: [
@@ -1234,6 +1236,8 @@ const statisticCtrl = {
         .populate("makho")
         .populate("ctpx")
         .populate({ path: "ctpx", populate: { path: "mavt" } });
+
+      console.log("phieuxuattoday : ", phieuxuattoday);
 
       let finddaily = "";
       let sumbill = 0;
@@ -1255,14 +1259,14 @@ const statisticCtrl = {
       phieuxuattoday.map((px) => {
         finddaily = liststore.find((itemstore) => {
           if (px.manv.madaily._id.toString() === itemstore._id.toString()) {
-            pn.ctpn.map((ctpnitem) => {
-              sumbill += ctpnitem.soluong * ctpnitem.gianhap;
+            px.ctpx.map((ctpxitem) => {
+              sumbill += ctpxitem.soluong * ctpxitem.giaxuat;
             });
             itemstore.sophieuxuat++;
             itemstore.chiphixuat += sumbill;
             sumbill = 0;
           }
-          return pn.manv.madaily._id.toString() === itemstore._id.toString();
+          return px.manv.madaily._id.toString() === itemstore._id.toString();
         });
       });
 

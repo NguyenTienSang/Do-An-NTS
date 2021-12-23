@@ -13,6 +13,14 @@ const PhieuNhapSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'kho'
     },
+    hotenkh: {
+        type: String,
+        required: true,
+    },
+    sodienthoaikh: {
+        type: String,
+        required: true,
+      },
     ctpn: [
         {
             mavt: {

@@ -28,12 +28,78 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function DanhSachPhieuXuat({navigation}) {
   const state = useContext(GlobalState);
   const [exportbills] = state.exportbillAPI.exportbills;
-  const [search, setSearch] = useState('');
+  const [listExportBillSearch, setListExportBillSearch] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [textInputFocussed, setTeInputFocussed] = useState(false);
+  const [inforuser, setInforUser] = useState('');
+
+  AsyncStorage.getItem('inforuser').then(async dataUser => {
+    setInforUser(JSON.parse(dataUser));
+  });
 
   useEffect(() => {
-    console.log('exportbills : ', exportbills);
-  }, [exportbills]);
+    if (inforuser.role === 'user') {
+      setListExportBillSearch(
+        exportbills?.filter(exportbill => {
+          if (
+            searchTerm === '' &&
+            inforuser.madaily._id.toString() ===
+              exportbill.manv.madaily._id.toString()
+          ) {
+            return exportbill;
+          } else if (
+            (exportbill._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              `${exportbill.ngay.slice(8, 10)}-${exportbill.ngay.slice(
+                5,
+                7,
+              )}-${exportbill.ngay.slice(0, 4)}`.includes(
+                searchTerm.toLowerCase(),
+              ) ||
+              exportbill.manv._id
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              exportbill.manv.madaily.tendl
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              exportbill.makho.tenkho
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())) &&
+            inforuser.madaily._id.toString() ===
+              exportbill.manv.madaily._id.toString()
+          ) {
+            return exportbill;
+          }
+        }),
+      );
+    } else {
+      setListExportBillSearch(
+        exportbills?.filter(exportbill => {
+          if (searchTerm === '') {
+            return exportbill;
+          } else if (
+            exportbill._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            `${exportbill.ngay.slice(8, 10)}-${exportbill.ngay.slice(
+              5,
+              7,
+            )}-${exportbill.ngay.slice(0, 4)}`.includes(
+              searchTerm.toLowerCase(),
+            ) ||
+            exportbill.manv._id
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            exportbill.manv.madaily.tendl
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            exportbill.makho.tenkho
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          ) {
+            return exportbill;
+          }
+        }),
+      );
+    }
+  }, [searchTerm, exportbills, inforuser]);
 
   return (
     <View style={{flex: 1}}>
@@ -77,34 +143,26 @@ export default function DanhSachPhieuXuat({navigation}) {
         </View>
         <ScrollView>
           <View style={styles.listPrice}>
-            {exportbills
-              ?.filter(phieuxuat => {
-                if (search == '') {
-                  return phieuxuat;
-                } else if (
-                  phieuxuat._id.toLowerCase().includes(search.toLowerCase()) ||
-                  phieuxuat.manv._id
-                    .toLowerCase()
-                    .includes(search.toLowerCase()) ||
-                  phieuxuat.manv.hoten
-                    .toLowerCase()
-                    .includes(search.toLowerCase()) ||
-                  phieuxuat.manv.madaily.tendl
-                    .toLowerCase()
-                    .includes(search.toLowerCase()) ||
-                  phieuxuat.makho.tenkho
-                    .toLowerCase()
-                    .includes(search.toLowerCase())
-                ) {
-                  return phieuxuat;
-                }
-              })
-              ?.map((phieuxuat, index) => (
+            {listExportBillSearch.length ? (
+              listExportBillSearch?.map((phieuxuat, index) => (
                 <PhieuXuatItem
                   key={phieuxuat._id}
                   phieuxuat={phieuxuat}
                   stt={index}></PhieuXuatItem>
-              ))}
+              ))
+            ) : (
+              <View>
+                <Text
+                  style={{
+                    marginTop: 150,
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                    fontSize: 20,
+                  }}>
+                  Đại lý chưa có phiếu xuất
+                </Text>
+              </View>
+            )}
           </View>
         </ScrollView>
       </View>

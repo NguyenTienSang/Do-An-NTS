@@ -5,7 +5,7 @@ const importbillCtrl = {
   getImportBill: async (req, res) => {
     try {
       const phieunhap = await PhieuNhap.find()
-        .sort({ ngay: 1 })
+        .sort({ ngay: -1 })
         .populate("manv")
         .populate({ path: "manv", populate: { path: "madaily" } })
         .populate("makho")
@@ -21,7 +21,7 @@ const importbillCtrl = {
     }
   },
   createImportBill: async (req, res) => {
-    const { ngay, manv, makho, ctpn } = req.body;
+    const { ngay, manv, makho, hotenkh, sodienthoaikh, ctpn } = req.body;
     if (!ngay) {
       return res
         .status(400)
@@ -36,6 +36,18 @@ const importbillCtrl = {
       return res
         .status(400)
         .json({ success: false, message: "Mã kho không được trống" });
+    }
+    if (!hotenkh) {
+      return res.status(400).json({
+        success: false,
+        message: "Họ tên khách hàng không được trống",
+      });
+    }
+    if (!sodienthoaikh) {
+      return res.status(400).json({
+        success: false,
+        message: "Số điện thoại khách hàng không được trống",
+      });
     }
     console.log("ctpn : ", ctpn[0]);
     if (!ctpn) {
@@ -57,7 +69,14 @@ const importbillCtrl = {
       //     .status(400)
       //     .json({ success: false, message: 'Tên phiếu nhập đã tồn tại' })
       // }
-      const newPhieuNhap = new PhieuNhap({ ngay, manv, makho, ctpn });
+      const newPhieuNhap = new PhieuNhap({
+        ngay,
+        manv,
+        makho,
+        hotenkh,
+        sodienthoaikh,
+        ctpn,
+      });
       await newPhieuNhap.save();
 
       const vattu = await VatTu.find();
@@ -86,7 +105,7 @@ const importbillCtrl = {
       // VatTu.update(filter,{vattu})
 
       return res.json({
-        message: "Đã thêm thành công",
+        message: "Lập phiếu thành công",
         newPhieuNhap,
       });
     } catch (error) {

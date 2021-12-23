@@ -57,9 +57,25 @@ function PhieuXuatItem({phieuxuat,stt}) {
             </View>
 
             <View style={styles.itemfield}>
-                <Text style={styles.label}>Nhân Viên :</Text>
+          <Text style={styles.label}>IDNV :</Text>
+          <Text style={styles.content}> {phieuxuat.manv._id}</Text>
+        </View>
+
+
+            <View style={styles.itemfield}>
+            <Text style={styles.label}>Họ tên NV :</Text>
                 <Text style={styles.content}> {phieuxuat.manv.hoten}</Text>
             </View>
+
+            <View style={styles.itemfield}>
+          <Text style={styles.label}>Họ tên KH :</Text>
+          <Text style={styles.content}> {phieuxuat.hotenkh}</Text>
+        </View>
+
+        <View style={styles.itemfield}>
+          <Text style={styles.label}>SĐT KH :</Text>
+          <Text style={styles.content}> {phieuxuat.sodienthoaikh}</Text>
+        </View>
 
             <View style={styles.itemfield}>
                 <Text style={styles.label}>Đại Lý : </Text>
@@ -144,8 +160,7 @@ listPrice: {
     //   width:400
   },
   label: {
-      width:85,
-    //   backgroundColor:"#999",
+    width: 110,
       paddingLeft:7,
       color:"#fff"
   }

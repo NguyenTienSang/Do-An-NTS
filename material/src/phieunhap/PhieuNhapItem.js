@@ -41,7 +41,7 @@ function PhieuNhapItem({phieunhap, stt}) {
         </View>
 
         <View style={styles.itemfield}>
-          <Text style={styles.label}>ID : </Text>
+          <Text style={styles.label}>ID Phiếu : </Text>
           <Text style={styles.content}>{phieunhap._id}</Text>
         </View>
 
@@ -54,8 +54,23 @@ function PhieuNhapItem({phieunhap, stt}) {
         </View>
 
         <View style={styles.itemfield}>
-          <Text style={styles.label}>Nhân Viên :</Text>
+          <Text style={styles.label}>IDNV :</Text>
+          <Text style={styles.content}> {phieunhap.manv._id}</Text>
+        </View>
+
+        <View style={styles.itemfield}>
+          <Text style={styles.label}>Họ tên NV :</Text>
           <Text style={styles.content}> {phieunhap.manv.hoten}</Text>
+        </View>
+
+        <View style={styles.itemfield}>
+          <Text style={styles.label}>Họ tên KH :</Text>
+          <Text style={styles.content}> {phieunhap.hotenkh}</Text>
+        </View>
+
+        <View style={styles.itemfield}>
+          <Text style={styles.label}>SĐT KH :</Text>
+          <Text style={styles.content}> {phieunhap.sodienthoaikh}</Text>
         </View>
 
         <View style={styles.itemfield}>
@@ -147,8 +162,7 @@ const styles = StyleSheet.create({
     //   width:400
   },
   label: {
-    width: 85,
-    //   backgroundColor:"#999",
+    width: 110,
     paddingLeft: 7,
     color: '#fff',
   },

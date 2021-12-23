@@ -27,10 +27,8 @@ import {GlobalState} from '../GlobalState';
 
 export default function LapPhieuNhap({navigation, route}) {
   const state = useContext(GlobalState);
-  const [inforuser] = state.userAPI.inforuser;
+  const [inforuser, setInforUser] = useState('');
   const [token] = state.token;
-  console.log('token : ', token);
-  console.log('inforuser : ', inforuser);
   const [importbills] = state.importbillAPI.importbills;
   const [detailimportbill, setDetailImportBill] = useState([]);
   const [callback, setCallback] = state.importbillAPI.callback;
@@ -40,18 +38,32 @@ export default function LapPhieuNhap({navigation, route}) {
   var [madl, setMaDL] = useState('');
   const [datehdn, setDateHDN] = useState(new Date());
   const [onSearch, setOnSearch] = useState(false);
-  const [importbill, setImportBill] = useState({
-    ngay: moment(),
-    manv: inforuser._id,
-    makho: '',
-  });
+  const [importbill, setImportBill] = useState();
+
+  useEffect(() => {
+    AsyncStorage.getItem('inforuser').then(async dataUser => {
+      // console.log('JSON.parse(dataUser) : ', JSON.parse(dataUser));
+      setMaDL(JSON.parse(dataUser).madaily._id);
+      setInforUser(JSON.parse(dataUser));
+    });
+  }, []);
+
+  useEffect(() => {
+    setImportBill({
+      ngay: moment(),
+      manv: inforuser?._id,
+      makho: '',
+      hotenkh: '',
+      sodienthoaikh: '',
+    });
+  }, [inforuser]);
 
   const [date, setDate] = useState(moment());
   const [show, setShow] = useState(false);
 
   //Set mã kho
   AsyncStorage.getItem('kt').then(async kt => {
-    console.log('Chọn kho  : ', kt);
+    // console.log('Chọn kho  : ', kt);
     if (kt == 'chonkho') {
       // importbill.makho = route.params.kho._id;
       setImportBill({...importbill, makho: route.params.kho._id});
@@ -70,7 +82,7 @@ export default function LapPhieuNhap({navigation, route}) {
     setDate(moment(currentDate));
     console.log('currentDate : ', currentDate);
     setImportBill({...importbill, ngay: moment(currentDate)});
-    console.log('importbill.ngay : ', importbill.ngay);
+    console.log('importbill.ngay chọn ngày : ', importbill.ngay);
   };
 
   //Load lại trang khi thêm vật tư
@@ -105,10 +117,11 @@ export default function LapPhieuNhap({navigation, route}) {
 
   useEffect(() => {
     setImportBill({
-      // tenpn:'PN' + (importbills.length+1),
       ngay: moment(new Date()).format('MM-DD-yyy'),
       manv: inforuser._id,
       makho: '',
+      hotenkh: '',
+      sodienthoaikh: '',
       ctpn: [],
     });
     setDetailImportBill([]);
@@ -176,7 +189,7 @@ export default function LapPhieuNhap({navigation, route}) {
           <TextInput
             style={styles.textInput}
             // placeholder="Mã nhân viên"
-            value={importbill.manv}
+            value={importbill?.manv}
             editable={false}
           />
         </View>
@@ -210,6 +223,44 @@ export default function LapPhieuNhap({navigation, route}) {
                 page: 'LapPhieuNhap',
               });
             }}
+          />
+        </View>
+
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 10,
+          }}>
+          <Text style={styles.label}>Họ tên KH</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Vui lòng nhập họ tên khách hàng"
+            value={importbill?.hotenkh}
+            onChangeText={text => setImportBill({...importbill, hotenkh: text})}
+            // editable={false}
+          />
+        </View>
+
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 10,
+          }}>
+          <Text style={styles.label}>SĐT KH</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Vui lòng nhập sđt khách hàng"
+            value={importbill?.sodienthoaikh}
+            maxLength={10}
+            keyboardType="numeric"
+            onChangeText={text =>
+              setImportBill({...importbill, sodienthoaikh: text})
+            }
+            // editable={false}
           />
         </View>
 
@@ -378,11 +429,11 @@ export default function LapPhieuNhap({navigation, route}) {
 
         <View style={styles.groupButtonAction}>
           <Button
-            disabled={importbill.makho === '' ? true : false}
+            disabled={importbill?.makho === '' ? true : false}
             buttonStyle={[styles.buttonAction, {width: 250}]}
             title="Thêm Vật Tư Vào Danh Sách"
             onPress={() => {
-              navigation.navigate('BangGiaNhap', {makho: importbill.makho});
+              navigation.navigate('BangGiaNhap', {makho: importbill?.makho});
             }}
           />
         </View>
@@ -393,11 +444,7 @@ export default function LapPhieuNhap({navigation, route}) {
             buttonStyle={styles.buttonAction}
             title="Lập Hóa Đơn"
             onPress={async () => {
-              // console.log('Tên phiếu : ',importbill.tenpn);
-              console.log(
-                'Ngày lập : ',
-                JSON.stringify(importbill.ngay).slice(0, 11),
-              );
+              importbill.ngay = JSON.stringify(importbill.ngay).slice(1, 11);
 
               try {
                 const res = await axios.post(

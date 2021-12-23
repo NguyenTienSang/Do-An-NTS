@@ -28,7 +28,7 @@ export default function DaiLy({navigation}) {
 
   const DeleteStore = async (id, public_id) => {
     const token = await AsyncStorage.getItem('token');
-
+    // console.log('token : ', token);
     axios
       .post(
         `${APIDestroy}`,

@@ -35,6 +35,10 @@ export default function NhanVien({navigation}) {
   const [token] = state.token;
   const [callback, setCallback] = state.employeeAPI.callback;
 
+  useEffect(() => {
+    setCallback(!callback);
+  }, []);
+
   const DeleteEmployee = async (id, public_id) => {
     axios
       .post(

@@ -243,6 +243,19 @@ export default function ThongKeVatTuTon({navigation, route}) {
                     <Text>{item.donvi}</Text>
                   </View>
                 </View>
+                <View style={styles.thongTinSP}>
+                  <Button
+                    title="Xem"
+                    buttonStyle={styles.buttonOption}
+                    onPress={() => {
+                      navigation.navigate('ThongKeVatTuTrongCacKho', {
+                        vattu: item,
+                      });
+                      // Delete(item._id);
+                      // DeleteMaterial(item._id, item.images.public_id);
+                    }}
+                  />
+                </View>
               </View>
             </View>
           ))}
@@ -331,5 +344,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 10,
+  },
+  buttonOption: {
+    width: 100,
+    height: 40,
+    borderRadius: 5,
+    backgroundColor: '#1b94ff',
+    marginRight: 5,
+    marginLeft: 5,
   },
 });

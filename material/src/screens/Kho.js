@@ -26,15 +26,17 @@ export default function Kho({navigation}) {
   const [search, setSearch] = useState('');
   const [textInputFocussed, setTeInputFocussed] = useState(false);
   const [token] = state.token;
-
   const [warehouse] = state.warehouseAPI.warehouses;
 
-console.log('warehouse : ',warehouse)
+  
 
   const [callback, setCallback] = state.warehouseAPI.callback;
 
+  useEffect(() => {
+    setCallback(!callback);
+  }, []);
+
   const DeleteWareHouse = async (id, public_id) => {
-    console.log('id : ', id);
     console.log('token : ', token);
     axios
       .post(
@@ -45,11 +47,13 @@ console.log('warehouse : ',warehouse)
         {headers: {Authorization: token}},
       )
       .then(() => {
+        console.log('xóa nè');
         axios
           .delete(`${APIKho}/${id}`, {
             headers: {Authorization: token},
           })
           .then(res => {
+            console.log('test1');
             Alert.alert('Thông báo', res.data.message, [
               {
                 text: 'OK',
@@ -61,6 +65,7 @@ console.log('warehouse : ',warehouse)
             ]);
           })
           .catch(error => {
+            console.log('test2');
             Alert.alert('Thông báo', error.response.data.message);
           });
       })

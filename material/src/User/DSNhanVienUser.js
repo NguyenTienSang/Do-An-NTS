@@ -36,6 +36,7 @@ export default function DSNhanVienUser({navigation}) {
 
   useEffect(() => {
     AsyncStorage.getItem('inforuser').then(async dataUser => {
+      console.log('JSON.parse(dataUser) : ', JSON.parse(dataUser));
       setInforUser(JSON.parse(dataUser));
     });
   }, []);

@@ -183,7 +183,7 @@ export default function ListMaterial({navigation}) {
                           title="Cập nhật"
                           buttonStyle={[
                             styles.buttonOption,
-                            {marginBottom: 40},
+                            {marginBottom: 10},
                           ]}
                           onPress={() => {
                             console.log('thông tin data : ', item);
@@ -193,10 +193,25 @@ export default function ListMaterial({navigation}) {
 
                         <Button
                           title="Xóa"
-                          buttonStyle={styles.buttonOption}
+                          buttonStyle={[
+                            styles.buttonOption,
+                            {marginBottom: 10},
+                          ]}
                           onPress={() => {
                             // Delete(item._id);
                             DeleteMaterial(item._id, item.images.public_id);
+                          }}
+                        />
+
+                        <Button
+                          title="Xem"
+                          buttonStyle={styles.buttonOption}
+                          onPress={() => {
+                            navigation.navigate('ThongKeVatTuTrongCacKho', {
+                              vattu: item,
+                            });
+                            // Delete(item._id);
+                            // DeleteMaterial(item._id, item.images.public_id);
                           }}
                         />
                       </View>

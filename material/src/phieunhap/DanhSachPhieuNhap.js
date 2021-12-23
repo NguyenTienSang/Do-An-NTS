@@ -28,10 +28,8 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function DanhSachPhieuNhap({navigation}) {
   const state = useContext(GlobalState);
   const [importbills] = state.importbillAPI.importbills;
-
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState();
-  const [search, setSearch] = useState('');
+  const [listImportBillSearch, setListImportBillSearch] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [textInputFocussed, setTeInputFocussed] = useState(false);
   const [inforuser, setInforUser] = useState('');
 
@@ -39,9 +37,70 @@ export default function DanhSachPhieuNhap({navigation}) {
     setInforUser(JSON.parse(dataUser));
   });
 
-  // console.log('inforuser : ', inforuser);
-
-  useEffect(() => {}, [importbills]);
+  useEffect(() => {
+    if (inforuser.role === 'user') {
+      setListImportBillSearch(
+        importbills?.filter(importbill => {
+          if (
+            searchTerm === '' &&
+            inforuser.madaily._id.toString() ===
+              importbill.manv.madaily._id.toString()
+          ) {
+            return importbill;
+          } else if (
+            (importbill._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              `${importbill.ngay.slice(8, 10)}-${importbill.ngay.slice(
+                5,
+                7,
+              )}-${importbill.ngay.slice(0, 4)}`.includes(
+                searchTerm.toLowerCase(),
+              ) ||
+              importbill.manv._id
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              importbill.manv.madaily.tendl
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              importbill.makho.tenkho
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())) &&
+            inforuser.madaily._id.toString() ===
+              importbill.manv.madaily._id.toString()
+          ) {
+            return importbill;
+          }
+        }),
+      );
+    } else {
+      setListImportBillSearch(
+        importbills?.filter(importbill => {
+          if (searchTerm === '') {
+            return importbill;
+          } else if (
+            importbill._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            `${importbill.ngay.slice(8, 10)}-${importbill.ngay.slice(
+              5,
+              7,
+            )}-${importbill.ngay.slice(0, 4)}`.includes(
+              searchTerm.toLowerCase(),
+            ) ||
+            importbill.manv._id
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            importbill.manv.madaily.tendl
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            importbill.makho.tenkho
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          ) {
+            console.log('importbill.ngay : ', importbill.ngay.slice(8, 10));
+            return importbill;
+          }
+        }),
+      );
+    }
+  }, [searchTerm, importbills, inforuser]);
 
   return (
     <View style={{flex: 1}}>
@@ -62,7 +121,7 @@ export default function DanhSachPhieuNhap({navigation}) {
           <TextInput
             style={{width: '80%'}}
             placeholder="Nhập từ khóa tìm kiếm"
-            onChangeText={text => setSearch(text)}
+            onChangeText={text => setSearchTerm(text)}
             onFocus={() => {
               setTeInputFocussed(false);
             }}
@@ -85,71 +144,26 @@ export default function DanhSachPhieuNhap({navigation}) {
         </View>
         <ScrollView>
           <View style={styles.listPrice}>
-            {inforuser.role === 'user'
-              ? importbills
-                  ?.filter(phieunhap => {
-                    if (
-                      search == '' &&
-                      inforuser.madaily._id === phieunhap.manv.madaily._id
-                    ) {
-                      return phieunhap;
-                    } else if (
-                      (phieunhap._id
-                        .toLowerCase()
-                        .includes(search.toLowerCase()) ||
-                        phieunhap.manv._id
-                          .toLowerCase()
-                          .includes(search.toLowerCase()) ||
-                        phieunhap.manv.hoten
-                          .toLowerCase()
-                          .includes(search.toLowerCase()) ||
-                        phieunhap.manv.madaily.tendl
-                          .toLowerCase()
-                          .includes(search.toLowerCase()) ||
-                        phieunhap.makho.tenkho
-                          .toLowerCase()
-                          .includes(search.toLowerCase())) &&
-                      inforuser.madaily._id === phieunhap.manv.madaily._id
-                    ) {
-                      return phieunhap;
-                    }
-                  })
-                  ?.map((phieunhap, index) => (
-                    <PhieuNhapItem
-                      key={phieunhap._id}
-                      phieunhap={phieunhap}
-                      stt={index}></PhieuNhapItem>
-                  ))
-              : importbills
-                  ?.filter(phieunhap => {
-                    if (search == '') {
-                      return phieunhap;
-                    } else if (
-                      phieunhap._id
-                        .toLowerCase()
-                        .includes(search.toLowerCase()) ||
-                      phieunhap.manv._id
-                        .toLowerCase()
-                        .includes(search.toLowerCase()) ||
-                      phieunhap.manv.hoten
-                        .toLowerCase()
-                        .includes(search.toLowerCase()) ||
-                      phieunhap.manv.madaily.tendl
-                        .toLowerCase()
-                        .includes(search.toLowerCase()) ||
-                      phieunhap.makho.tenkho
-                        .toLowerCase()
-                        .includes(search.toLowerCase())
-                    ) {
-                      return phieunhap;
-                    }
-                  })
-                  ?.map((phieunhap, index) => (
-                    <PhieuNhapItem
-                      key={phieunhap._id}
-                      phieunhap={phieunhap}
-                      stt={index}></PhieuNhapItem>
-                  ))}
+            {listImportBillSearch.length ? (
+              listImportBillSearch?.map((phieunhap, index) => (
+                <PhieuNhapItem
+                  key={phieunhap._id}
+                  phieunhap={phieunhap}
+                  stt={index}></PhieuNhapItem>
+              ))
+            ) : (
+              <View>
+                <Text
+                  style={{
+                    marginTop: 150,
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                    fontSize: 20,
+                  }}>
+                  Đại lý chưa có phiếu nhập
+                </Text>
+              </View>
+            )}
           </View>
         </ScrollView>
       </View>

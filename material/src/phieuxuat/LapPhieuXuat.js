@@ -27,10 +27,8 @@ import {GlobalState} from '../GlobalState';
 
 export default function LapPhieuXuat({navigation, route}) {
   const state = useContext(GlobalState);
-  const [inforuser] = state.userAPI.inforuser;
+  const [inforuser, setInforUser] = useState('');
   const [token] = state.token;
-  console.log('token : ', token);
-  console.log('inforuser : ', inforuser);
   const [exportbills] = state.exportbillAPI.exportbills;
   const [detailexportbill, setDetailExportBill] = useState([]);
   const [callback, setCallback] = state.exportbillAPI.callback;
@@ -41,11 +39,25 @@ export default function LapPhieuXuat({navigation, route}) {
   const [datehdn, setDateHDN] = useState(new Date());
   const [onSearch, setOnSearch] = useState(false);
   const [materialsfilter, setMaterialsFilter] = useState(null);
-  const [exportbill, setExportBill] = useState({
-    ngay: moment(),
-    manv: inforuser._id,
-    makho: '',
-  });
+  const [exportbill, setExportBill] = useState();
+
+  useEffect(() => {
+    AsyncStorage.getItem('inforuser').then(async dataUser => {
+      // console.log('JSON.parse(dataUser) : ', JSON.parse(dataUser));
+      setMaDL(JSON.parse(dataUser).madaily._id);
+      setInforUser(JSON.parse(dataUser));
+    });
+  }, []);
+
+  useEffect(() => {
+    setExportBill({
+      ngay: moment(),
+      manv: inforuser?._id,
+      makho: '',
+      hotenkh: '',
+      sodienthoaikh: '',
+    });
+  }, [inforuser]);
 
   const [date, setDate] = useState(moment());
   const [show, setShow] = useState(false);
@@ -72,9 +84,9 @@ export default function LapPhieuXuat({navigation, route}) {
     const currentDate = selectedDate || date;
     setShow(false);
     setDate(moment(currentDate));
-    console.log('currentDate : ', currentDate);
+    // console.log('currentDate : ', currentDate);
     setExportBill({...exportbill, ngay: moment(currentDate)});
-    console.log('exportbill.ngay : ', exportbill.ngay);
+    // console.log('exportbill.ngay : ', exportbill.ngay);
   };
 
   //Load lại trang khi thêm vật tư
@@ -108,7 +120,6 @@ export default function LapPhieuXuat({navigation, route}) {
 
   useEffect(() => {
     setExportBill({
-      // tenpx:'PX' + (exportbills.length+1),
       ngay: moment(new Date()).format('MM-DD-yyy'),
       manv: inforuser._id,
       makho: '',
@@ -199,7 +210,7 @@ export default function LapPhieuXuat({navigation, route}) {
           <TextInput
             style={styles.textInput}
             // placeholder="Mã nhân viên"
-            value={exportbill.manv}
+            value={exportbill?.manv}
             editable={false}
           />
         </View>
@@ -231,6 +242,44 @@ export default function LapPhieuXuat({navigation, route}) {
                 page: 'LapPhieuXuat',
               });
             }}
+          />
+        </View>
+
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 10,
+          }}>
+          <Text style={styles.label}>Họ tên KH</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Vui lòng nhập họ tên khách hàng"
+            value={exportbill?.hotenkh}
+            onChangeText={text => setExportBill({...exportbill, hotenkh: text})}
+            // editable={false}
+          />
+        </View>
+
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 10,
+          }}>
+          <Text style={styles.label}>SĐT KH</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Vui lòng nhập sđt khách hàng"
+            value={exportbill?.sodienthoaikh}
+            maxLength={10}
+            keyboardType="numeric"
+            onChangeText={text =>
+              setExportBill({...exportbill, sodienthoaikh: text})
+            }
+            // editable={false}
           />
         </View>
 
@@ -398,7 +447,7 @@ export default function LapPhieuXuat({navigation, route}) {
 
         <View style={styles.groupButtonAction}>
           <Button
-            disabled={exportbill.makho === '' ? true : false}
+            disabled={exportbill?.makho === '' ? true : false}
             buttonStyle={[styles.buttonAction, {width: 250}]}
             title="Thêm Vật Tư Vào Danh Sách"
             onPress={() => {
@@ -406,8 +455,8 @@ export default function LapPhieuXuat({navigation, route}) {
               // console.log('Mã kho : ', exportbill.makho);
               // console.log('Mã đại lý : ', inforuser.madaily._id);
               navigation.navigate('BangGiaXuat', {
-                madaily: inforuser.madaily._id,
-                makho: exportbill.makho,
+                madaily: inforuser?.madaily?._id,
+                makho: exportbill?.makho,
               });
             }}
           />
@@ -419,14 +468,6 @@ export default function LapPhieuXuat({navigation, route}) {
             buttonStyle={styles.buttonAction}
             title="Lập Hóa Đơn"
             onPress={async () => {
-              console.log('Tên phiếu : ', exportbill.tenpx);
-              console.log(
-                'Ngày lập : ',
-                JSON.stringify(exportbill.ngay).slice(0, 11),
-              );
-              console.log('Mã nhân viên : ', exportbill.manv);
-              console.log('Mã kho : ', exportbill.makho);
-              console.log('datacart : ', datacart);
               if (datacart.length == 0) {
                 Alert.alert('Thông báo', res.data.message, [
                   {
@@ -454,6 +495,11 @@ export default function LapPhieuXuat({navigation, route}) {
               }
               if (!checkoverstorage) {
                 try {
+                  exportbill.ngay = JSON.stringify(exportbill?.ngay).slice(
+                    1,
+                    11,
+                  );
+
                   const res = await axios.post(
                     `${APIPX}`,
                     {

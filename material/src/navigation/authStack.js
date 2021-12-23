@@ -48,8 +48,6 @@ import SignUpScreen from './../screens/authScreens/SignUpScreen';
 // import HomeScreen from '../screens/HomeScreen';
 // import UserHomeScreen from './../User/UserHomeScreen';
 import DSNhanVienUser from './../User/DSNhanVienUser';
-import DanhSachPhieuNhapUser from './../phieunhap/DanhSachPhieuNhapUser';
-import DanhSachPhieuXuatUser from './../phieuxuat/DanhSachPhieuXuatUser';
 import ListMaterialUser from './../Materials/ListMaterialUser';
 import DanhSachDaiLy from './../store/DanhSachDaiLy';
 import DanhSachKho from './../kho/DanhSachKho';
@@ -60,6 +58,7 @@ import ThongKeTheoNamTungDaiLy from '../screens/ThongKeTheoNamTungDaiLy';
 import ThongKeTheoGiaiDoanTungDaiLy from '../screens/ThongKeTheoGiaiDoanTungDaiLy';
 import ThongKeNhanVienLapPhieu from '../thongke/ThongKeNhanVienLapPhieu';
 import ThongKeVatTuTon from '../thongke/ThongKeVatTuTon';
+import ThongKeVatTuTrongCacKho from '../thongke/ThongKeVatTuTrongCacKho';
 
 import SoLuongTonKho from './../kho/SoLuongTonKho';
 
@@ -433,6 +432,15 @@ export function AuthStack() {
         }}
       />
 
+      <Stack.Screen
+        name="ThongKeVatTuTrongCacKho"
+        component={ThongKeVatTuTrongCacKho}
+        options={{
+          headerShown: false,
+          ...TransitionPresets.RevealFromBottomAndroid,
+        }}
+      />
+
       {/* <Stack.Screen
         name="HomeScreen"
         component={HomeScreen}
@@ -460,23 +468,7 @@ export function AuthStack() {
         }}
       />
 
-      <Stack.Screen
-        name="DanhSachPhieuNhapUser"
-        component={DanhSachPhieuNhapUser}
-        options={{
-          headerShown: false,
-          ...TransitionPresets.RevealFromBottomAndroid,
-        }}
-      />
-
-      <Stack.Screen
-        name="DanhSachPhieuXuatUser"
-        component={DanhSachPhieuXuatUser}
-        options={{
-          headerShown: false,
-          ...TransitionPresets.RevealFromBottomAndroid,
-        }}
-      />
+     
 
       <Stack.Screen
         name="ListMaterialUser"
@@ -513,8 +505,6 @@ export function AuthStack() {
           ...TransitionPresets.RevealFromBottomAndroid,
         }}
       />
-
-
     </Stack.Navigator>
   );
 }
